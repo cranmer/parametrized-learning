@@ -19,24 +19,62 @@ Calculate power (expected significance) for some alpha using profile likelihood 
 import ROOT
 import numpy as np
 from sklearn import svm, linear_model, gaussian_process
+from sklearn.neural_network import BernoulliRBM
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+
 import matplotlib.pyplot as plt
 
-def trainAndTest():
+def trainAndTest(nmax=-1):
 	print "Entering trainAndTest"
 	trainAndTarget = np.loadtxt('traindata.dat')
-	traindata = trainAndTarget[:,0:2]
-	targetdata = trainAndTarget[:,2]
+	#to use nmax, need to shuffle first
+	traindata = trainAndTarget[:nmax,0:2]
+	targetdata = trainAndTarget[:nmax,2]
 
 	testdata = np.loadtxt('testdata.dat')
 	testdata1 = np.loadtxt('testdata1.dat')
 
+	#transform data
+
 	# do regression with nuisance parameter input
 	clf = svm.NuSVR()
+	'''
+	# attempt at using Gaussian Processes as in 
+	# http://scikit-learn.org/stable/auto_examples/gaussian_process/plot_gp_probabilistic_classification_after_regression.html
+	clf = gaussian_process.GaussianProcess(theta0=1)
+	noise = np.random.normal(0,.1,len(traindata))
+	dummy=np.zeros(len(traindata))
+	offset = np.column_stack((dummy,noise))
+	targetdata= targetdata+noise
+	traindata=traindata+offset
+	'''
+   
 	clf.fit(traindata, targetdata)  
+
 
 	# evaluate with different asssumed mass values
 	outputs=clf.predict(testdata)
 	outputs1=clf.predict(testdata1)
+
+	'''
+	# Create and fit an AdaBoosted decision tree
+	bdt = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2), 
+		algorithm="SAMME", n_estimators=200)
+	bdt.fit(traindata, targetdata)
+	outputs = bdt.decision_function(testdata)
+	outputs = (outputs-outputs.min())/(outputs.max()-outputs.min())
+	print outputs
+	outputs1 = bdt.decision_function(testdata1)
+	'''
+
+	'''	
+	# an unsupervised method, not using properly here.
+	brbm = BernoulliRBM()
+	brbm.fit(traindata,targetdata)
+	outputs = brbm.transform(testdata)
+	print np.shape(outputs)
+	'''
 
 	# make scatter plot of regression vs. likelihood ratio
 	f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
@@ -55,11 +93,11 @@ def trainAndTest():
 
 	plt.scatter(traindata[:,0],targetdata,color='red')
 	plt.scatter(testdata[:,0],outputs,color='green')
-	plt.scatter(testdata1[:,0],outputs1,color='purple')
+	#plt.scatter(testdata1[:,0],outputs1,color='purple')
 	plt.scatter(testdata[:,0],LRs,color='black')
 
-	plt.show()
 	plt.savefig('example.pdf')
+	plt.show()
 
 	#make histograms of output for signal and background samples
 	#FIX: currently using the trainig data b/c test data has no labels
@@ -68,6 +106,8 @@ def trainAndTest():
 	plt.hist(sigoutputs, alpha=.5)
 	plt.hist(bkgoutputs, alpha=.5)
 	plt.show()
+
+	#nicer plot example: http://scikit-learn.org/stable/auto_examples/svm/plot_svm_nonlinear.html
 
 def makePdfPlot():
 	f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
@@ -89,7 +129,7 @@ def makePdfPlot():
 
 def makeData():
 	musteps=10
-	numTrain=1000
+	numTrain=500
 	numTest=numTrain
 
 	#Make statistical model
@@ -141,9 +181,14 @@ def makeData():
 	np.savetxt('testdata1.dat',testdata1, fmt='%f')
 
 
+
+def KDE():
+	# see http://scikit-learn.org/stable/auto_examples/neighbors/plot_kde_1d.html
+	pass
+
 if __name__ == '__main__':
-	makeData()
-	makePdfPlot()
+	#makeData()
+	#makePdfPlot()
 	trainAndTest()
 
 	'''	
