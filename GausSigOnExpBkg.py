@@ -1,17 +1,18 @@
 '''
+author Kyle Cranmer <kyle.cranmer@nyu.edu>
+
 Define model mu_s*Gaus(x|alpha,sigma)+mu_b*flat(x)
 Generate {x} for several {alpha}
 Calculate power (expected significance) for some alpha using profile likelihood approach
-Train NN for alpha=0. 
-	make (histfactory/on the fly) model for NN with alpha variations
+1) Train NN for alpha=0. 
+	1a) make (histfactory/on the fly) model for NN with alpha variations
 		- calculate power
-Train NN with {x,alpha}
-	a) make (histfactory/on the fly) model for NN with alpha variations using same alpha as input to NN
+	1b) make pdf on the fly for each value of alpha
+2) Train NN with {x,alpha}
+	a) make histfactory model for NN with alpha variations using same alpha as input to NN
 		- calculate power
-	b) make (histfactory/on the fly) model for NN with alpha variations maximizing NN w.r.t. alpha
+	b) make pdf on the fly for NN with alpha variations using same alpha as input to NN
 		- calculate power
-	d) instead of maximizing per event, maximize sum NN and build corresponding distribution
-		- note, this is variant to non-linearchanges in NN -> NN' so seems like bad idea
 '''
 
 
@@ -20,24 +21,92 @@ import numpy as np
 from sklearn import svm, linear_model, gaussian_process
 import matplotlib.pyplot as plt
 
+def trainAndTest():
+	print "Entering trainAndTest"
+	trainAndTarget = np.loadtxt('traindata.dat')
+	traindata = trainAndTarget[:,0:2]
+	targetdata = trainAndTarget[:,2]
+
+	testdata = np.loadtxt('testdata.dat')
+	testdata1 = np.loadtxt('testdata1.dat')
+
+	# do regression with nuisance parameter input
+	clf = svm.NuSVR()
+	clf.fit(traindata, targetdata)  
+
+	# evaluate with different asssumed mass values
+	outputs=clf.predict(testdata)
+	outputs1=clf.predict(testdata1)
+
+	# make scatter plot of regression vs. likelihood ratio
+	f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
+	w = f.Get('w')
+	x = w.var('x')
+	mu = w.var('mu')
+	sigpdf = w.pdf('g')
+	bkgpdf = w.pdf('e')
+
+	mu.setVal(0)
+	LRs=np.zeros(len(testdata))
+	for i, xx in enumerate(testdata):
+		x.setVal(xx[0])
+		LRs[i] = sigpdf.getVal(ROOT.RooArgSet(x))/bkgpdf.getVal(ROOT.RooArgSet(x))
+	LRs = LRs / np.max(LRs) 
+
+	plt.scatter(traindata[:,0],targetdata,color='red')
+	plt.scatter(testdata[:,0],outputs,color='green')
+	plt.scatter(testdata1[:,0],outputs1,color='purple')
+	plt.scatter(testdata[:,0],LRs,color='black')
+
+	plt.show()
+	plt.savefig('example.pdf')
+
+	#make histograms of output for signal and background samples
+	#FIX: currently using the trainig data b/c test data has no labels
+	sigoutputs=clf.predict(traindata[:len(traindata)/2])
+	bkgoutputs=clf.predict(traindata[len(traindata)/2:])
+	plt.hist(sigoutputs, alpha=.5)
+	plt.hist(bkgoutputs, alpha=.5)
+	plt.show()
+
+def makePdfPlot():
+	f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
+	w = f.Get('w')
+	x = w.var('x')
+	mu = w.var('mu')
+	sigpdf = w.pdf('g')
+	bkgpdf = w.pdf('e')
+	pdf = w.pdf('model')
+	frame = x.frame()
+	pdf.plotOn(frame)
+	pdf.plotOn(frame,ROOT.RooFit.Components('g'),ROOT.RooFit.LineColor(ROOT.kRed))
+	pdf.plotOn(frame,ROOT.RooFit.Components('e'),ROOT.RooFit.LineColor(ROOT.kGreen))
+	c1 = ROOT.TCanvas()
+	frame.Draw()
+	c1.SaveAs('model.pdf')
+	f.Close()
+
+
 def makeData():
 	musteps=10
-	numTrain=500
+	numTrain=1000
 	numTest=numTrain
 
+	#Make statistical model
 	w = ROOT.RooWorkspace('w')
 	w.factory('Gaussian::g(x[-5,5],mu[0,-3,3],sigma[0.5, 0, 2])')
 	w.factory('Exponential::e(x,tau[-.15,-3,0])')
 	w.factory('SUM::model(s[50,0,100]*g,b[100,0,1000]*e)')
 	w.Print() #this isn't displaying in iPython
+	w.writeToFile('workspace_GausSigOnExpBkg.root')
 
 	x = w.var('x')
 	mu = w.var('mu')
 	pdf = w.pdf('model')
 	sigpdf = w.pdf('g')
 	bkgpdf = w.pdf('e')
-	frame = x.frame()
 
+	#create training, testing data
 	traindata = np.zeros((2*numTrain*musteps,2))
 	targetdata = np.zeros(2*numTrain*musteps)
 
@@ -49,8 +118,6 @@ def makeData():
 		sigdata = sigpdf.generate(ROOT.RooArgSet(x),numTrain)
 		bkgdata = bkgpdf.generate(ROOT.RooArgSet(x),numTrain)
 		alldata = pdf.generate(ROOT.RooArgSet(x),numTest)
-
-
 
 		for i in range(numTrain):
 			traindata[ i+mustep*numTrain,0] = sigdata.get(i).getRealValue('x')
@@ -66,58 +133,18 @@ def makeData():
 
 		for i in range(numTest):
 			testdata1[i+mustep*numTest,0] = alldata.get(i).getRealValue('x')
-			testdata1[i+mustep*numTest,1] = 2*(i%2)-1.
+			testdata1[i+mustep*numTest,1] = 1 # optionally 2*(i%2)-1.
 
 	#print train and test data to file
-	f = open('traindata.dat','w')
-	for i, x in enumerate(traindata):
-		f.write('{x} {mass} {target}\n'.format(x=x[0], mass=x[1], target=targetdata[i]))
-	f.close()
-
-	f = open('testdata.dat','w')
-	for i, x in enumerate(testdata):
-		f.write('{x} {mass}\n'.format(x=x[0], mass=x[1]))
-	f.close()
-
-	# do regression with nuisance parameter input
-	clf = svm.NuSVR()
-	clf.fit(traindata, targetdata)  
-
-	# evaluate with different asssumed mass values
-	outputs=clf.predict(testdata)
-	outputs1=clf.predict(testdata1)
-
-	# do regression without
-	clf = svm.NuSVR()
-	temp = traindata[:,0].reshape(len(traindata),1)
-	clf.fit(temp, targetdata)  
-	outputsSmeared=clf.predict(testdata1[:,0].reshape(len(testdata1),1) )
-
-	# make scatter plot of regression vs. likelihood ratio
-	x = w.var('x')
-	mu.setVal(0)
-	LRs=np.zeros(len(testdata))
-	for i, xx in enumerate(testdata):
-		x.setVal(xx[0])
-		LRs[i] = sigpdf.getVal(ROOT.RooArgSet(x))/bkgpdf.getVal(ROOT.RooArgSet(x))
-	LRs = LRs / np.max(LRs) 
-
-
-	#plt.scatter(traindata[:,0],traindata[:,1],color='green')
-
-	plt.scatter(traindata[:,0],targetdata,color='red')
-	plt.scatter(testdata[:,0],outputs,color='green')
-	plt.scatter(testdata1[:,0],outputs1,color='purple')
-	plt.scatter(testdata1[:,0],outputsSmeared,color='orange')
-	plt.scatter(testdata[:,0],LRs,color='black')
-
-	#plt.show()
-	plt.savefig('example.pdf')
+	np.savetxt('traindata.dat',np.column_stack((traindata,targetdata)), fmt='%f')
+	np.savetxt('testdata.dat',testdata, fmt='%f')
+	np.savetxt('testdata1.dat',testdata1, fmt='%f')
 
 
 if __name__ == '__main__':
 	makeData()
-
+	makePdfPlot()
+	trainAndTest()
 
 	'''	
 	#write ttrees, some issue with ownership?
