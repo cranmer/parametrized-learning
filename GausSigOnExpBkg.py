@@ -41,7 +41,8 @@ def trainAndTest(nmax=-1):
 	clf = svm.NuSVR()
 	'''
 	# attempt at using Gaussian Processes as in 
-	# http://scikit-learn.org/stable/auto_examples/gaussian_process/plot_gp_probabilistic_classification_after_regression.html
+	# http://scikit-learn.org/stable/auto_examples/gaussian_process/\
+	# plot_gp_probabilistic_classification_after_regression.html
 	clf = gaussian_process.GaussianProcess(theta0=1)
 	noise = np.random.normal(0,.1,len(traindata))
 	dummy=np.zeros(len(traindata))
@@ -108,6 +109,60 @@ def trainAndTest(nmax=-1):
 	plt.show()
 
 	#nicer plot example: http://scikit-learn.org/stable/auto_examples/svm/plot_svm_nonlinear.html
+
+def makePdf():
+	# making plots for when mu is and isn't included in training
+	# using data with several mu values
+	# FIX: use different test/train samples (not a big deal for simple problem)
+	
+	print "Entering trainAndTest"
+	trainAndTarget = np.loadtxt('traindata.dat')
+	#to use nmax, need to shuffle first
+	traindata = trainAndTarget[:,0:2]
+	targetdata = trainAndTarget[:,2]
+
+	massPoints = np.unique(traindata[:,1])
+	chunk = len(traindata)/len(massPoints)/2
+	shift = len(traindata)/2
+
+
+	#plot for fixed mu=0 training
+	clf = svm.NuSVR()
+	reducedtrain = 	np.concatenate((traindata[4*chunk : 5*chunk,0], 
+		traindata[4*chunk+shift : 5*chunk+shift , 0]))
+	reducedtarget = np.concatenate((targetdata[4*chunk : 5*chunk], 
+		targetdata[4*chunk+shift : 5*chunk+shift]))
+
+	clf.fit(reducedtrain.reshape((len(reducedtrain),1)), reducedtarget)  
+	outputs=clf.predict(traindata[:,0].reshape((len(traindata),1)))
+
+
+	for i, mass in enumerate(massPoints):
+		#bkg part
+		#plt.hist(outputs[i*chunk+shift: \
+		#	(i+1)*chunk+shift], 30, alpha=0.3)
+		#sig part
+		plt.hist(outputs[i*chunk: \
+			(i+1)*chunk], 30, alpha=0.1, range=(-.2,1.2))
+	plt.savefig('fixed_training.pdf')
+	plt.show()
+
+
+	# plot for adaptive training
+
+	clf.fit(traindata,targetdata)  
+	outputs=clf.predict(traindata)
+
+	for i, mass in enumerate(massPoints):
+		#bkg part
+		#plt.hist(outputs[i*chunk+shift: \
+		#	(i+1)*chunk+shift], 30, alpha=0.3)
+		#sig part
+		plt.hist(outputs[i*chunk: \
+			(i+1)*chunk], 30, alpha=0.1, range=(-.2,1.2))
+	plt.savefig('adaptive_training.pdf')
+	plt.show()
+
 
 def makePdfPlot():
 	f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
@@ -189,7 +244,8 @@ def KDE():
 if __name__ == '__main__':
 	#makeData()
 	#makePdfPlot()
-	trainAndTest()
+	#trainAndTest()
+	makePdf()
 
 	'''	
 	#write ttrees, some issue with ownership?
