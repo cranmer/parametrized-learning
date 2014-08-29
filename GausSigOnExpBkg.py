@@ -235,6 +235,20 @@ def makeData():
 	np.savetxt('testdata.dat',testdata, fmt='%f')
 	np.savetxt('testdata1.dat',testdata1, fmt='%f')
 
+def makeMomentMorph(w,interpParam, observable, pdfList, paramPoints):
+	paramVec = ROOT.TVectorD(len(paramPoints))
+	for i, p in enumerate(paramPoints):
+		paramVec[i]=p #seems silly, but other constructor gave problems
+
+	pdfs = ROOT.RooArgList()
+	for pdf in pdfList:
+		pdfs.add(pdf)
+
+	setting = ROOT.RooMomentMorph.Linear
+	morph = ROOT.RooMomentMorph('morph','morph',interpParam,
+		ROOT.RooArgList(observable),pdfs, paramVec,setting)
+	getattr(w,'import')(morph) # work around for morph = w.import(morph)
+	return w
 
 
 def KDE():
