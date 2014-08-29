@@ -13,6 +13,7 @@ def makeMomentMorph(w,interpParam, observable, pdfList, paramPoints):
 	setting = ROOT.RooMomentMorph.Linear
 	morph = ROOT.RooMomentMorph('morph','morph',interpParam,
 		ROOT.RooArgList(observable),pdfs, paramVec,setting)
+	print morph
 	getattr(w,'import')(morph) # work around for morph = w.import(morph)
 	return w
 
@@ -43,7 +44,9 @@ def testMomentMorph():
 
 	w = makeMomentMorph(w,mu,x,pdfs,paramPoints)
 	morph = w.pdf('morph')
-	morph.Print('v')
+	w.Print()
+	morph.Print()
+	return
 
 	#make plots of interpolated pdf
 	for i in np.arange(5):

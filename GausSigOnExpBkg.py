@@ -110,11 +110,55 @@ def trainAndTest(nmax=-1):
 
 	#nicer plot example: http://scikit-learn.org/stable/auto_examples/svm/plot_svm_nonlinear.html
 
+
+
+
+def makeMomentMorph(w,interpParam, observable, pdfList, paramPoints):
+	paramVec = ROOT.TVectorD(len(paramPoints))
+	for i, p in enumerate(paramPoints):
+		paramVec[i]=p #seems silly, but other constructor gave problems
+
+	pdfs = ROOT.RooArgList()
+	for pdf in pdfList:
+		pdfs.add(pdf)
+
+	setting = ROOT.RooMomentMorph.Linear
+	morph = ROOT.RooMomentMorph("morph",'morph',interpParam,
+		ROOT.RooArgList(observable),pdfs, paramVec,setting)
+
+	'''	debugging
+	print morph
+	print observable
+	print "name is", morph.GetName()
+	morph.Print('v')
+
+	c1 = ROOT.TCanvas("c3",'',400,400)
+	frame = observable.frame()
+	for pdf in pdfList:
+		pdf.plotOn(frame)
+	mu=interpParam
+	mu.setVal(0)
+	#morph.plotOn(frame)
+	frame.Draw()
+	c1.SaveAs('root_mmorph2.pdf')
+	'''
+
+	#getattr(w,'import')(morph) # work around for morph = w.import(morph)
+	getattr(w,'import')(ROOT.RooArgSet(morph),ROOT.RooFit.RecycleConflictNodes()) # work around for morph = w.import(morph)
+	#getattr(w,'import')(morph,ROOT.RooFit.RecycleConflictNodes()) # work around for morph = w.import(morph)
+	#getattr(w,'import')(morph,ROOT.RooFit.RenameConflictNodes("clash")) # work around for morph = w.import(morph)
+	#getattr(w,'import')(morph,False) # treats like a TObject, looses name?
+	w.Print()
+
+
+
+	return w
+
 def makePdf():
 	# making plots for when mu is and isn't included in training
 	# using data with several mu values
 	# FIX: use different test/train samples (not a big deal for simple problem)
-	
+
 	print "Entering trainAndTest"
 	trainAndTarget = np.loadtxt('traindata.dat')
 	#to use nmax, need to shuffle first
@@ -127,6 +171,7 @@ def makePdf():
 
 
 	#plot for fixed mu=0 training
+	print "training fixed"
 	clf = svm.NuSVR()
 	reducedtrain = 	np.concatenate((traindata[4*chunk : 5*chunk,0], 
 		traindata[4*chunk+shift : 5*chunk+shift , 0]))
@@ -136,7 +181,8 @@ def makePdf():
 	clf.fit(reducedtrain.reshape((len(reducedtrain),1)), reducedtarget)  
 	outputs=clf.predict(traindata[:,0].reshape((len(traindata),1)))
 
-
+	fixedhists=[]
+	c1 = ROOT.TCanvas()
 	for i, mass in enumerate(massPoints):
 		#bkg part
 		#plt.hist(outputs[i*chunk+shift: \
@@ -144,15 +190,38 @@ def makePdf():
 		#sig part
 		plt.hist(outputs[i*chunk: \
 			(i+1)*chunk], 30, alpha=0.1, range=(-.2,1.2))
+
+		hist = ROOT.TH1F('hist{0}'.format(i),"hist",30,-0.1,1.2)
+		fixedhists.append(hist)
+		for val in outputs[i*chunk: (i+1)*chunk]:
+			hist.Fill(val)
+		if i==0:
+			hist.Draw()
+		else:
+			hist.Draw('same')
+	c1.SaveAs('roothists.pdf')
+
+
 	plt.savefig('fixed_training.pdf')
-	plt.show()
+	#plt.show()
 
 
 	# plot for adaptive training
-
+	print "training adaptive"
 	clf.fit(traindata,targetdata)  
 	outputs=clf.predict(traindata)
 
+	#f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
+	#w = f.Get('w')
+	w = ROOT.RooWorkspace('w')
+	w.factory('mu[-3,3]')
+	w.factory('score[-.1,1.2]')
+	s = w.var('score')
+	mu = w.var('mu')
+
+	adaptivehists=[]
+	adpativedatahists=[]
+	adpativehistpdfs=[]
 	for i, mass in enumerate(massPoints):
 		#bkg part
 		#plt.hist(outputs[i*chunk+shift: \
@@ -160,8 +229,50 @@ def makePdf():
 		#sig part
 		plt.hist(outputs[i*chunk: \
 			(i+1)*chunk], 30, alpha=0.1, range=(-.2,1.2))
+
+
+		hist = ROOT.TH1F('hist{0}'.format(i),"hist",30,-0.1,1.2)
+		adaptivehists.append(hist)
+		for val in outputs[i*chunk: (i+1)*chunk]:
+			hist.Fill(val)
+		if i==0:
+			hist.Draw()
+		else:
+			hist.Draw('same')
+		datahist = ROOT.RooDataHist('datahist{0}'.format(i),"hist", ROOT.RooArgList(s), hist)
+		histpdf = ROOT.RooHistPdf('histpdf{0}'.format(i),"hist", ROOT.RooArgSet(s), datahist,1)
+
+		getattr(w,'import')(histpdf) # work around for morph = w.import(morph)
+		getattr(w,'import')(datahist) # work around for morph = w.import(morph)
+		adpativedatahists.append(datahist)
+		adpativehistpdfs.append(histpdf)
+
+	c1.SaveAs('root_adaptive_hists.pdf')
+
+	w = makeMomentMorph(w,mu,s,adpativehistpdfs, massPoints)
+	w.Print()
+
+	morph = w.obj('morph')
+	print morph
+
+	c1 = ROOT.TCanvas("c2",'',400,400)
+	frame = s.frame()
+	for pdf in adpativehistpdfs:
+		pdf.plotOn(frame)
+	frame = s.frame()
+	mu.setVal(0)
+	morph.plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
+	mu.setVal(-1)
+	#morph.plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
+	frame.Draw()
+	c1.SaveAs('root_mmorph.pdf')
+
+
 	plt.savefig('adaptive_training.pdf')
-	plt.show()
+	#plt.show()
+
+
+
 
 
 def makePdfPlot():
@@ -235,20 +346,6 @@ def makeData():
 	np.savetxt('testdata.dat',testdata, fmt='%f')
 	np.savetxt('testdata1.dat',testdata1, fmt='%f')
 
-def makeMomentMorph(w,interpParam, observable, pdfList, paramPoints):
-	paramVec = ROOT.TVectorD(len(paramPoints))
-	for i, p in enumerate(paramPoints):
-		paramVec[i]=p #seems silly, but other constructor gave problems
-
-	pdfs = ROOT.RooArgList()
-	for pdf in pdfList:
-		pdfs.add(pdf)
-
-	setting = ROOT.RooMomentMorph.Linear
-	morph = ROOT.RooMomentMorph('morph','morph',interpParam,
-		ROOT.RooArgList(observable),pdfs, paramVec,setting)
-	getattr(w,'import')(morph) # work around for morph = w.import(morph)
-	return w
 
 
 def KDE():
