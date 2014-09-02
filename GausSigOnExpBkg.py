@@ -125,23 +125,7 @@ def makeMomentMorph(w,interpParam, observable, pdfList, paramPoints):
 	setting = ROOT.RooMomentMorph.Linear
 	morph = ROOT.RooMomentMorph("morph",'morph',interpParam,
 		ROOT.RooArgList(observable),pdfs, paramVec,setting)
-
-	'''	debugging
-	print morph
-	print observable
-	print "name is", morph.GetName()
-	morph.Print('v')
-
-	c1 = ROOT.TCanvas("c3",'',400,400)
-	frame = observable.frame()
-	for pdf in pdfList:
-		pdf.plotOn(frame)
-	mu=interpParam
-	mu.setVal(0)
-	#morph.plotOn(frame)
-	frame.Draw()
-	c1.SaveAs('root_mmorph2.pdf')
-	'''
+	morph.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel("RooBinIntegrator")
 
 	#getattr(w,'import')(morph) # work around for morph = w.import(morph)
 	getattr(w,'import')(ROOT.RooArgSet(morph),ROOT.RooFit.RecycleConflictNodes()) # work around for morph = w.import(morph)
@@ -150,7 +134,33 @@ def makeMomentMorph(w,interpParam, observable, pdfList, paramPoints):
 	#getattr(w,'import')(morph,False) # treats like a TObject, looses name?
 	w.Print()
 
+	return w
 
+def makeBSpline(w,interpParam, observable, pdfList, paramPoints):
+	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
+
+	paramVec = ROOT.TVectorD(len(paramPoints))
+	tValues = ROOT.std.vector("double")()
+	for i, p in enumerate(paramPoints):
+		paramVec[i]=p #seems silly, but other constructor gave problems
+		tValues.push_back(p)
+
+	order=3
+	bspb = ROOT.RooStats.HistFactory.RooBSplineBases( "bases", "bases", order, tValues, interpParam )
+
+	pdfs = ROOT.RooArgList()
+	for pdf in pdfList:
+		pdfs.add(pdf)
+
+	#this makes a function
+	morphfunc = ROOT.RooStats.HistFactory.RooBSpline( "morphf", "morphf", pdfs, bspb, ROOT.RooArgSet() )
+
+	#if you want to convert it into a PDF
+	morph = ROOT.RooRealSumPdf('morph','morph', ROOT.RooArgList(morphfunc), ROOT.RooArgList())
+
+	print morph
+	#getattr(w,'import')(morph) # work around for morph = w.import(morph)
+	getattr(w,'import')(ROOT.RooArgSet(morph),ROOT.RooFit.RecycleConflictNodes()) # work around for morph = w.import(morph)
 
 	return w
 
@@ -215,7 +225,10 @@ def makePdf():
 	#w = f.Get('w')
 	w = ROOT.RooWorkspace('w')
 	w.factory('mu[-3,3]')
-	w.factory('score[-.1,1.2]')
+	bins=30
+	low=0.
+	high=1.
+	w.factory('score[{0},{1}]'.format(low,high))
 	s = w.var('score')
 	mu = w.var('mu')
 
@@ -228,10 +241,10 @@ def makePdf():
 		#	(i+1)*chunk+shift], 30, alpha=0.3)
 		#sig part
 		plt.hist(outputs[i*chunk: \
-			(i+1)*chunk], 30, alpha=0.1, range=(-.2,1.2))
+			(i+1)*chunk], bins, alpha=0.1, range=(low,high))
 
 
-		hist = ROOT.TH1F('hist{0}'.format(i),"hist",30,-0.1,1.2)
+		hist = ROOT.TH1F('hist{0}'.format(i),"hist",bins,low,high)
 		adaptivehists.append(hist)
 		for val in outputs[i*chunk: (i+1)*chunk]:
 			hist.Fill(val)
@@ -239,8 +252,12 @@ def makePdf():
 			hist.Draw()
 		else:
 			hist.Draw('same')
+
 		datahist = ROOT.RooDataHist('datahist{0}'.format(i),"hist", ROOT.RooArgList(s), hist)
-		histpdf = ROOT.RooHistPdf('histpdf{0}'.format(i),"hist", ROOT.RooArgSet(s), datahist,1)
+		order=0
+		s.setBins(bins)
+		histpdf = ROOT.RooHistPdf('histpdf{0}'.format(i),"hist", ROOT.RooArgSet(s), datahist,order)
+		histpdf.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
 
 		getattr(w,'import')(histpdf) # work around for morph = w.import(morph)
 		getattr(w,'import')(datahist) # work around for morph = w.import(morph)
@@ -249,28 +266,27 @@ def makePdf():
 
 	c1.SaveAs('root_adaptive_hists.pdf')
 
-	w = makeMomentMorph(w,mu,s,adpativehistpdfs, massPoints)
+	w = makeBSpline(w,mu,s,adpativehistpdfs, massPoints)
 	w.Print()
-
-	morph = w.obj('morph')
+	w.writeToFile("workspace_GausSigOnExpBkg_morph.root")
+	morph = w.pdf('morph')
 	print morph
+	morph.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
 
 	c1 = ROOT.TCanvas("c2",'',400,400)
 	frame = s.frame()
 	for pdf in adpativehistpdfs:
 		pdf.plotOn(frame)
-	frame = s.frame()
 	mu.setVal(0)
 	morph.plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
-	mu.setVal(-1)
 	#morph.plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
 	frame.Draw()
-	c1.SaveAs('root_mmorph.pdf')
+	c1.SaveAs('root_bspline.pdf')
 
 
 	plt.savefig('adaptive_training.pdf')
 	#plt.show()
-
+	print massPoints
 
 
 
