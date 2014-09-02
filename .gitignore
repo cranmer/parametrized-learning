@@ -62,3 +62,4 @@ docs/_build/
 *.d
 
 *.root
+*.wscode*/
