@@ -23,8 +23,10 @@ var/
 *.egg
 
 # ROOT
-*.d 
+*_cxx.d 
 *.so
+*.npy
+*.pkl
 
 # Installer logs
 pip-log.txt
@@ -56,3 +58,7 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+
+*.d
+
+*.root

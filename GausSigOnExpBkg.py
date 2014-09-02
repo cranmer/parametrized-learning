@@ -1,5 +1,10 @@
+#!/usr/bin/env python
+# https://github.com/svenkreiss/PyROOTUtils/blob/master/PyROOTUtils/Graph.py  
+__author__ = "Kyle Cranmer <kyle.cranmer@nyu.edu"
+__version__ = "0.1"
+
 '''
-author Kyle Cranmer <kyle.cranmer@nyu.edu>
+This is a research work in progress.
 
 Define model mu_s*Gaus(x|alpha,sigma)+mu_b*flat(x)
 Generate {x} for several {alpha}
@@ -26,421 +31,14 @@ from sklearn.externals import joblib
 
 import matplotlib.pyplot as plt
 
-def trainAndTest(nmax=-1):
-	print "Entering trainAndTest"
-	trainAndTarget = np.loadtxt('traindata.dat')
-	#to use nmax, need to shuffle first
-	traindata = trainAndTarget[:nmax,0:2]
-	targetdata = trainAndTarget[:nmax,2]
-
-	testdata = np.loadtxt('testdata.dat')
-	testdata1 = np.loadtxt('testdata1.dat')
-
-	#transform data
-
-	# do regression with nuisance parameter input
-	clf = svm.NuSVR()
-	'''
-	# attempt at using Gaussian Processes as in 
-	# http://scikit-learn.org/stable/auto_examples/gaussian_process/\
-	# plot_gp_probabilistic_classification_after_regression.html
-	clf = gaussian_process.GaussianProcess(theta0=1)
-	noise = np.random.normal(0,.1,len(traindata))
-	dummy=np.zeros(len(traindata))
-	offset = np.column_stack((dummy,noise))
-	targetdata= targetdata+noise
-	traindata=traindata+offset
-	'''
-   
-	clf.fit(traindata, targetdata)  
-
-
-	# evaluate with different asssumed mass values
-	outputs=clf.predict(testdata)
-	outputs1=clf.predict(testdata1)
-
-	'''
-	# Create and fit an AdaBoosted decision tree
-	bdt = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2), 
-		algorithm="SAMME", n_estimators=200)
-	bdt.fit(traindata, targetdata)
-	outputs = bdt.decision_function(testdata)
-	outputs = (outputs-outputs.min())/(outputs.max()-outputs.min())
-	print outputs
-	outputs1 = bdt.decision_function(testdata1)
-	'''
-
-	'''	
-	# an unsupervised method, not using properly here.
-	brbm = BernoulliRBM()
-	brbm.fit(traindata,targetdata)
-	outputs = brbm.transform(testdata)
-	print np.shape(outputs)
-	'''
-
-	# make scatter plot of regression vs. likelihood ratio
-	f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
-	w = f.Get('w')
-	x = w.var('x')
-	mu = w.var('mu')
-	sigpdf = w.pdf('g')
-	bkgpdf = w.pdf('e')
-
-	mu.setVal(0)
-	LRs=np.zeros(len(testdata))
-	for i, xx in enumerate(testdata):
-		x.setVal(xx[0])
-		LRs[i] = sigpdf.getVal(ROOT.RooArgSet(x))/bkgpdf.getVal(ROOT.RooArgSet(x))
-	LRs = LRs / np.max(LRs) 
-
-	plt.scatter(traindata[:,0],targetdata,color='red')
-	plt.scatter(testdata[:,0],outputs,color='green')
-	#plt.scatter(testdata1[:,0],outputs1,color='purple')
-	plt.scatter(testdata[:,0],LRs,color='black')
-
-	plt.savefig('example.pdf')
-	plt.show()
-
-	#make histograms of output for signal and background samples
-	#FIX: currently using the trainig data b/c test data has no labels
-	sigoutputs=clf.predict(traindata[:len(traindata)/2])
-	bkgoutputs=clf.predict(traindata[len(traindata)/2:])
-	plt.hist(sigoutputs, alpha=.5)
-	plt.hist(bkgoutputs, alpha=.5)
-	plt.show()
-
-	#nicer plot example: http://scikit-learn.org/stable/auto_examples/svm/plot_svm_nonlinear.html
-
-
-
-
-def makeMomentMorph(w,interpParam, observable, pdfList, paramPoints):
-	paramVec = ROOT.TVectorD(len(paramPoints))
-	for i, p in enumerate(paramPoints):
-		paramVec[i]=p #seems silly, but other constructor gave problems
-
-	pdfs = ROOT.RooArgList()
-	for pdf in pdfList:
-		pdfs.add(pdf)
-
-	setting = ROOT.RooMomentMorph.Linear
-	morph = ROOT.RooMomentMorph("morph",'morph',interpParam,
-		ROOT.RooArgList(observable),pdfs, paramVec,setting)
-	morph.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel("RooBinIntegrator")
-
-	#getattr(w,'import')(morph) # work around for morph = w.import(morph)
-	getattr(w,'import')(ROOT.RooArgSet(morph),ROOT.RooFit.RecycleConflictNodes()) # work around for morph = w.import(morph)
-	#getattr(w,'import')(morph,ROOT.RooFit.RecycleConflictNodes()) # work around for morph = w.import(morph)
-	#getattr(w,'import')(morph,ROOT.RooFit.RenameConflictNodes("clash")) # work around for morph = w.import(morph)
-	#getattr(w,'import')(morph,False) # treats like a TObject, looses name?
-	w.Print()
-
-	return w
-
-def makeBSpline(w,interpParam, observable, pdfList, paramPoints):
-	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
-
-	paramVec = ROOT.TVectorD(len(paramPoints))
-	tValues = ROOT.std.vector("double")()
-	for i, p in enumerate(paramPoints):
-		paramVec[i]=p #seems silly, but other constructor gave problems
-		tValues.push_back(p)
-
-	order=3
-	bspb = ROOT.RooStats.HistFactory.RooBSplineBases( "bases", "bases", order, tValues, interpParam )
-
-	pdfs = ROOT.RooArgList()
-	for pdf in pdfList:
-		pdfs.add(pdf)
-
-	#this makes a function
-	morphfunc = ROOT.RooStats.HistFactory.RooBSpline( "morphf", "morphf", pdfs, bspb, ROOT.RooArgSet() )
-
-	#if you want to convert it into a PDF
-	morph = ROOT.RooRealSumPdf('morph','morph', ROOT.RooArgList(morphfunc), ROOT.RooArgList())
-
-	print morph
-	#getattr(w,'import')(morph) # work around for morph = w.import(morph)
-	getattr(w,'import')(ROOT.RooArgSet(morph),ROOT.RooFit.RecycleConflictNodes()) # work around for morph = w.import(morph)
-
-	return w
-
-def makePdf():
-	# making plots for when mu is and isn't included in training
-	# using data with several mu values
-	# FIX: use different test/train samples (not a big deal for simple problem)
-
-	print "Entering trainAndTest"
-	trainAndTarget = np.loadtxt('traindata.dat')
-	#to use nmax, need to shuffle first
-	traindata = trainAndTarget[:,0:2]
-	targetdata = trainAndTarget[:,2]
-
-	massPoints = np.unique(traindata[:,1])
-	chunk = len(traindata)/len(massPoints)/2
-	shift = len(traindata)/2
-
-
-	#plot for fixed mu=0 training
-	print "training fixed"
-	clf = svm.NuSVR()
-	reducedtrain = 	np.concatenate((traindata[4*chunk : 5*chunk,0], 
-		traindata[4*chunk+shift : 5*chunk+shift , 0]))
-	reducedtarget = np.concatenate((targetdata[4*chunk : 5*chunk], 
-		targetdata[4*chunk+shift : 5*chunk+shift]))
-
-	clf.fit(reducedtrain.reshape((len(reducedtrain),1)), reducedtarget)  
-	outputs=clf.predict(traindata[:,0].reshape((len(traindata),1)))
-	joblib.dump(clf, 'fixed.pkl') 
-
-	fixedhists=[]
-	c1 = ROOT.TCanvas()
-	for i, mass in enumerate(massPoints):
-		#bkg part
-		#plt.hist(outputs[i*chunk+shift: \
-		#	(i+1)*chunk+shift], 30, alpha=0.3)
-		#sig part
-		plt.hist(outputs[i*chunk: \
-			(i+1)*chunk], 30, alpha=0.1, range=(-.2,1.2))
-
-		hist = ROOT.TH1F('hist{0}'.format(i),"hist",30,-0.1,1.2)
-		fixedhists.append(hist)
-		for val in outputs[i*chunk: (i+1)*chunk]:
-			hist.Fill(val)
-		if i==0:
-			hist.Draw()
-		else:
-			hist.Draw('same')
-	c1.SaveAs('roothists.pdf')
-
-
-	plt.savefig('fixed_training.pdf')
-	#plt.show()
-
-
-	# plot for adaptive training
-	print "training adaptive"
-	#clf = joblib.load('adaptive.pkl') 
-	clf.fit(traindata,targetdata)  
-	joblib.dump(clf, 'adaptive.pkl') 
-
-	outputs=clf.predict(traindata)
-
-	#f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
-	#w = f.Get('w')
-	w = ROOT.RooWorkspace('w')
-	w.factory('mu[-3,3]')
-	bins=30
-	low=0.
-	high=1.
-	w.factory('score[{0},{1}]'.format(low,high))
-	s = w.var('score')
-	mu = w.var('mu')
-
-	adaptivehists=[]
-	adpativedatahists=[]
-	adpativehistpdfs=[]
-	for i, mass in enumerate(massPoints):
-		#bkg part
-		#plt.hist(outputs[i*chunk+shift: \
-		#	(i+1)*chunk+shift], 30, alpha=0.3)
-		#sig part
-		plt.hist(outputs[i*chunk: \
-			(i+1)*chunk], bins, alpha=0.1, range=(low,high))
-
-
-		hist = ROOT.TH1F('hist{0}'.format(i),"hist",bins,low,high)
-		adaptivehists.append(hist)
-		for val in outputs[i*chunk: (i+1)*chunk]:
-			hist.Fill(val)
-		if i==0:
-			hist.Draw()
-		else:
-			hist.Draw('same')
-
-		datahist = ROOT.RooDataHist('datahist{0}'.format(i),"hist", ROOT.RooArgList(s), hist)
-		order=0
-		s.setBins(bins)
-		histpdf = ROOT.RooHistPdf('histpdf{0}'.format(i),"hist", ROOT.RooArgSet(s), datahist,order)
-		histpdf.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
-
-		getattr(w,'import')(histpdf) # work around for morph = w.import(morph)
-		getattr(w,'import')(datahist) # work around for morph = w.import(morph)
-		adpativedatahists.append(datahist)
-		adpativehistpdfs.append(histpdf)
-
-	c1.SaveAs('root_adaptive_hists.pdf')
-
-	w = makeBSpline(w,mu,s,adpativehistpdfs, massPoints)
-	w.Print()
-	w.writeToFile("workspace_GausSigOnExpBkg_morph.root")
-	morph = w.pdf('morph')
-	print morph
-	morph.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
-
-	c1 = ROOT.TCanvas("c2",'',400,400)
-	frame = s.frame()
-	for pdf in adpativehistpdfs:
-		pdf.plotOn(frame)
-	mu.setVal(0)
-	morph.plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
-	#morph.plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
-	frame.Draw()
-	c1.SaveAs('root_bspline.pdf')
-
-
-	plt.savefig('adaptive_training.pdf')
-	#plt.show()
-	print massPoints
-
-
-def testPickl():
-	# making plots for when mu is and isn't included in training
-	# using data with several mu values
-	# FIX: use different test/train samples (not a big deal for simple problem)
-
-	print "Entering testPickl"
-	trainAndTarget = np.loadtxt('traindata.dat')
-	#to use nmax, need to shuffle first
-	traindata = trainAndTarget[:,0:2]
-	targetdata = trainAndTarget[:,2]
-
-	massPoints = np.unique(traindata[:,1])
-	chunk = len(traindata)/len(massPoints)/2
-	shift = len(traindata)/2
-
-
-	#plot for fixed mu=0 training
-	print "training fixed"
-	#clf = svm.NuSVR()
-	reducedtrain = 	np.concatenate((traindata[4*chunk : 5*chunk,0], 
-		traindata[4*chunk+shift : 5*chunk+shift , 0]))
-	reducedtarget = np.concatenate((targetdata[4*chunk : 5*chunk], 
-		targetdata[4*chunk+shift : 5*chunk+shift]))
-
-	#clf.fit(reducedtrain.reshape((len(reducedtrain),1)), reducedtarget)  
-	clf = joblib.load('fixed.pkl') 
-	outputs=clf.predict(traindata[:,0].reshape((len(traindata),1)))
-
-	fixedhists=[]
-	c1 = ROOT.TCanvas()
-	for i, mass in enumerate(massPoints):
-		#bkg part
-		#plt.hist(outputs[i*chunk+shift: \
-		#	(i+1)*chunk+shift], 30, alpha=0.3)
-		#sig part
-		plt.hist(outputs[i*chunk: \
-			(i+1)*chunk], 30, alpha=0.1, range=(-.2,1.2))
-
-		hist = ROOT.TH1F('hist{0}'.format(i),"hist",30,-0.1,1.2)
-		fixedhists.append(hist)
-		for val in outputs[i*chunk: (i+1)*chunk]:
-			hist.Fill(val)
-		if i==0:
-			hist.Draw()
-		else:
-			hist.Draw('same')
-	c1.SaveAs('roothists.pdf')
-
-
-	plt.savefig('fixed_training.pdf')
-	#plt.show()
-
-
-	# plot for adaptive training
-	print "training adaptive"
-	clf = joblib.load('adaptive.pkl') 
-	#clf.fit(traindata,targetdata)  
-	#joblib.dump(clf, 'adaptive.pkl') 
-
-	outputs=clf.predict(traindata)
-
-	#f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
-	#w = f.Get('w')
-	w = ROOT.RooWorkspace('w')
-	w.factory('mu[-3,3]')
-	bins=30
-	low=0.
-	high=1.
-	w.factory('score[{0},{1}]'.format(low,high))
-	s = w.var('score')
-	mu = w.var('mu')
-
-	adaptivehists=[]
-	adpativedatahists=[]
-	adpativehistpdfs=[]
-	for i, mass in enumerate(massPoints):
-		#bkg part
-		#plt.hist(outputs[i*chunk+shift: \
-		#	(i+1)*chunk+shift], 30, alpha=0.3)
-		#sig part
-		plt.hist(outputs[i*chunk: \
-			(i+1)*chunk], bins, alpha=0.1, range=(low,high))
-
-
-		hist = ROOT.TH1F('hist{0}'.format(i),"hist",bins,low,high)
-		adaptivehists.append(hist)
-		for val in outputs[i*chunk: (i+1)*chunk]:
-			hist.Fill(val)
-		if i==0:
-			hist.Draw()
-		else:
-			hist.Draw('same')
-
-		datahist = ROOT.RooDataHist('datahist{0}'.format(i),"hist", ROOT.RooArgList(s), hist)
-		order=0
-		s.setBins(bins)
-		histpdf = ROOT.RooHistPdf('histpdf{0}'.format(i),"hist", ROOT.RooArgSet(s), datahist,order)
-		histpdf.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
-
-		getattr(w,'import')(histpdf) # work around for morph = w.import(morph)
-		getattr(w,'import')(datahist) # work around for morph = w.import(morph)
-		adpativedatahists.append(datahist)
-		adpativehistpdfs.append(histpdf)
-
-	c1.SaveAs('root_adaptive_hists.pdf')
-
-	w = makeBSpline(w,mu,s,adpativehistpdfs, massPoints)
-	w.Print()
-	w.writeToFile("workspace_GausSigOnExpBkg_morph.root")
-	morph = w.pdf('morph')
-	print morph
-	morph.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
-
-	c1 = ROOT.TCanvas("c2",'',400,400)
-	frame = s.frame()
-	for pdf in adpativehistpdfs:
-		pdf.plotOn(frame)
-	mu.setVal(0)
-	morph.plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
-	#morph.plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
-	frame.Draw()
-	c1.SaveAs('root_bspline.pdf')
-
-
-	plt.savefig('adaptive_training.pdf')
-	#plt.show()
-	print massPoints
-
-def makePdfPlot():
-	f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
-	w = f.Get('w')
-	x = w.var('x')
-	mu = w.var('mu')
-	sigpdf = w.pdf('g')
-	bkgpdf = w.pdf('e')
-	pdf = w.pdf('model')
-	frame = x.frame()
-	pdf.plotOn(frame)
-	pdf.plotOn(frame,ROOT.RooFit.Components('g'),ROOT.RooFit.LineColor(ROOT.kRed))
-	pdf.plotOn(frame,ROOT.RooFit.Components('e'),ROOT.RooFit.LineColor(ROOT.kGreen))
-	c1 = ROOT.TCanvas()
-	frame.Draw()
-	c1.SaveAs('model.pdf')
-	f.Close()
+import os.path
 
 
 def makeData():
+	'''
+	make a RooFit model for some features parametrized by location of Gaussian.
+	Use model to create some dummy training and testing data.
+	'''
 	musteps=10
 	numTrain=500
 	numTest=numTrain
@@ -493,37 +91,275 @@ def makeData():
 	np.savetxt('testdata.dat',testdata, fmt='%f')
 	np.savetxt('testdata1.dat',testdata1, fmt='%f')
 
+def makeModelPdfPlot():
+	'''
+	Just make some plots for the RooFit model.
+	'''
+	print 'Entering makeModelPdfPlot'
+	f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
+	w = f.Get('w')
+	x = w.var('x')
+	mu = w.var('mu')
+	sigpdf = w.pdf('g')
+	bkgpdf = w.pdf('e')
+	pdf = w.pdf('model')
+	frame = x.frame()
+	pdf.plotOn(frame)
+	pdf.plotOn(frame,ROOT.RooFit.Components('g'),ROOT.RooFit.LineColor(ROOT.kRed))
+	pdf.plotOn(frame,ROOT.RooFit.Components('e'),ROOT.RooFit.LineColor(ROOT.kGreen))
+	c1 = ROOT.TCanvas('c1')
+	frame.Draw()
+	c1.SaveAs('modelPdfPlots.pdf')
+	f.Close()
 
 
-def KDE():
-	# see http://scikit-learn.org/stable/auto_examples/neighbors/plot_kde_1d.html
+def trainFixed():
+	'''
+	train a machine learner based on data from some fixed parameter point.
+	save to fixed.pkl
+	'''
+	print "Entering train fixed"
+	trainAndTarget = np.loadtxt('traindata.dat')
+	traindata = trainAndTarget[:,0:2]
+	targetdata = trainAndTarget[:,2]
+
+	massPoints = np.unique(traindata[:,1])
+	chunk = len(traindata)/len(massPoints)/2
+	shift = len(traindata)/2
+
+
+	#plot for fixed mu=0 training
+	print "training fixed"
+	clf = svm.NuSVR()
+	reducedtrain = 	np.concatenate((traindata[4*chunk : 5*chunk,0], 
+		traindata[4*chunk+shift : 5*chunk+shift , 0]))
+	reducedtarget = np.concatenate((targetdata[4*chunk : 5*chunk], 
+		targetdata[4*chunk+shift : 5*chunk+shift]))
+
+	clf.fit(reducedtrain.reshape((len(reducedtrain),1)), reducedtarget)  
+	joblib.dump(clf, 'fixed.pkl') 
+
+def trainAdaptive():
+	'''
+	train a machine learner on parametrized data examples.
+	save to adaptive.pkl
+	'''
+	print "Entering train adaptive"
+	trainAndTarget = np.loadtxt('traindata.dat')
+	traindata = trainAndTarget[:,0:2]
+	targetdata = trainAndTarget[:,2]
+
+	massPoints = np.unique(traindata[:,1])
+	chunk = len(traindata)/len(massPoints)/2
+	shift = len(traindata)/2
+
+
+	print "training adaptive"
+	clf = svm.NuSVR()
+	clf.fit(traindata,targetdata)  
+	joblib.dump(clf, 'adaptive.pkl') 
+
+def createdPdfForFixed():
+	'''
+	Read in learner saved in fixed.pkl
+	Evaluate outputs for several parameter points.
+	Generate histograms for each point.
+	(to do:	create parametrized pdf that interpolates across these pdfs)
+	'''
+	clf = joblib.load('fixed.pkl') 
+
+	trainAndTarget = np.loadtxt('traindata.dat')
+	traindata = trainAndTarget[:,0:2]
+	targetdata = trainAndTarget[:,2]
+
+	massPoints = np.unique(traindata[:,1])
+
+
+	fixedhists=[]
+	c1 = ROOT.TCanvas()
+	for i, mass in enumerate(massPoints):
+		#bkg part
+		#plt.hist(outputs[i*chunk+shift: \
+		#	(i+1)*chunk+shift], 30, alpha=0.3)
+		#sig part
+		plt.hist(outputs[i*chunk: \
+			(i+1)*chunk], 30, alpha=0.1, range=(-.2,1.2))
+
+		hist = ROOT.TH1F('hist{0}'.format(i),"hist",30,-0.1,1.2)
+		fixedhists.append(hist)
+		for val in outputs[i*chunk: (i+1)*chunk]:
+			hist.Fill(val)
+		if i==0:
+			hist.Draw()
+		else:
+			hist.Draw('same')
+	c1.SaveAs('roothists.pdf')
+
+
+def createPdfForAdaptive():
+	'''
+	Read in learner saved in adaptive.pkl
+	Evaluate outputs for several parameter points, using true value for parameter
+	Generate histograms for each point.
+	create parametrized pdf that interpolates across these pdfs
+	'''
+
+	trainAndTarget = np.loadtxt('traindata.dat')
+	traindata = trainAndTarget[:,0:2]
+	targetdata = trainAndTarget[:,2]
+
+	massPoints = np.unique(traindata[:,1])
+	chunk = len(traindata)/len(massPoints)/2
+	shift = len(traindata)/2
+
+	clf = joblib.load('adaptive.pkl') 
+
+	outputs=clf.predict(traindata)
+
+	#f = ROOT.TFile('workspace_GausSigOnExpBkg.root','r')
+	#w = f.Get('w')
+	w = ROOT.RooWorkspace('w')
+	w.factory('mu[-3,3]')
+	bins=30
+	low=0.
+	high=1.
+	w.factory('score[{0},{1}]'.format(low,high))
+	s = w.var('score')
+	mu = w.var('mu')
+
+	c1 = ROOT.TCanvas("c2",'',400,400)
+
+	adaptivehists=[]
+	adpativedatahists=[]
+	adpativehistpdfs=[]
+	for i, mass in enumerate(massPoints):
+		plt.hist(outputs[i*chunk: \
+			(i+1)*chunk], bins, alpha=0.1, range=(low,high))
+
+
+		hist = ROOT.TH1F('hist{0}'.format(i),"hist",bins,low,high)
+		adaptivehists.append(hist)
+		for val in outputs[i*chunk: (i+1)*chunk]:
+			hist.Fill(val)
+		if i==0:
+			hist.Draw()
+		else:
+			hist.Draw('same')
+
+		datahist = ROOT.RooDataHist('datahist{0}'.format(i),"hist", ROOT.RooArgList(s), hist)
+		order=0
+		s.setBins(bins)
+		histpdf = ROOT.RooHistPdf('histpdf{0}'.format(i),"hist", ROOT.RooArgSet(s), datahist,order)
+		histpdf.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
+
+		getattr(w,'import')(datahist) # work around for morph = w.import(morph)
+		getattr(w,'import')(histpdf) # work around for morph = w.import(morph)
+		adpativedatahists.append(datahist)
+		adpativehistpdfs.append(histpdf)
+
+	c1.SaveAs('root_adaptive_hists.pdf')
+
+	w = makeBSpline(w,mu,s,adpativehistpdfs, massPoints)
+	morph = w.pdf('morph')
+	morph.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
+	print morph
+	w.Print()
+	w.writeToFile("workspace_adaptive.root")
+
+
+def plotAdaptive():
+	'''
+	make plots of the output of the parametrized model
+	'''
+	#import class code should work automatically, but confused by namespace
+	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
+
+	f = ROOT.TFile('workspace_adaptive.root','r')
+	w = f.Get('w')
+	#w = ROOT.RooWorkspace('w')
+
+	c1 = ROOT.TCanvas("c2",'',400,400)
+	frame = w.var('score').frame()
+
+	for val in np.linspace(-1,1,20):
+		w.var('mu').setVal(val)
+		w.pdf('morph').plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
+	frame.Draw()
+	c1.SaveAs('root_bspline.pdf')
+
+
+def fitAdaptive():
+	#ugh, tough b/c fixed data are the features, not the NN output
 	pass
 
-if __name__ == '__main__':
-	#makeData()
-	#makePdfPlot()
-	#trainAndTest()
-	#makePdf()
-	testPickl()
-
-	'''	
-	#write ttrees, some issue with ownership?
-	x = w.var('x')
-	rootfile = ROOT.TFile('sigdata.root','RECREATE')
-	tempdata = ROOT.RooDataSet('sigdata','sigdata',ROOT.RooArgSet(x))
-	tempdata.setDefaultStorageType(0) # tree
-	tempdata.append(sigdata)
-	tree = tempdata.store().tree()
-	tree.SetDirectory(ROOT.gDirectory.pwd())
-	tempdata = ROOT.RooDataSet('bkgdata','bkgdata',ROOT.RooArgSet(x))
-	tempdata.setDefaultStorageType(0) # tree
-	tempdata.append(bkgdata)
-	tree = tempdata.store().tree()
-	tree.SetDirectory(ROOT.gDirectory.pwd())
-	#tree.SetDirectory(ROOT.gDirectory)
-	print tree
-	print tree.GetDirectory()
-	#tree.Write()
-	rootfile.Write()
-	rootfile.Close()
+def makeBSpline(w,interpParam, observable, pdfList, paramPoints):
 	'''
+	The helper function to create the parametrized model that interpolates
+	across input pdfs 
+	'''
+	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
+
+	paramVec = ROOT.TVectorD(len(paramPoints))
+	tValues = ROOT.std.vector("double")()
+	for i, p in enumerate(paramPoints):
+		paramVec[i]=p #seems silly, but other constructor gave problems
+		tValues.push_back(p)
+
+	order=3
+	bspb = ROOT.RooStats.HistFactory.RooBSplineBases( "bases", "bases", order, tValues, interpParam )
+
+	pdfs = ROOT.RooArgList()
+	for pdf in pdfList:
+		pdfs.add(pdf)
+
+	#this makes a function
+	morphfunc = ROOT.RooStats.HistFactory.RooBSpline( "morphf", "morphf", pdfs, bspb, ROOT.RooArgSet() )
+
+	#if you want to convert it into a PDF
+	morph = ROOT.RooRealSumPdf('morph','morph', ROOT.RooArgList(morphfunc), ROOT.RooArgList())
+
+	print morph
+	#getattr(w,'import')(morph) # work around for morph = w.import(morph)
+	getattr(w,'import')(ROOT.RooArgSet(morph),ROOT.RooFit.RecycleConflictNodes()) # work around for morph = w.import(morph)
+	w.importClassCode()
+
+	return w
+
+
+
+if __name__ == '__main__':
+	'''
+	The main function that calls the individual steps of the procedure
+	'''
+	if os.path.isfile('workspace_GausSigOnExpBkg.root'):
+		print 'training data and model already created, skipping makeData()'
+	else:
+		makeData()
+
+	if os.path.isfile('modelPdfPlots.pdf'):
+		print 'model pdf plots already created, skipping makeModelPdfPlot()'
+	else:
+		pass
+		makeModelPdfPlot()
+
+	if os.path.isfile('fixed.pkl'):
+		print 'fixed machine learner already created, skipping trainFixed()'
+	else:
+		trainFixed()
+
+	if os.path.isfile('adaptive.pkl'):
+		print 'adaptive machine learner already created, skipping trainAdaptive()'
+	else:
+		trainAdaptive()
+
+	if os.path.isfile('workspace_adaptive.root'):
+		print 'adaptive workspace already created, skipping createPdfForAdaptive()'
+	else:
+		createPdfForAdaptive()
+
+	if os.path.isfile('root_bspline.root'):
+		print 'plots for adatpive already created, skipping plotAdaptive()'
+	else:
+		plotAdaptive()
+
+
