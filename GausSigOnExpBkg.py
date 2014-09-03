@@ -290,7 +290,32 @@ def plotAdaptive():
 
 def fitAdaptive():
 	#ugh, tough b/c fixed data are the features, not the NN output
-	pass
+	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
+	ROOT.gROOT.ProcessLine('.L CompositeFunctionPdf.cxx+')
+
+	f = ROOT.TFile('workspace_adaptive.root','r')
+	w = f.Get('w')
+	w.Print()
+	#morphfunc = w.pdf('morphfunc')
+	w.factory('CompositeFunctionPdf::pdf(morphfunc)')
+	w.Print()
+
+	#create a dataset for x
+	w.factory('Gaussian::g(x[-5,5],mu,sigma[0.5, 0, 2])')
+	w.var('mu').setVal(0)
+	data = w.pdf('g').generate(w.var('x'),100)
+
+	#need a RooAbsReal to evaluate NN(x,mu)
+
+	#create nll based on pdf(NN(x,mu) | mu)
+
+
+	c1 = ROOT.TCanvas('c1')
+	frame = w.var('score').frame()
+	w.pdf('pdf').plotOn(frame)
+	frame.Draw()
+	c1.SaveAs('fitAdaptive.pdf')
+
 
 def makeBSpline(w,interpParam, observable, pdfList, paramPoints):
 	'''
@@ -313,7 +338,7 @@ def makeBSpline(w,interpParam, observable, pdfList, paramPoints):
 		pdfs.add(pdf)
 
 	#this makes a function
-	morphfunc = ROOT.RooStats.HistFactory.RooBSpline( "morphf", "morphf", pdfs, bspb, ROOT.RooArgSet() )
+	morphfunc = ROOT.RooStats.HistFactory.RooBSpline( "morphfunc", "morphfunc", pdfs, bspb, ROOT.RooArgSet() )
 
 	#if you want to convert it into a PDF
 	morph = ROOT.RooRealSumPdf('morph','morph', ROOT.RooArgList(morphfunc), ROOT.RooArgList())
@@ -362,4 +387,8 @@ if __name__ == '__main__':
 	else:
 		plotAdaptive()
 
+	if os.path.isfile('fitAdaptive.pdf'):
+		print 'plots for adatpive already created, skipping fitAdaptive()'
+	else:
+		fitAdaptive()
 
