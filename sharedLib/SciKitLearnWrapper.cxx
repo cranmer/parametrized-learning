@@ -42,6 +42,7 @@ ClassImp(SciKitLearnWrapper)
    char* blah=NULL;
    PyObject* result = PyObject_CallFunction( m_callback, blah );
    Py_XDECREF( result );
+
    return 1.0 ; 
  } 
 

@@ -43,7 +43,7 @@ $(DICT): $(HDRS)
 
 $(TARGETLIB): $(OBJS) $(DICTO)
 ifeq ($(PLATFORM),macosx)
-	$(LD) $(SOFLAGS)$@ $(LDFLAGS) $^ $(OutPutOpt) $@ $(GLIBS)
+	$(LD) $(SOFLAGS)$@ $(LDFLAGS)  $^ $(OutPutOpt) $@ $(GLIBS) -lRooFit -lRooFitCore
 else
 	$(LD) $(SOFLAGS) $(LDFLAGS) $^ $(GLIBS) $(OutPutOpt)$@
 endif
@@ -53,3 +53,5 @@ distclean: clean
 
 clean:
 	@rm -f $(OBJS) $(DICTO)
+	@rm SciKitLearnWrapperDict.cxx SciKitLearnWrapperDict.h libSciKitLearnWrapper.so 
+

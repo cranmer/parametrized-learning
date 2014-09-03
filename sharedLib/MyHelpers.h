@@ -1,3 +1,4 @@
+
 class RooAbsReal;
 #ifndef PyObject_HEAD
 struct _object;
