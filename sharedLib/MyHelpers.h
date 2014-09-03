@@ -3,6 +3,7 @@ class RooAbsReal;
 struct _object;
 typedef _object PyObject;
 #endif
+
 //#include "Python.h"
 
 RooAbsReal* CreateMyClass();
