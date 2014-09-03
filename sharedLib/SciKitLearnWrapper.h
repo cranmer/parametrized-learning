@@ -13,9 +13,14 @@
 #include "RooAbsReal.h"
 #include "RooAbsCategory.h"
 
-#include "Python.h"
+//#include "Python.h"
 //struct PyObject;
 //class PyObject;
+
+#ifndef PyObject_HEAD
+struct _object;
+typedef _object PyObject;
+#endif
  
 class SciKitLearnWrapper : public RooAbsReal {
 public:

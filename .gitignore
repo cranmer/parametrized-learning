@@ -63,3 +63,9 @@ docs/_build/
 
 *.root
 *.wscode*/
+
+sharedLib/SciKitLearnWrapperDict.cxx
+
+sharedLib/SciKitLearnWrapperDict.h
+
+*.o
