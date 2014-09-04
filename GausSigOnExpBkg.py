@@ -295,7 +295,7 @@ def scikitlearnFunc(x=0.,alpha=0):
 	traindata = np.array((x,alpha))
 	outputs=clf.predict(traindata)
 	#print x, outputs
-	print 'x,alpha =', x, alpha, outputs[0]
+	#print 'x,alpha =', x, alpha, outputs[0]
 	if outputs[0]>1: 
 		return 1.
 	return outputs[0]
@@ -319,7 +319,9 @@ def testSciKitLearnWrapper2d():
 	ROOT.gSystem.Load( 'SciKitLearnWrapper/libSciKitLearnWrapper' )	
 	x = ROOT.RooRealVar('x','x',0.2,-5,5)	
 	mu = ROOT.RooRealVar('mu','mu',0.2,-1,1)	
-	nn = ROOT.SciKitLearnWrapper2d('nn','nn',x,mu)
+	#nn = ROOT.SciKitLearnWrapper2d('nn','nn',x,mu)
+
+	nn = ROOT.SciKitLearnWrapperNd('nn','nn',ROOT.RooArgList(x,mu))
 
 	nn.RegisterCallBack( scikitlearnFunc );
 	print "callback "
@@ -369,11 +371,13 @@ def fitAdaptive():
 	#need a RooAbsReal to evaluate NN(x,mu)
 	#nn = ROOT.SciKitLearnWrapper2d('nn','nn',x,mu)
 	#w.factory('SciKitLearnWrapper::nn(x)')
-	w.factory('SciKitLearnWrapper2d::nn(x,mu)')
-	nn = w.function('nn')
+	#w.factory('SciKitLearnWrapper2d::nn(x,mu)')
+	#nn = w.function('nn')
+	nn = ROOT.SciKitLearnWrapperNd('nn','nn',ROOT.RooArgList(x,mu))
+
 	nn.RegisterCallBack( scikitlearnFunc );
 	print "get val = ",	nn.getVal()
-	#getattr(w,'import')(ROOT.RooArgSet(nn),ROOT.RooFit.RecycleConflictNodes()) 
+	getattr(w,'import')(ROOT.RooArgSet(nn),ROOT.RooFit.RecycleConflictNodes()) 
 	w.Print()
 
 	'''

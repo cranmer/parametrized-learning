@@ -24,6 +24,8 @@ ClassImp(SciKitLearnWrapper2d)
   features("features","features",this,_features),
   params("params","params",this, _params)
  { 
+    m_callback=NULL;
+
  } 
 
 
@@ -46,6 +48,10 @@ ClassImp(SciKitLearnWrapper2d)
   //cout << "result as double " << PyFloat_AsDouble(result) << endl; 
 
   //cout << "features.arg().getVal() = " << features.arg().getVal() << endl;
+  if(    m_callback==NULL) {
+    cout << "no call back set" << endl;
+    return 0;
+  }
 
   PyObject* arg1 = PyFloat_FromDouble(features.arg().getVal());
   PyObject* arg2 = PyFloat_FromDouble(params.arg().getVal());

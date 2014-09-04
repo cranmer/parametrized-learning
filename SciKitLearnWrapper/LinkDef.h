@@ -5,7 +5,7 @@
 #pragma link off all functions;
 
 #pragma link C++ class SciKitLearnWrapper;
-
 #pragma link C++ class SciKitLearnWrapper2d;
+#pragma link C++ class SciKitLearnWrapperNd;
 
 #endif

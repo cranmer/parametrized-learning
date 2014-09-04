@@ -23,6 +23,8 @@ ClassImp(SciKitLearnWrapper)
   RooAbsReal(name,title), 
   features("features","features",this,_features)
  { 
+    m_callback=NULL;
+
  } 
 
 
@@ -39,6 +41,8 @@ ClassImp(SciKitLearnWrapper)
   // ENTER EXPRESSION IN TERMS OF VARIABLE ARGUMENTS HERE 
   //std::cout << "Hi from C++!" << std::endl;
   char* blah=NULL;
+  if(    m_callback==NULL) return 0;
+
   #ifndef __CINT__
   //PyObject* result = PyObject_CallFunction( m_callback, blah);
   // cout << "result as long " << PyInt_AsLong(result) << endl;

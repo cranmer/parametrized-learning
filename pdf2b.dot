@@ -9,7 +9,7 @@ bases"];
 mu"];
 "histpdf0_pdf" [ color=red, label="RooHistPdf
 histpdf0_pdf"];
-"nn" [ color=red, label="SciKitLearnWrapper
+"nn" [ color=red, label="SciKitLearnWrapperNd
 nn"];
 "x" [ color=blue, label="RooRealVar
 x"];
@@ -31,7 +31,6 @@ histpdf7_pdf"];
 histpdf8_pdf"];
 "histpdf9_pdf" [ color=red, label="RooHistPdf
 histpdf9_pdf"];
-"histpdf0_pdf" -> "nn";
 "morphfunc_pdf" -> "histpdf0_pdf";
 "morphfunc_pdf" -> "histpdf1_pdf";
 "morphfunc_pdf" -> "histpdf2_pdf";
@@ -43,16 +42,18 @@ histpdf9_pdf"];
 "morphfunc_pdf" -> "histpdf8_pdf";
 "morphfunc_pdf" -> "histpdf9_pdf";
 "morphfunc_pdf" -> "bases";
+"nn" -> "mu";
+"nn" -> "x";
+"pdf" -> "morphfunc_pdf";
+"histpdf0_pdf" -> "nn";
 "histpdf1_pdf" -> "nn";
 "histpdf2_pdf" -> "nn";
 "histpdf3_pdf" -> "nn";
 "histpdf4_pdf" -> "nn";
-"pdf" -> "morphfunc_pdf";
 "histpdf5_pdf" -> "nn";
 "histpdf6_pdf" -> "nn";
 "histpdf7_pdf" -> "nn";
 "histpdf8_pdf" -> "nn";
 "histpdf9_pdf" -> "nn";
 "bases" -> "mu";
-"nn" -> "x";
 }
