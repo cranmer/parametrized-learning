@@ -28,10 +28,10 @@ public:
 
 
   // adding this for special case
-//  virtual Bool_t selfNormalized() const { 
-  //  // P.d.f is self normalized
-//    return kTRUE ; 
-//  }
+  virtual Bool_t selfNormalized() const { 
+    // P.d.f is self normalized
+    return kTRUE ; 
+  }
 
 protected:
 

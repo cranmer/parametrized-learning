@@ -288,6 +288,62 @@ def plotAdaptive():
 	c1.SaveAs('root_bspline.pdf')
 
 
+def scikitlearnFunc(x=0.,alpha=0):
+	#print "scikitlearnTest"
+	#print 'x,alpha =', x, alpha
+	clf = joblib.load('adaptive.pkl') 
+	#print "inouttest input was", x
+	traindata = np.array((x,alpha))
+	outputs=clf.predict(traindata)
+	#print x, outputs
+	return outputs[0]
+
+def testSciKitLearnWrapper():
+	#need a RooAbsReal to evaluate NN(x,mu)
+	ROOT.gSystem.Load( 'SciKitLearnWrapper/libSciKitLearnWrapper' )	
+	x = ROOT.RooRealVar('x','x',0.2,-5,5)	
+	nn = ROOT.SciKitLearnWrapper('nn','nn',x)
+	nn.RegisterCallBack( scikitlearnFunc );
+
+	c1 = ROOT.TCanvas('c1')
+	frame = x.frame()
+	nn.plotOn(frame)
+	frame.Draw()
+	c1.SaveAs('testWrapper.pdf')
+
+def testSciKitLearnWrapper2d():
+	print "testSciKitLearnWrapper2d"
+	#need a RooAbsReal to evaluate NN(x,mu)
+	ROOT.gSystem.Load( 'SciKitLearnWrapper/libSciKitLearnWrapper' )	
+	x = ROOT.RooRealVar('x','x',0.2,-5,5)	
+	mu = ROOT.RooRealVar('mu','mu',0.2,-1,1)	
+	nn = ROOT.SciKitLearnWrapper2d('nn','nn',x,mu)
+	nn.RegisterCallBack( scikitlearnFunc );
+	print "callback "
+	print "callback ", nn.getVal()
+	c1 = ROOT.TCanvas('c1')
+	#hist = nn.createHistogram('x,mu',20,20)
+	#hist = nn.createHistogram('xmu',x)
+
+	#hist = nn.createHistogram('xmu',x,ROOT.RooFit.Binning(20),
+	#	ROOT.RooFit.YVar(mu, ROOT.RooFit.Binning(20)))
+
+	# see http://root.cern.ch/phpBB3/viewtopic.php?t=9643
+	#hist = ROOT.RooAbsReal.createHistogram(nn,'x,mu',20,20)
+	#hist = ROOT.RooAbsReal.createHistogram(nn,'xmu',x,ROOT.RooFit.Binning(20),
+	#	ROOT.RooFit.YVar(mu, ROOT.RooFit.Binning(20)))
+
+	hist = ROOT.TH2F('hist','hist',20,-5,5,20,-1,1)
+	for xval in np.linspace(-5,5,20):
+		for muval in np.linspace(-1,1,20):
+			x.setVal(xval)
+			mu.setVal(muval)
+			hist.Fill(xval,muval,nn.getVal())
+	hist.Draw('surf')
+	#hist.Draw()
+	c1.SaveAs('testWrapper2d.pdf')
+	return
+
 def fitAdaptive():
 	#ugh, tough b/c fixed data are the features, not the NN output
 	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
@@ -297,24 +353,57 @@ def fitAdaptive():
 	w = f.Get('w')
 	w.Print()
 	#morphfunc = w.pdf('morphfunc')
-	w.factory('CompositeFunctionPdf::pdf(morphfunc)')
-	w.Print()
+	w.factory('CompositeFunctionPdf::template(morphfunc)')
 
 	#create a dataset for x
 	w.factory('Gaussian::g(x[-5,5],mu,sigma[0.5, 0, 2])')
-	w.var('mu').setVal(0)
-	data = w.pdf('g').generate(w.var('x'),100)
+	mu = w.var('mu')
+	mu.setVal(0)
+	x = w.var('x')
+	data = w.pdf('g').generate(ROOT.RooArgSet(x),100)
 
 	#need a RooAbsReal to evaluate NN(x,mu)
+	ROOT.gSystem.Load( 'SciKitLearnWrapper/libSciKitLearnWrapper' )	
+	nn = ROOT.SciKitLearnWrapper2d('nn','nn',x,mu)
+	nn.RegisterCallBack( scikitlearnFunc );
+	getattr(w,'import')(ROOT.RooArgSet(nn),ROOT.RooFit.RecycleConflictNodes()) 
+	w.Print()
+
 
 	#create nll based on pdf(NN(x,mu) | mu)
-
-
+	w.factory('score2[0,1]')
+	w.factory('EDIT::template2(template,score=score2)')
+	score2=w.var('score2')
+	frame = score2.frame()
+	pdf = w.pdf('template2')
+	pdf.plotOn(frame)
 	c1 = ROOT.TCanvas('c1')
-	frame = w.var('score').frame()
-	w.pdf('pdf').plotOn(frame)
 	frame.Draw()
 	c1.SaveAs('fitAdaptive.pdf')
+
+	
+
+	#create nll based on pdf(NN(x,mu) | mu)
+	w.factory('EDIT::pdf(template,score=nn)')
+	#wory that DataHist & HistPdf observable not being reset
+	pdf = w.pdf('pdf')
+	print 'pdf has expected events = ', pdf.expectedEvents(ROOT.RooArgSet(nn))
+	w.Print()
+	pdf.graphVizTree('pdf2b.dot')
+	return
+
+	#construct likelihood and plot it
+	mu = w.var('mu')
+	nll = pdf.createNLL(data,ROOT.RooFit.Extended(False))
+	frame=mu.frame()
+	nll.plotOn(frame)
+	c1 = ROOT.TCanvas('c1')
+	frame.Draw()
+	c1.SaveAs('fitAdaptive.pdf')
+	return
+	
+
+
 
 
 def makeBSpline(w,interpParam, observable, pdfList, paramPoints):
@@ -382,12 +471,22 @@ if __name__ == '__main__':
 	else:
 		createPdfForAdaptive()
 
-	if os.path.isfile('root_bspline.root'):
+	if os.path.isfile('root_bspline.pdf'):
 		print 'plots for adatpive already created, skipping plotAdaptive()'
 	else:
 		plotAdaptive()
 
-	if os.path.isfile('fitAdaptive.pdf'):
+	if os.path.isfile('testWrapper.pdf'):
+		print 'plots for adatpive already created, skipping testWrapper()'
+	else:
+		testSciKitLearnWrapper()
+
+	if os.path.isfile('testWrapper2d.pdf'):
+		print 'plots for adatpive already created, skipping testWrapper2d()'
+	else:
+		testSciKitLearnWrapper2d()
+
+	if True and os.path.isfile('fitAdaptive.pdf'):
 		print 'plots for adatpive already created, skipping fitAdaptive()'
 	else:
 		fitAdaptive()

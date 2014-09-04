@@ -1,11 +1,12 @@
 from ROOT import *
+#this is a simple mock-up of the RooFit structure needed for parametrized learning
 
 def testConditional():
 	w = RooWorkspace("w") 
 
 	gROOT.ProcessLine('.L CompositeFunctionPdf.cxx+')
 
-	# Define (dummy f(x,alpha)
+	# Define (dummy f(x,alpha) acts as NN
 	w.factory('expr::f("x+y+z-3*alpha",x[-10,10],y[-10,10],z[-10,10],alpha[-10,10])')
 
 	# Define a pdf(f) ;

@@ -6,4 +6,6 @@
 
 #pragma link C++ class SciKitLearnWrapper;
 
+#pragma link C++ class SciKitLearnWrapper2d;
+
 #endif

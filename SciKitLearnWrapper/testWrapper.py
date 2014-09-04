@@ -44,23 +44,10 @@ def scikitlearnFunc(x=0.):
 def scikitlearnTest():
 	gSystem.Load( 'libSciKitLearnWrapper' )	
 	x = RooRealVar('x','x',0.2,-5,5)	
-	#w = RooWorkspace('w')
-	#w.factory('x[-1,1]')
-	#x = w.var('x')
 	s = SciKitLearnWrapper('s','s',x)
 	s.RegisterCallBack( scikitlearnFunc );
-	print "\ngetVal"
-	print s.getVal()
 
-	print s
-	print "make plot"
 	c1 = TCanvas('c1')
-	for val in np.linspace(-1,1,10):
-		x.setVal(val)
-		temp = s.getVal()
-		print "x,s = ", x.getVal(), temp, s.call_getVal()
-
-
 	frame = x.frame()
 	s.plotOn(frame)
 	frame.Draw()
