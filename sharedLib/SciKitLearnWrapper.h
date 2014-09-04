@@ -27,7 +27,7 @@ public:
 
   void RegisterCallBack( PyObject* pyobject );
 
-  Double_t call_eval(){return evaluate();}
+  //  Double_t call_eval(){return evaluate();}
 
 protected:
 
