@@ -9,27 +9,21 @@
 #include "Riostream.h" 
 
 #include "SciKitLearnWrapper.h" 
-#include "RooAbsReal.h" 
-#include "RooAbsCategory.h" 
 #include <math.h> 
-#include "TMath.h" 
 
+#ifndef __CINT__
 #include "Python.h"
-
+#endif
 
 ClassImp(SciKitLearnWrapper) 
 
- SciKitLearnWrapper::SciKitLearnWrapper(const char *name, const char *title, 
-                        RooAbsReal& _features) :
-   RooAbsReal(name,title), 
-   features("features","features",this,_features)
+ SciKitLearnWrapper::SciKitLearnWrapper(const char *name, const char *title) : TNamed(name,title)
  { 
  } 
 
 
  SciKitLearnWrapper::SciKitLearnWrapper(const SciKitLearnWrapper& other, const char* name) :  
-   RooAbsReal(other,name), 
-   features("features",this,other.features)
+   TNamed(other)
  { 
  } 
 
@@ -40,9 +34,10 @@ ClassImp(SciKitLearnWrapper)
    // ENTER EXPRESSION IN TERMS OF VARIABLE ARGUMENTS HERE 
    std::cout << "Hi from C++!" << std::endl;
    char* blah=NULL;
+   #ifndef __CINT__
    PyObject* result = PyObject_CallFunction( m_callback, blah );
    Py_XDECREF( result );
-
+   #endif
    return 1.0 ; 
  } 
 

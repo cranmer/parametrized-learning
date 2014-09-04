@@ -1,11 +1,10 @@
 
 #include "SciKitLearnWrapper.h"
 #include "Python.h"
-#include "RooAbsReal.h"
 
 static SciKitLearnWrapper s_myClass;
 
-RooAbsReal* CreateMyClass() {
+SciKitLearnWrapper* CreateMyClass() {
    return &s_myClass;
 }
 

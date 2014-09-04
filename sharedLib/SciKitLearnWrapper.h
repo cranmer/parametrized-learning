@@ -7,44 +7,28 @@
 #ifndef SCIKITLEARNWRAPPER
 #define SCIKITLEARNWRAPPER
 
-#include "RooAbsReal.h"
-#include "RooRealProxy.h"
-#include "RooCategoryProxy.h"
-#include "RooAbsReal.h"
-#include "RooAbsCategory.h"
-
-//#include "Python.h"
-//struct PyObject;
-//class PyObject;
-
-
-#ifndef PyObject_HEAD
-struct _object;
-typedef _object PyObject;
+#include "TNamed.h"
+#ifndef __CINT__
+#include "Python.h"
 #endif
 
-
-class SciKitLearnWrapper : public RooAbsReal {
+class SciKitLearnWrapper : public TNamed{
 public:
   SciKitLearnWrapper() {} ; 
-  SciKitLearnWrapper(const char *name, const char *title,
-	      RooAbsReal& _features);
+  SciKitLearnWrapper(const char *name, const char *title);
   SciKitLearnWrapper(const SciKitLearnWrapper& other, const char* name=0) ;
   virtual TObject* clone(const char* newname) const { return new SciKitLearnWrapper(*this,newname); }
   inline virtual ~SciKitLearnWrapper() { }
 
   void RegisterCallBack( PyObject* pyobject );
 
-protected:
-
-  RooRealProxy features ;
-  
   Double_t evaluate() const ;
+  
 
 private:
 
   PyObject* m_callback;
-  ClassDef(SciKitLearnWrapper,1) // Your description goes here...
+  ClassDef(SciKitLearnWrapper,1); // Your description goes here...
 };
  
 #endif
