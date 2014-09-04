@@ -1,0 +1,58 @@
+digraph pdf{
+"pdf" [ color=red, label="CompositeFunctionPdf
+pdf"];
+"morphfunc_pdf" [ color=red, label="RooStats::HistFactory::RooBSpline
+morphfunc_pdf"];
+"bases" [ color=red, label="RooStats::HistFactory::RooBSplineBases
+bases"];
+"mu" [ color=blue, label="RooRealVar
+mu"];
+"histpdf0_pdf" [ color=red, label="RooHistPdf
+histpdf0_pdf"];
+"nn" [ color=red, label="SciKitLearnWrapper
+nn"];
+"x" [ color=blue, label="RooRealVar
+x"];
+"histpdf1_pdf" [ color=red, label="RooHistPdf
+histpdf1_pdf"];
+"histpdf2_pdf" [ color=red, label="RooHistPdf
+histpdf2_pdf"];
+"histpdf3_pdf" [ color=red, label="RooHistPdf
+histpdf3_pdf"];
+"histpdf4_pdf" [ color=red, label="RooHistPdf
+histpdf4_pdf"];
+"histpdf5_pdf" [ color=red, label="RooHistPdf
+histpdf5_pdf"];
+"histpdf6_pdf" [ color=red, label="RooHistPdf
+histpdf6_pdf"];
+"histpdf7_pdf" [ color=red, label="RooHistPdf
+histpdf7_pdf"];
+"histpdf8_pdf" [ color=red, label="RooHistPdf
+histpdf8_pdf"];
+"histpdf9_pdf" [ color=red, label="RooHistPdf
+histpdf9_pdf"];
+"histpdf0_pdf" -> "nn";
+"morphfunc_pdf" -> "histpdf0_pdf";
+"morphfunc_pdf" -> "histpdf1_pdf";
+"morphfunc_pdf" -> "histpdf2_pdf";
+"morphfunc_pdf" -> "histpdf3_pdf";
+"morphfunc_pdf" -> "histpdf4_pdf";
+"morphfunc_pdf" -> "histpdf5_pdf";
+"morphfunc_pdf" -> "histpdf6_pdf";
+"morphfunc_pdf" -> "histpdf7_pdf";
+"morphfunc_pdf" -> "histpdf8_pdf";
+"morphfunc_pdf" -> "histpdf9_pdf";
+"morphfunc_pdf" -> "bases";
+"histpdf1_pdf" -> "nn";
+"histpdf2_pdf" -> "nn";
+"histpdf3_pdf" -> "nn";
+"histpdf4_pdf" -> "nn";
+"pdf" -> "morphfunc_pdf";
+"histpdf5_pdf" -> "nn";
+"histpdf6_pdf" -> "nn";
+"histpdf7_pdf" -> "nn";
+"histpdf8_pdf" -> "nn";
+"histpdf9_pdf" -> "nn";
+"bases" -> "mu";
+"nn" -> "x";
+}

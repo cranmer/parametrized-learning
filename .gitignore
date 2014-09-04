@@ -64,21 +64,9 @@ docs/_build/
 *.root
 *.wscode*/
 
-sharedLib/SciKitLearnWrapperDict.cxx
-
-sharedLib/SciKitLearnWrapperDict.h
 
 *.o
 
-MyHelpers.cxx
-
-MyHelpers.h
-
-SciKitLearnWrapper.h
-
-SciKitLearnWrapper.cxx
-
-SciKitLearnWrapper.py
 
 testPythonFromC.cxx
 

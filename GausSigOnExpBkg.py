@@ -290,12 +290,14 @@ def plotAdaptive():
 
 def scikitlearnFunc(x=0.,alpha=0):
 	#print "scikitlearnTest"
-	#print 'x,alpha =', x, alpha
 	clf = joblib.load('adaptive.pkl') 
 	#print "inouttest input was", x
 	traindata = np.array((x,alpha))
 	outputs=clf.predict(traindata)
 	#print x, outputs
+	print 'x,alpha =', x, alpha, outputs[0]
+	if outputs[0]>1: 
+		return 1.
 	return outputs[0]
 
 def testSciKitLearnWrapper():
@@ -318,6 +320,7 @@ def testSciKitLearnWrapper2d():
 	x = ROOT.RooRealVar('x','x',0.2,-5,5)	
 	mu = ROOT.RooRealVar('mu','mu',0.2,-1,1)	
 	nn = ROOT.SciKitLearnWrapper2d('nn','nn',x,mu)
+
 	nn.RegisterCallBack( scikitlearnFunc );
 	print "callback "
 	print "callback ", nn.getVal()
@@ -346,12 +349,12 @@ def testSciKitLearnWrapper2d():
 
 def fitAdaptive():
 	#ugh, tough b/c fixed data are the features, not the NN output
+	ROOT.gSystem.Load( 'SciKitLearnWrapper/libSciKitLearnWrapper' )	
 	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
 	ROOT.gROOT.ProcessLine('.L CompositeFunctionPdf.cxx+')
 
 	f = ROOT.TFile('workspace_adaptive.root','r')
 	w = f.Get('w')
-	w.Print()
 	#morphfunc = w.pdf('morphfunc')
 	w.factory('CompositeFunctionPdf::template(morphfunc)')
 
@@ -360,17 +363,23 @@ def fitAdaptive():
 	mu = w.var('mu')
 	mu.setVal(0)
 	x = w.var('x')
-	data = w.pdf('g').generate(ROOT.RooArgSet(x),100)
+	w.Print()
+	data = w.pdf('g').generate(ROOT.RooArgSet(x),10)
 
 	#need a RooAbsReal to evaluate NN(x,mu)
-	ROOT.gSystem.Load( 'SciKitLearnWrapper/libSciKitLearnWrapper' )	
-	nn = ROOT.SciKitLearnWrapper2d('nn','nn',x,mu)
+	#nn = ROOT.SciKitLearnWrapper2d('nn','nn',x,mu)
+	#w.factory('SciKitLearnWrapper::nn(x)')
+	w.factory('SciKitLearnWrapper2d::nn(x,mu)')
+	nn = w.function('nn')
 	nn.RegisterCallBack( scikitlearnFunc );
-	getattr(w,'import')(ROOT.RooArgSet(nn),ROOT.RooFit.RecycleConflictNodes()) 
+	print "get val = ",	nn.getVal()
+	#getattr(w,'import')(ROOT.RooArgSet(nn),ROOT.RooFit.RecycleConflictNodes()) 
 	w.Print()
 
+	'''
+	#test edit of template (working)
+	#wory that DataHist & HistPdf observable not being reset
 
-	#create nll based on pdf(NN(x,mu) | mu)
 	w.factory('score2[0,1]')
 	w.factory('EDIT::template2(template,score=score2)')
 	score2=w.var('score2')
@@ -380,7 +389,7 @@ def fitAdaptive():
 	c1 = ROOT.TCanvas('c1')
 	frame.Draw()
 	c1.SaveAs('fitAdaptive.pdf')
-
+	'''
 	
 
 	#create nll based on pdf(NN(x,mu) | mu)
@@ -390,7 +399,7 @@ def fitAdaptive():
 	print 'pdf has expected events = ', pdf.expectedEvents(ROOT.RooArgSet(nn))
 	w.Print()
 	pdf.graphVizTree('pdf2b.dot')
-	return
+	#return
 
 	#construct likelihood and plot it
 	mu = w.var('mu')
@@ -486,7 +495,7 @@ if __name__ == '__main__':
 	else:
 		testSciKitLearnWrapper2d()
 
-	if True and os.path.isfile('fitAdaptive.pdf'):
+	if False and os.path.isfile('fitAdaptive.pdf'):
 		print 'plots for adatpive already created, skipping fitAdaptive()'
 	else:
 		fitAdaptive()
