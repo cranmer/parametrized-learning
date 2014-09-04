@@ -39,6 +39,12 @@ ClassImp(SciKitLearnWrapper)
    char* blah=NULL;
    #ifndef __CINT__
    PyObject* result = PyObject_CallFunction( m_callback, blah );
+   cout << "result as long " << PyInt_AsLong(result) << endl;
+   cout << "result as double " << PyFloat_AsDouble(result) << endl; 
+   double ret;
+   PyArg_Parse((result),"d", &ret);
+   cout << "from parse " << ret << endl;
+
    Py_XDECREF( result );
    #endif
    return 1.0 ; 
