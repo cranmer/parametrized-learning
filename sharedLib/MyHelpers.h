@@ -1,11 +1,8 @@
-
-class RooAbsReal;
 #ifndef PyObject_HEAD
 struct _object;
 typedef _object PyObject;
 #endif
 
-//#include "Python.h"
-
+class RooAbsReal;
 RooAbsReal* CreateMyClass();
 void RegisterCallBack( PyObject* );

@@ -13,38 +13,31 @@
 #include "RooAbsReal.h"
 #include "RooAbsCategory.h"
 
-//#include "Python.h"
-//struct PyObject;
-//class PyObject;
-
-
-#ifndef PyObject_HEAD
-struct _object;
-typedef _object PyObject;
+#ifndef __CINT__
+#include "Python.h"
 #endif
 
-
-class SciKitLearnWrapper : public RooAbsReal {
+class SciKitLearnWrapper : public RooAbsReal{
 public:
   SciKitLearnWrapper() {} ; 
-  SciKitLearnWrapper(const char *name, const char *title,
-	      RooAbsReal& _features);
+  SciKitLearnWrapper(const char *name, const char *title, RooAbsReal& _features);
   SciKitLearnWrapper(const SciKitLearnWrapper& other, const char* name=0) ;
   virtual TObject* clone(const char* newname) const { return new SciKitLearnWrapper(*this,newname); }
   inline virtual ~SciKitLearnWrapper() { }
 
   void RegisterCallBack( PyObject* pyobject );
 
+  Double_t call_eval(){return evaluate();}
+
 protected:
 
-  RooRealProxy features ;
-  
-  Double_t evaluate() const ;
+  virtual Double_t evaluate() const ;
 
 private:
+  RooRealProxy features ;  
 
   PyObject* m_callback;
-  ClassDef(SciKitLearnWrapper,1) // Your description goes here...
+  ClassDef(SciKitLearnWrapper,1); // Your description goes here...
 };
  
 #endif
