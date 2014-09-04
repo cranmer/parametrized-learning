@@ -81,3 +81,7 @@ SciKitLearnWrapper.cxx
 SciKitLearnWrapper.py
 
 testPythonFromC.cxx
+
+SciKitLearnWrapper/SciKitLearnWrapperDict.cxx
+
+SciKitLearnWrapper/SciKitLearnWrapperDict.h
