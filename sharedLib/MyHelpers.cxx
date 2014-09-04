@@ -4,7 +4,7 @@
 
 static SciKitLearnWrapper s_myClass;
 
-SciKitLearnWrapper* CreateMyClass() {
+RooAbsReal* CreateMyClass() {
    return &s_myClass;
 }
 

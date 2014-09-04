@@ -17,14 +17,17 @@
 
 ClassImp(SciKitLearnWrapper) 
 
- SciKitLearnWrapper::SciKitLearnWrapper(const char *name, const char *title) : TNamed(name,title)
+  SciKitLearnWrapper::SciKitLearnWrapper(const char *name, const char *title, 
+                       RooAbsReal& _features) :
+  RooAbsReal(name,title), 
+  features("features","features",this,_features)
  { 
  } 
 
 
  SciKitLearnWrapper::SciKitLearnWrapper(const SciKitLearnWrapper& other, const char* name) :  
-   TNamed(other)
- { 
+  RooAbsReal(other,name), 
+  features("features",this,other.features) { 
  } 
 
 

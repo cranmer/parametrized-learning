@@ -7,4 +7,4 @@ def SayHi():
 
 s = CreateMyClass()
 RegisterCallBack( SayHi );
-s.evaluate()
+s.call_eval()
