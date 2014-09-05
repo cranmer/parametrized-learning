@@ -177,22 +177,21 @@ def createdPdfForFixed():
 
 	fixedhists=[]
 	c1 = ROOT.TCanvas()
-	for i, mass in enumerate(massPoints):
-		#bkg part
-		#plt.hist(outputs[i*chunk+shift: \
-		#	(i+1)*chunk+shift], 30, alpha=0.3)
-		#sig part
-		plt.hist(outputs[i*chunk: \
-			(i+1)*chunk], 30, alpha=0.1, range=(-.2,1.2))
-
-		hist = ROOT.TH1F('hist{0}'.format(i),"hist",30,-0.1,1.2)
-		fixedhists.append(hist)
-		for val in outputs[i*chunk: (i+1)*chunk]:
-			hist.Fill(val)
-		if i==0:
-			hist.Draw()
-		else:
-			hist.Draw('same')
+	for j, name in enumerate(['sig','bkg']):
+		for i, mass in enumerate(massPoints):
+			#bkg part
+			#plt.hist(outputs[i*chunk+shift: \
+			#	(i+1)*chunk+shift], 30, alpha=0.3)
+			#sig part
+	
+			hist = ROOT.TH1F('{0}hist{1}'.format(name,i),"hist",30,-0.1,1.2)
+			fixedhists.append(hist)
+			for val in outputs[i*chunk+j*shift: (i+1)*chunk+j*shift]:
+				hist.Fill(val)
+			if i==0:
+				hist.Draw()
+			else:
+				hist.Draw('same')
 	c1.SaveAs('roothists.pdf')
 
 
@@ -229,40 +228,43 @@ def createPdfForAdaptive():
 
 	c1 = ROOT.TCanvas("c2",'',400,400)
 
-	adaptivehists=[]
-	adpativedatahists=[]
-	adpativehistpdfs=[]
-	for i, mass in enumerate(massPoints):
-		plt.hist(outputs[i*chunk: \
-			(i+1)*chunk], bins, alpha=0.1, range=(low,high))
+	for j, name in enumerate(['sig','bkg']):
+		adaptivehists=[]
+		adpativedatahists=[]
+		adpativehistpdfs=[]
+		for i, mass in enumerate(massPoints):
+			plt.hist(outputs[i*chunk: \
+				(i+1)*chunk], bins, alpha=0.1, range=(low,high))
+	
+	
+			hist = ROOT.TH1F('{0}hist{1}'.format(name,i),"hist",bins,low,high)
+			adaptivehists.append(hist)
+			for val in outputs[i*chunk+j*shift: (i+1)*chunk+j*shift]:
+				hist.Fill(val)
+			if i==0:
+				hist.Draw()
+			else:
+				hist.Draw('same')
+	
+			datahist = ROOT.RooDataHist('{0}datahist{1}'.format(name,i),"hist", 
+				ROOT.RooArgList(s), hist)
+			order=1
+			s.setBins(bins)
+			histpdf = ROOT.RooHistPdf('{0}histpdf{1}'.format(name,i),"hist", 
+				ROOT.RooArgSet(s), datahist,order)
+			histpdf.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
+	
+			getattr(w,'import')(datahist) # work around for morph = w.import(morph)
+			getattr(w,'import')(histpdf) # work around for morph = w.import(morph)
+			adpativedatahists.append(datahist)
+			adpativehistpdfs.append(histpdf)
+		w = makeBSpline(w,mu,s,adpativehistpdfs, massPoints, '{0}morph'.format(name))
+		morph = w.pdf('{0}morph'.format(name))
+		morph.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
+		print morph
 
+		c1.SaveAs('root_adaptive_{0}_hists.pdf'.format(name))
 
-		hist = ROOT.TH1F('hist{0}'.format(i),"hist",bins,low,high)
-		adaptivehists.append(hist)
-		for val in outputs[i*chunk: (i+1)*chunk]:
-			hist.Fill(val)
-		if i==0:
-			hist.Draw()
-		else:
-			hist.Draw('same')
-
-		datahist = ROOT.RooDataHist('datahist{0}'.format(i),"hist", ROOT.RooArgList(s), hist)
-		order=1
-		s.setBins(bins)
-		histpdf = ROOT.RooHistPdf('histpdf{0}'.format(i),"hist", ROOT.RooArgSet(s), datahist,order)
-		histpdf.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
-
-		getattr(w,'import')(datahist) # work around for morph = w.import(morph)
-		getattr(w,'import')(histpdf) # work around for morph = w.import(morph)
-		adpativedatahists.append(datahist)
-		adpativehistpdfs.append(histpdf)
-
-	c1.SaveAs('root_adaptive_hists.pdf')
-
-	w = makeBSpline(w,mu,s,adpativehistpdfs, massPoints)
-	morph = w.pdf('morph')
-	morph.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
-	print morph
 	w.Print()
 	w.writeToFile("workspace_adaptive.root")
 
@@ -280,10 +282,12 @@ def plotAdaptive():
 
 	c1 = ROOT.TCanvas("c2",'',400,400)
 	frame = w.var('score').frame()
+	c1.SetLogy();
 
 	for val in np.linspace(-1,1,20):
 		w.var('mu').setVal(val)
-		w.pdf('morph').plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
+		w.pdf('sigmorph').plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
+		w.pdf('bkgmorph').plotOn(frame,ROOT.RooFit.LineColor(ROOT.kBlue))
 	frame.Draw()
 	c1.SaveAs('root_bspline.pdf')
 
@@ -358,15 +362,30 @@ def fitAdaptive():
 	f = ROOT.TFile('workspace_adaptive.root','r')
 	w = f.Get('w')
 	#morphfunc = w.pdf('morphfunc')
-	w.factory('CompositeFunctionPdf::template(morphfunc)')
+	w.factory('CompositeFunctionPdf::sigtemplate(sigmorphfunc)')
+	w.factory('CompositeFunctionPdf::bkgtemplate(bkgmorphfunc)')
+	w.factory('Uniform::baseline(score)')
+	w.factory('SUM::template(sigfrac[0,1]*sigtemplate,const[0.01]*baseline,bkgtemplate)')
 
-	#create a dataset for x
-	w.factory('Gaussian::g(x[-5,5],mu,sigma[0.5, 0, 2])')
 	mu = w.var('mu')
 	mu.setVal(0)
+
+	c1 = ROOT.TCanvas('c1')
+	sframe = w.var('score').frame()
+	w.pdf('template').plotOn(sframe)
+	w.pdf('template').plotOn(sframe,ROOT.RooFit.Components('sigtemplate'),ROOT.RooFit.LineColor(ROOT.kRed))
+	w.pdf('template').plotOn(sframe,ROOT.RooFit.Components('bkgtemplate'),ROOT.RooFit.LineColor(ROOT.kGreen))
+	sframe.Draw()
+	c1.SaveAs('template.pdf')
+
+	#create a dataset for x, shortcut just repeat model
+	w.factory('Gaussian::g(x[-5,5],mu,sigma[0.5, 0, 2])')
+	w.factory('Exponential::e(x,tau[-.15,-3,0])')
+	w.factory('SUM::model(s[50,0,100]*g,b[100,0,1000]*e)')
+
 	x = w.var('x')
 	w.Print()
-	data = w.pdf('g').generate(ROOT.RooArgSet(x),10)
+	data = w.pdf('model').generate(ROOT.RooArgSet(x),150)
 
 	#need a RooAbsReal to evaluate NN(x,mu)
 	#nn = ROOT.SciKitLearnWrapper2d('nn','nn',x,mu)
@@ -405,13 +424,16 @@ def fitAdaptive():
 	pdf.graphVizTree('pdf2b.dot')
 	#return
 
+	pdf.fitTo(data,ROOT.RooFit.Extended(False))
+	return
+
+
 	#construct likelihood and plot it
 	mu = w.var('mu')
 	nll = pdf.createNLL(data,ROOT.RooFit.Extended(False))
 	#restrict NLL to relevant region in mu
 	frame=mu.frame(-.7,.7)
 	nll.plotOn(frame, ROOT.RooFit.ShiftToZero())
-	c1 = ROOT.TCanvas('c1')
 	frame.SetMinimum(0)
 	frame.SetMaximum(10)
 	frame.Draw()
@@ -419,7 +441,7 @@ def fitAdaptive():
 	return
 	
 
-def makeBSpline(w,interpParam, observable, pdfList, paramPoints):
+def makeBSpline(w,interpParam, observable, pdfList, paramPoints,name='morph',):
 	'''
 	The helper function to create the parametrized model that interpolates
 	across input pdfs 
@@ -440,10 +462,10 @@ def makeBSpline(w,interpParam, observable, pdfList, paramPoints):
 		pdfs.add(pdf)
 
 	#this makes a function
-	morphfunc = ROOT.RooStats.HistFactory.RooBSpline( "morphfunc", "morphfunc", pdfs, bspb, ROOT.RooArgSet() )
+	morphfunc = ROOT.RooStats.HistFactory.RooBSpline( name+'func', "morphfunc", pdfs, bspb, ROOT.RooArgSet() )
 
 	#if you want to convert it into a PDF
-	morph = ROOT.RooRealSumPdf('morph','morph', ROOT.RooArgList(morphfunc), ROOT.RooArgList())
+	morph = ROOT.RooRealSumPdf(name,name, ROOT.RooArgList(morphfunc), ROOT.RooArgList())
 
 	print morph
 	#getattr(w,'import')(morph) # work around for morph = w.import(morph)
