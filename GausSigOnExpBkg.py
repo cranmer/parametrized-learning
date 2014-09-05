@@ -40,7 +40,7 @@ def makeData():
 	Use model to create some dummy training and testing data.
 	'''
 	musteps=10
-	numTrain=500
+	numTrain=5000
 	numTest=numTrain
 
 	#Make statistical model
@@ -409,7 +409,7 @@ def fitAdaptive():
 	mu = w.var('mu')
 	nll = pdf.createNLL(data,ROOT.RooFit.Extended(False))
 	#restrict NLL to relevant region in mu
-	frame=mu.frame(-1,1)
+	frame=mu.frame(-.7,.7)
 	nll.plotOn(frame, ROOT.RooFit.ShiftToZero())
 	c1 = ROOT.TCanvas('c1')
 	frame.SetMinimum(0)
@@ -458,7 +458,7 @@ if __name__ == '__main__':
 	'''
 	The main function that calls the individual steps of the procedure
 	'''
-	if os.path.isfile('workspace_GausSigOnExpBkg.root'):
+	if  True and os.path.isfile('workspace_GausSigOnExpBkg.root'):
 		print 'training data and model already created, skipping makeData()'
 	else:
 		makeData()
@@ -479,12 +479,12 @@ if __name__ == '__main__':
 	else:
 		trainAdaptive()
 
-	if os.path.isfile('workspace_adaptive.root'):
+	if True and os.path.isfile('workspace_adaptive.root'):
 		print 'adaptive workspace already created, skipping createPdfForAdaptive()'
 	else:
 		createPdfForAdaptive()
 
-	if os.path.isfile('root_bspline.pdf'):
+	if True and os.path.isfile('root_bspline.pdf'):
 		print 'plots for adatpive already created, skipping plotAdaptive()'
 	else:
 		plotAdaptive()
@@ -494,7 +494,7 @@ if __name__ == '__main__':
 	else:
 		testSciKitLearnWrapper()
 
-	if os.path.isfile('testWrapper2d.pdf'):
+	if True and os.path.isfile('testWrapper2d.pdf'):
 		print 'plots for adatpive already created, skipping testWrapper2d()'
 	else:
 		testSciKitLearnWrapper2d()

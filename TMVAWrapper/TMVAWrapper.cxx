@@ -36,6 +36,13 @@
 
 //using namespace TMVA;
 
+/* update to parse XML for expected variables
+  <Variables NVar="2">
+    <Variable VarIndex="0" Expression="x" Label="x" Title="mass" Unit="units" Internal="x" Type="F" Min="-5.79654074e+00" Max="4.99505901e+00"/>
+    <Variable VarIndex="1" Expression="alpha" Label="alpha" Title="alpha" Unit="units" Internal="alpha" Type="F" Min="-2.00000000e+00" Max="2.00000000e+00"/>
+  </Variables>
+
+*/
 
 ClassImp(TMVAWrapper) 
 
