@@ -28,7 +28,7 @@ class TMVAWrapper : public RooAbsReal {
 public:
   TMVAWrapper() {} ; 
   TMVAWrapper(const char *name, const char *title,
-	      RooAbsReal& _features);
+	      RooAbsReal& _features, RooAbsReal& _param);
   TMVAWrapper(const TMVAWrapper& other, const char* name=0) ;
   virtual TObject* clone(const char* newname) const { return new TMVAWrapper(*this,newname); }
   inline virtual ~TMVAWrapper() { }
@@ -37,6 +37,7 @@ public:
 protected:
 
   RooRealProxy features ;
+  RooRealProxy param ;
   
   Double_t evaluate() const ;
 
@@ -44,7 +45,7 @@ private:
 
   TMVA::Reader *reader ;
   mutable Float_t x;
-  Float_t alpha;
+  mutable Float_t alpha;
   Float_t target;
 
   ClassDef(TMVAWrapper,1) // Your description goes here...

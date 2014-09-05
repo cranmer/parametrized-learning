@@ -1,0 +1,119 @@
+digraph pdf{
+"pdf" [ color=red, label="RooAddPdf
+pdf"];
+"sigfrac" [ color=blue, label="RooRealVar
+sigfrac"];
+"const" [ color=blue, label="RooRealVar
+const"];
+"sigtemplate_pdf" [ color=red, label="CompositeFunctionPdf
+sigtemplate_pdf"];
+"sigmorphfunc_pdf" [ color=red, label="RooStats::HistFactory::RooBSpline
+sigmorphfunc_pdf"];
+"bases" [ color=red, label="RooStats::HistFactory::RooBSplineBases
+bases"];
+"mu" [ color=blue, label="RooRealVar
+mu"];
+"sighistpdf0_pdf" [ color=red, label="RooHistPdf
+sighistpdf0_pdf"];
+"nn" [ color=red, label="TMVAWrapper
+nn"];
+"x" [ color=blue, label="RooRealVar
+x"];
+"sighistpdf1_pdf" [ color=red, label="RooHistPdf
+sighistpdf1_pdf"];
+"sighistpdf2_pdf" [ color=red, label="RooHistPdf
+sighistpdf2_pdf"];
+"sighistpdf3_pdf" [ color=red, label="RooHistPdf
+sighistpdf3_pdf"];
+"sighistpdf4_pdf" [ color=red, label="RooHistPdf
+sighistpdf4_pdf"];
+"sighistpdf5_pdf" [ color=red, label="RooHistPdf
+sighistpdf5_pdf"];
+"sighistpdf6_pdf" [ color=red, label="RooHistPdf
+sighistpdf6_pdf"];
+"sighistpdf7_pdf" [ color=red, label="RooHistPdf
+sighistpdf7_pdf"];
+"sighistpdf8_pdf" [ color=red, label="RooHistPdf
+sighistpdf8_pdf"];
+"sighistpdf9_pdf" [ color=red, label="RooHistPdf
+sighistpdf9_pdf"];
+"baseline_pdf" [ color=red, label="RooUniform
+baseline_pdf"];
+"bkgtemplate_pdf" [ color=red, label="CompositeFunctionPdf
+bkgtemplate_pdf"];
+"bkgmorphfunc_pdf" [ color=red, label="RooStats::HistFactory::RooBSpline
+bkgmorphfunc_pdf"];
+"bkghistpdf0_pdf" [ color=red, label="RooHistPdf
+bkghistpdf0_pdf"];
+"bkghistpdf1_pdf" [ color=red, label="RooHistPdf
+bkghistpdf1_pdf"];
+"bkghistpdf2_pdf" [ color=red, label="RooHistPdf
+bkghistpdf2_pdf"];
+"bkghistpdf3_pdf" [ color=red, label="RooHistPdf
+bkghistpdf3_pdf"];
+"bkghistpdf4_pdf" [ color=red, label="RooHistPdf
+bkghistpdf4_pdf"];
+"bkghistpdf5_pdf" [ color=red, label="RooHistPdf
+bkghistpdf5_pdf"];
+"bkghistpdf6_pdf" [ color=red, label="RooHistPdf
+bkghistpdf6_pdf"];
+"bkghistpdf7_pdf" [ color=red, label="RooHistPdf
+bkghistpdf7_pdf"];
+"bkghistpdf8_pdf" [ color=red, label="RooHistPdf
+bkghistpdf8_pdf"];
+"bkghistpdf9_pdf" [ color=red, label="RooHistPdf
+bkghistpdf9_pdf"];
+"bases" -> "mu";
+"nn" -> "mu";
+"nn" -> "x";
+"pdf" -> "sigtemplate_pdf";
+"pdf" -> "baseline_pdf";
+"pdf" -> "bkgtemplate_pdf";
+"pdf" -> "sigfrac";
+"pdf" -> "const";
+"sighistpdf1_pdf" -> "nn";
+"sigtemplate_pdf" -> "sigmorphfunc_pdf";
+"sigmorphfunc_pdf" -> "bases";
+"sigmorphfunc_pdf" -> "sighistpdf1_pdf";
+"sigmorphfunc_pdf" -> "sighistpdf0_pdf";
+"sigmorphfunc_pdf" -> "sighistpdf2_pdf";
+"sigmorphfunc_pdf" -> "sighistpdf3_pdf";
+"sigmorphfunc_pdf" -> "sighistpdf4_pdf";
+"sigmorphfunc_pdf" -> "sighistpdf5_pdf";
+"sigmorphfunc_pdf" -> "sighistpdf6_pdf";
+"sigmorphfunc_pdf" -> "sighistpdf7_pdf";
+"sigmorphfunc_pdf" -> "sighistpdf8_pdf";
+"sigmorphfunc_pdf" -> "sighistpdf9_pdf";
+"sighistpdf0_pdf" -> "nn";
+"sighistpdf2_pdf" -> "nn";
+"sighistpdf3_pdf" -> "nn";
+"sighistpdf4_pdf" -> "nn";
+"sighistpdf5_pdf" -> "nn";
+"sighistpdf6_pdf" -> "nn";
+"sighistpdf7_pdf" -> "nn";
+"sighistpdf8_pdf" -> "nn";
+"sighistpdf9_pdf" -> "nn";
+"baseline_pdf" -> "nn";
+"bkgtemplate_pdf" -> "bkgmorphfunc_pdf";
+"bkgmorphfunc_pdf" -> "bases";
+"bkgmorphfunc_pdf" -> "bkghistpdf0_pdf";
+"bkgmorphfunc_pdf" -> "bkghistpdf1_pdf";
+"bkgmorphfunc_pdf" -> "bkghistpdf2_pdf";
+"bkgmorphfunc_pdf" -> "bkghistpdf3_pdf";
+"bkgmorphfunc_pdf" -> "bkghistpdf4_pdf";
+"bkgmorphfunc_pdf" -> "bkghistpdf5_pdf";
+"bkgmorphfunc_pdf" -> "bkghistpdf6_pdf";
+"bkgmorphfunc_pdf" -> "bkghistpdf7_pdf";
+"bkgmorphfunc_pdf" -> "bkghistpdf8_pdf";
+"bkgmorphfunc_pdf" -> "bkghistpdf9_pdf";
+"bkghistpdf0_pdf" -> "nn";
+"bkghistpdf1_pdf" -> "nn";
+"bkghistpdf2_pdf" -> "nn";
+"bkghistpdf3_pdf" -> "nn";
+"bkghistpdf4_pdf" -> "nn";
+"bkghistpdf5_pdf" -> "nn";
+"bkghistpdf6_pdf" -> "nn";
+"bkghistpdf7_pdf" -> "nn";
+"bkghistpdf8_pdf" -> "nn";
+"bkghistpdf9_pdf" -> "nn";
+}

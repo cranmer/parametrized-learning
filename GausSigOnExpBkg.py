@@ -399,22 +399,6 @@ def fitAdaptive():
 	getattr(w,'import')(ROOT.RooArgSet(nn),ROOT.RooFit.RecycleConflictNodes()) 
 	w.Print()
 
-	'''
-	#test edit of template (working)
-	#wory that DataHist & HistPdf observable not being reset
-
-	w.factory('score2[0,1]')
-	w.factory('EDIT::template2(template,score=score2)')
-	score2=w.var('score2')
-	frame = score2.frame()
-	pdf = w.pdf('template2')
-	pdf.plotOn(frame)
-	c1 = ROOT.TCanvas('c1')
-	frame.Draw()
-	c1.SaveAs('fitAdaptive.pdf')
-	'''
-	
-
 	#create nll based on pdf(NN(x,mu) | mu)
 	w.factory('EDIT::pdf(template,score=nn)')
 	#wory that DataHist & HistPdf observable not being reset
@@ -425,8 +409,6 @@ def fitAdaptive():
 	#return
 
 	pdf.fitTo(data,ROOT.RooFit.Extended(False))
-	return
-
 
 	#construct likelihood and plot it
 	mu = w.var('mu')
@@ -439,7 +421,74 @@ def fitAdaptive():
 	frame.Draw()
 	c1.SaveAs('fitAdaptive.pdf')
 	return
+
+
+def fitAdaptiveTMVA():
+	#ugh, tough b/c fixed data are the features, not the NN output
+	ROOT.gSystem.Load( 'TMVAWrapper/libTMVAWrapper' )	
+	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
+	ROOT.gROOT.ProcessLine('.L CompositeFunctionPdf.cxx+')
+
+	f = ROOT.TFile('workspace_adaptive.root','r')
+	w = f.Get('w')
+	#morphfunc = w.pdf('morphfunc')
+	w.factory('CompositeFunctionPdf::sigtemplate(sigmorphfunc)')
+	w.factory('CompositeFunctionPdf::bkgtemplate(bkgmorphfunc)')
+	w.factory('Uniform::baseline(score)')
+	w.factory('SUM::template(sigfrac[0,1]*sigtemplate,const[0.01]*baseline,bkgtemplate)')
+
+	mu = w.var('mu')
+	mu.setVal(0)
+
+	c1 = ROOT.TCanvas('c1')
+	sframe = w.var('score').frame()
+	w.pdf('template').plotOn(sframe)
+	w.pdf('template').plotOn(sframe,ROOT.RooFit.Components('sigtemplate'),ROOT.RooFit.LineColor(ROOT.kRed))
+	w.pdf('template').plotOn(sframe,ROOT.RooFit.Components('bkgtemplate'),ROOT.RooFit.LineColor(ROOT.kGreen))
+	sframe.Draw()
+	c1.SaveAs('template.pdf')
+
+	#create a dataset for x, shortcut just repeat model
+	w.factory('Gaussian::g(x[-5,5],mu,sigma[0.5, 0, 2])')
+	w.factory('Exponential::e(x,tau[-.15,-3,0])')
+	w.factory('SUM::model(s[50,0,100]*g,b[100,0,1000]*e)')
+
+	x = w.var('x')
+	w.Print()
+	data = w.pdf('model').generate(ROOT.RooArgSet(x),150)
+
+	#need a RooAbsReal to evaluate NN(x,mu)
+	nn = ROOT.TMVAWrapper('nn','nn',x,mu)
+
+	print "get val = ",	nn.getVal()
+	getattr(w,'import')(ROOT.RooArgSet(nn),ROOT.RooFit.RecycleConflictNodes()) 
+	w.Print()	
+
+	#create nll based on pdf(NN(x,mu) | mu)
+	w.factory('EDIT::pdf(template,score=nn)')
+	#wory that DataHist & HistPdf observable not being reset
+	pdf = w.pdf('pdf')
+	print 'pdf has expected events = ', pdf.expectedEvents(ROOT.RooArgSet(nn))
+	w.Print()
+	pdf.graphVizTree('pdf2bTMVA.dot')
+	#return
+
+	pdf.fitTo(data,ROOT.RooFit.Extended(False))
+
+
+	#construct likelihood and plot it
+	mu = w.var('mu')
+	nll = pdf.createNLL(data,ROOT.RooFit.Extended(False))
+	#restrict NLL to relevant region in mu
+	frame=mu.frame(-.7,.7)
+	nll.plotOn(frame, ROOT.RooFit.ShiftToZero())
+	frame.SetMinimum(0)
+	frame.SetMaximum(10)
+	frame.Draw()
+	c1.SaveAs('fitAdaptiveTMVA.pdf')
+	return
 	
+
 
 def makeBSpline(w,interpParam, observable, pdfList, paramPoints,name='morph',):
 	'''
@@ -524,5 +573,5 @@ if __name__ == '__main__':
 	if False and os.path.isfile('fitAdaptive.pdf'):
 		print 'plots for adatpive already created, skipping fitAdaptive()'
 	else:
-		fitAdaptive()
+		fitAdaptiveTMVA()
 

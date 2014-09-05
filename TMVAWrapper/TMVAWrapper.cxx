@@ -47,9 +47,10 @@
 ClassImp(TMVAWrapper) 
 
  TMVAWrapper::TMVAWrapper(const char *name, const char *title, 
-                        RooAbsReal& _features) :
+                        RooAbsReal& _features, RooAbsReal& _param) :
    RooAbsReal(name,title), 
-   features("features","features",this,_features)
+   features("features","features",this,_features),
+   param("param","param",this,_param)
  { 
 
    TMVA::Tools::Instance();
@@ -74,7 +75,8 @@ ClassImp(TMVAWrapper)
 
  TMVAWrapper::TMVAWrapper(const TMVAWrapper& other, const char* name) :  
    RooAbsReal(other,name), 
-   features("features",this,other.features)
+   features("features",this,other.features),
+   param("param",this,other.param)
  { 
    TMVA::Tools::Instance();
    reader = new TMVA::Reader( "!Color:!Silent" );    
@@ -101,6 +103,7 @@ ClassImp(TMVAWrapper)
  { 
 
    x = features.arg().getVal();
+   alpha = param.arg().getVal();
    Float_t val = (reader->EvaluateRegression("MLP method"))[0];
 
 
