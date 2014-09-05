@@ -247,7 +247,7 @@ def createPdfForAdaptive():
 			hist.Draw('same')
 
 		datahist = ROOT.RooDataHist('datahist{0}'.format(i),"hist", ROOT.RooArgList(s), hist)
-		order=0
+		order=1
 		s.setBins(bins)
 		histpdf = ROOT.RooHistPdf('histpdf{0}'.format(i),"hist", ROOT.RooArgSet(s), datahist,order)
 		histpdf.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
@@ -408,16 +408,16 @@ def fitAdaptive():
 	#construct likelihood and plot it
 	mu = w.var('mu')
 	nll = pdf.createNLL(data,ROOT.RooFit.Extended(False))
-	frame=mu.frame()
-	nll.plotOn(frame)
+	#restrict NLL to relevant region in mu
+	frame=mu.frame(-1,1)
+	nll.plotOn(frame, ROOT.RooFit.ShiftToZero())
 	c1 = ROOT.TCanvas('c1')
+	frame.SetMinimum(0)
+	frame.SetMaximum(10)
 	frame.Draw()
 	c1.SaveAs('fitAdaptive.pdf')
 	return
 	
-
-
-
 
 def makeBSpline(w,interpParam, observable, pdfList, paramPoints):
 	'''
