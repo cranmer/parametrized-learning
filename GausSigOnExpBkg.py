@@ -40,7 +40,7 @@ def makeData():
 	Use model to create some dummy training and testing data.
 	'''
 	musteps=10
-	numTrain=5000
+	numTrain=500
 	numTest=numTrain
 
 	#Make statistical model
@@ -274,6 +274,7 @@ def plotAdaptive():
 	make plots of the output of the parametrized model
 	'''
 	#import class code should work automatically, but confused by namespace
+	ROOT.gROOT.ProcessLine(".L RooBSplineBases.cxx+")
 	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
 
 	f = ROOT.TFile('workspace_adaptive.root','r')
@@ -356,6 +357,7 @@ def testSciKitLearnWrapper2d():
 def fitAdaptive():
 	#ugh, tough b/c fixed data are the features, not the NN output
 	ROOT.gSystem.Load( 'SciKitLearnWrapper/libSciKitLearnWrapper' )	
+	ROOT.gROOT.ProcessLine(".L RooBSplineBases.cxx+")
 	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
 	ROOT.gROOT.ProcessLine('.L CompositeFunctionPdf.cxx+')
 
@@ -495,6 +497,7 @@ def makeBSpline(w,interpParam, observable, pdfList, paramPoints,name='morph',):
 	The helper function to create the parametrized model that interpolates
 	across input pdfs 
 	'''
+	ROOT.gROOT.ProcessLine(".L RooBSplineBases.cxx+")
 	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
 
 	paramVec = ROOT.TVectorD(len(paramPoints))
@@ -573,5 +576,5 @@ if __name__ == '__main__':
 	if False and os.path.isfile('fitAdaptive.pdf'):
 		print 'plots for adatpive already created, skipping fitAdaptive()'
 	else:
-		fitAdaptiveTMVA()
+		fitAdaptive()
 

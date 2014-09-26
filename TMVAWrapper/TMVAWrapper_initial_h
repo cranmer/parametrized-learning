@@ -8,18 +8,10 @@
 #define TMVAWRAPPER
 
 #include "RooAbsReal.h"
-#include "RooArgList.h"
 #include "RooRealProxy.h"
 #include "RooCategoryProxy.h"
 #include "RooAbsReal.h"
 #include "RooAbsCategory.h"
-#include "RooListProxy.h"
-
-#include "TDOMParser.h"
-#include "TXMLNode.h"
-#include <iostream>
-#include "TList.h"
-#include "TXMLAttr.h"
 
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"
@@ -35,35 +27,25 @@
 class TMVAWrapper : public RooAbsReal {
 public:
   TMVAWrapper() {} ; 
-  //  TMVAWrapper(const char *name, const char *title,
-  //	      RooAbsReal& _features, RooAbsReal& _param);
+  TMVAWrapper(const char *name, const char *title,
+	      RooAbsReal& _features, RooAbsReal& _param);
   TMVAWrapper(const TMVAWrapper& other, const char* name=0) ;
-  TMVAWrapper(const char *name, const char *title, RooArgList &ral,char weightfile[100]);
-
   virtual TObject* clone(const char* newname) const { return new TMVAWrapper(*this,newname); }
   inline virtual ~TMVAWrapper() { }
 
 
 protected:
 
-  RooListProxy _actualVars;
-
-  RooAbsReal *_rab[10];
+  RooRealProxy features ;
+  RooRealProxy param ;
   
-  int num_features;
-  std::vector<TString> names;
-
   Double_t evaluate() const ;
-
-  char weights[1000];
 
 private:
 
-  void findVariables(TXMLNode *node);
-  void getListOfVars(char weights[100]);
-  
   TMVA::Reader *reader ;
-  mutable Float_t local_features[10];
+  mutable Float_t x;
+  mutable Float_t alpha;
   Float_t target;
 
   ClassDef(TMVAWrapper,1) // Your description goes here...

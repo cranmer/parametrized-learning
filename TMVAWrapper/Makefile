@@ -43,7 +43,7 @@ $(DICT): $(HDRS)
 
 $(TARGETLIB): $(OBJS) $(DICTO)
 ifeq ($(PLATFORM),macosx)
-	$(LD) $(SOFLAGS)$@ $(LDFLAGS)  $^ $(OutPutOpt) $@ $(GLIBS) -lRooFit -lRooFitCore -lTMVA
+	$(LD) $(SOFLAGS)$@ $(LDFLAGS)  $^ $(OutPutOpt) $@ $(GLIBS) -lRooFit -lRooFitCore -lTMVA -lxmlparser
 else
 	$(LD) $(SOFLAGS) $(LDFLAGS) $^ $(GLIBS) $(OutPutOpt)$@
 endif
