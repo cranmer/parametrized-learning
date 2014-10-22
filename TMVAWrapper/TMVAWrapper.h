@@ -46,7 +46,6 @@ public:
 
 protected:
 
-  RooListProxy _actualVars;
 
   RooAbsReal *_rab[10];
   
@@ -59,12 +58,15 @@ protected:
 
 private:
 
+
   void findVariables(TXMLNode *node);
   void getListOfVars(char weights[100]);
   
   TMVA::Reader *reader ;
   mutable Float_t local_features[10];
   Float_t target;
+
+  RooListProxy _actualVars;
 
   ClassDef(TMVAWrapper,1) // Your description goes here...
 };

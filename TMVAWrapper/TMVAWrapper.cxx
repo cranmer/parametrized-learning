@@ -153,10 +153,16 @@ TMVAWrapper::TMVAWrapper(const char *name, const char *title,RooArgList &ral,cha
 
  TMVAWrapper::TMVAWrapper(const TMVAWrapper& other, const char* name) :  
    RooAbsReal(other,name),
-  _actualVars("actualVars",this, other._actualVars)
+   _actualVars("actualVars",this,other._actualVars)
  { 
-   std::cout << "Copy constructor! " << name << std::endl;
-//   _actualVars.add(other._actualVars);
+   
+  //    std::cout << "Copy constructor! " << name << std::endl;
+      std::cout << "Copy constructor! " << std::endl;
+    reader=NULL;
+    for (int i=0;i<10;i++)
+       _rab[i] = NULL;
+
+
 
    TMVA::Tools::Instance();
    reader = new TMVA::Reader( "!Color:!Silent" );    
@@ -198,7 +204,8 @@ TMVAWrapper::TMVAWrapper(const char *name, const char *title,RooArgList &ral,cha
        
        if (_rab[i])
 	 {
-	   local_features[i] = _rab[i]->getVal();
+//     local_features[i] = _rab[i]->getVal();
+         local_features[i] = ((RooAbsReal*)_actualVars.at(i))->getVal();
 	   std::cout << " ( " << names[i] << " = " << local_features[i] << ") ";
 	 }
        else

@@ -73,3 +73,5 @@ testPythonFromC.cxx
 SciKitLearnWrapper/SciKitLearnWrapperDict.cxx
 
 SciKitLearnWrapper/SciKitLearnWrapperDict.h
+
+tex/parametrized-learning.synctex.gz

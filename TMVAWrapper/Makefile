@@ -27,7 +27,7 @@ OBJS      := $(SRCS:.$(SrcSuf)=.$(ObjSuf))
 ############# RULES ###############
 
 .$(SrcSuf).$(ObjSuf):
-	$(CXX)  $(CXXFLAGS) -c $<
+	$(CXX)  $(CXXFLAGS) -c -g $<
 
 ############# TARGETS #############
 
