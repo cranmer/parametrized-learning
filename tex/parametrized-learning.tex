@@ -36,7 +36,7 @@ Notation:
 In high-energy physics (HEP) we typically are searching for or measuring the properties of some 
 class of events, generically referred to as \textit{signal}, in the presence of a separate class 
 of \textit{background} events. For each event we measure some quantities $x$ that have corresponding distributions 
-$f_0(x|\theta)$ for background and $f_1(x|\theta)$ for signal.  Often machine learning classification algorithms are trained on large samples of synthetic data $\{x_i, c_i\}$ generated with some nominal values of the parameters $\theta_0$, where $c=0$ corresponds to background and $c=1$ corresponds to signal. The resulting classifier is denoted $s(x)$. Based on this classifier and large samples of synthetic data drawn from $f_c(x | theta)$ we construct the distribution  $f_c(s | \theta)$. An example of the distributions of the distribution of $s$ for the signal and background events with $\theta=\theta_0$ is shown in Figure~\ref{fig:tmva}.
+$f_0(x|\theta)$ for background and $f_1(x|\theta)$ for signal.  Often machine learning classification algorithms are trained on large samples of synthetic data $\{x_i, c_i\}$ generated with some nominal values of the parameters $\theta_0$, where $c=0$ corresponds to background and $c=1$ corresponds to signal. The resulting classifier is denoted $s(x)$. Based on this classifier and large samples of synthetic data drawn from $f_c(x | \theta)$ we construct the distribution  $f_c(s | \theta)$. An example of the distributions of the distribution of $s$ for the signal and background events with $\theta=\theta_0$ is shown in Figure~\ref{fig:tmva}.
 
 
 \begin{figure}[htbp]
@@ -67,5 +67,26 @@ p( \{ x_e \} \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( s(x_e;\thet
 \end{equation}
 
 The construction in Eq.~\ref{eq:parametrizedML} presents a computational challenge as for each value of $\theta$ one has a new mapping $s: x\to\mathbb{R}$. The most naive realization of this would be to generate synthetic data $\{x_e\}$ according to $f_c(x|\theta)$, evaluate $s(x_e ; \theta)$, and then use a histogram, kernel density, or other non-parametric density estimation procedure to estimate $f_c( s | \theta)$. This approach is not realistic in situations where $f_c(x|\theta)$ is realized with expensive computer simulations; thus, some interpolation strategy or emulator over a fixed set of parameter points $\{\theta_i\}$ would typically be used.
+
+\section{Possible Extensions}
+The approach describe thus far has been agnostic as to the type of classifier used to produce $s(x)$ and $s(x; \theta)$. In practice, we have used standard packages for the training of these learners. In particular, the loss function for these learning algorithms is based on classification performance of individual $(x_e, c_e)$ feature $\to$ target examples. However, in overarching statistical procedure that uses the statistical model in Eq.~\ref{eq:typicalML} or \ref{eq:parametrizedML} the quantity we wish to optimize is a property of an entire dataset $\{x_e\}$ or ensembles of datasets that can be generated from the statistical models $f_c(x|\theta)$. 
+
+For example, in typical hypothesis testing problems posed in the Neyman-Pearson context one would be interested in minimizing type II error under a fixed rate of typeI error rate. In the presence of systematic uncertainty and nuisance parameters, the loss function may become more complicated. The recent Higgs boson machine learning challenge hosted by Kaggle, the evaluation was the approximate median significance (AMS) that characterized the power of a hypothesis test between $\mu=0$ (the background only hypothesis) and $\mu=\mu_0$ (the signal+background hypothesis, where $\mu_0$ is a small number reflecting the small Higgs signal that would be found in addition to the much larger background process) in the presence of uncertainty on the background normalization. 
+Interestingly, the top entries to the challenge did not improve by focusing on this alternative loss function 
+in training their classifier, but instead used it for the optimization of a threshold on the score (a working point on the ROC curve) that was related to the way the challenge was designed. This suggests that the standard 
+classification loss functions lead to similar optimizations and that refinements for the custom loss functions
+are not easy to come by.
+
+More generally, there is an avenue of research associated to custom loss functions specifically designed 
+for these real world statistical problems. One direction might be to choose loss functions that make 
+some balance between the standard classification loss, take into account robustness with respect to nuisance parameters, and population-level quantities like type I and II error.
+
+\section*{Acknowldgements}
+We would like to thank Yann LeCun, Philip Stark for their feedback on the
+project early in its conception and Bal\'azs K\'egl for discussions about the Kaggle challenge and 
+non-standard loss functions.
+KC is supported by the US National Science Foundation grants PHY-0854724 and PHY-0955626. 
+KC would like to thank UC-Irvine for their hospitality while this research was carried out and the 
+Moore and Sloan foundations for their generous support of the data science environment at NYU.
 
 \end{document} 
