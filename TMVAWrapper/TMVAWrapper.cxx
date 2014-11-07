@@ -47,8 +47,13 @@ void TMVAWrapper::findVariables(TXMLNode *node)
       // if so, get the name
       TList *atts = node->GetAttributes();
       TXMLAttr *ob = (TXMLAttr*)atts->FindObject("Label");
-      std::cout << "   @@@@ found feature " << ob << " " << ob->GetValue() <<  std::endl;
-      names.push_back(ob->GetValue());
+      //      std::cout << "   @@@@ found feature " << ob << " " << ob->GetValue() <<  std::endl;
+      if (names.size()>_max_vars)
+	{
+	  std::cout << "--> Error max vars exceeded: " << _max_vars <<std::endl;
+	}
+      else
+	names.push_back(ob->GetValue());
     }
 
   // recursively explore siblings and children
@@ -57,14 +62,18 @@ void TMVAWrapper::findVariables(TXMLNode *node)
     findVariables(node->GetNextNode());
 }
 
-void TMVAWrapper::getListOfVars(char weights[100])
+void TMVAWrapper::getListOfVars(char weights[1000])
 {
   num_features=0;
   names.clear();
   
   // set up the parser
   TDOMParser *parser = new TDOMParser();
+
+  // validation looks for a DTD file, we don't have one
   parser->SetValidate(false);
+
+  // parse the file
   parser->ParseFile(weights);
 
   // get the root of the XML tree
@@ -75,74 +84,32 @@ void TMVAWrapper::getListOfVars(char weights[100])
   findVariables(node);
 
   num_features=names.size();
+
 }
 
-
-
-//using namespace TMVA;
-
-/* update to parse XML for expected variables
-  <Variables NVar="2">
-    <Variable VarIndex="0" Expression="x" Label="x" Title="mass" Unit="units" Internal="x" Type="F" Min="-5.79654074e+00" Max="4.99505901e+00"/>
-    <Variable VarIndex="1" Expression="alpha" Label="alpha" Title="alpha" Unit="units" Internal="alpha" Type="F" Min="-2.00000000e+00" Max="2.00000000e+00"/>
-  </Variables>
-
-*/
-
-
-/*
- TMVAWrapper::TMVAWrapper(const char *name, const char *title, 
-                        RooAbsReal& _features, RooAbsReal& _param) :
-   RooAbsReal(name,title), 
-   features("features","features",this,_features),
-   param("param","param",this,_param)
- { 
-   TMVA::Tools::Instance();
-   reader = new TMVA::Reader( "!Color:!Silent" );    
-
-   // Create a set of variables and declare them to the reader
-   // - the variable names MUST corresponds in name and type to those given in the weight file(s) used
-   reader->AddVariable( "x", &x);
-   reader->AddVariable( "alpha", &alpha);
-
-   // --- Book the MVA methods
-
-   TString dir    = "weights/";
-   TString prefix = "TMVARegression";
-
-   // Book method(s)
-   TString methodName = "MLP method";
-   const TString weightfile = "TMVARegression_alphavary.root_MLP.weights.xml";
-   reader->BookMVA( methodName, weightfile ); 
-
- } 
-*/
 
 TMVAWrapper::TMVAWrapper(const char *name, const char *title,RooArgList &ral,char weights_in[1000]):
   RooAbsReal(name,title),
   _actualVars("actualVars","useless title",this)
  { 
-   std::cout << "Constructor!" << std::endl;
 
    _actualVars.add(ral);
    
    TMVA::Tools::Instance();
    reader = new TMVA::Reader( "!Color:!Silent" );    
 
+   // keep a copy of the filename
    strcpy(weights,weights_in);
 
+   // read the XML to find the list of NN input variables
    getListOfVars(weights);
 
+   //   local_features = new Float_t[num_features];
+   // for each variable, tell the TMVA reader to look for it
    for (int i=0;i<num_features;i++)
-     {
-       std::cout << " adding variable " << names[i] <<std::endl;
-       _rab[i] = dynamic_cast<RooAbsReal*>(_actualVars.find(names[i]));
-       std::cout << " in actualvars? " << _rab[i] << std::endl;
-       reader->AddVariable(names[i],&local_features[i]);
-     }
-
+     reader->AddVariable(names[i],&local_features[i]);
+     
    // --- Book the MVA methods
-
    TString dir    = "weights/";
    TString prefix = "TMVARegression";
 
@@ -156,19 +123,15 @@ TMVAWrapper::TMVAWrapper(const char *name, const char *title,RooArgList &ral,cha
    _actualVars("actualVars",this,other._actualVars)
  { 
    
-  //    std::cout << "Copy constructor! " << name << std::endl;
-      std::cout << "Copy constructor! " << std::endl;
     reader=NULL;
-    for (int i=0;i<10;i++)
-       _rab[i] = NULL;
-
-
 
    TMVA::Tools::Instance();
    reader = new TMVA::Reader( "!Color:!Silent" );    
    
-   // get feature list from other 
+   // get name of weights file
    strcpy(weights,other.weights);
+
+   // get list of features
    num_features = other.num_features;
    names.clear();
    for (int i=0;i<num_features;i++)
@@ -176,11 +139,7 @@ TMVAWrapper::TMVAWrapper(const char *name, const char *title,RooArgList &ral,cha
 
    // register them
    for (int i=0;i<num_features;i++)
-     {
-       _rab[i] = other._rab[i];
-       std::cout << "Adding variable " << names[i] << " in " << _rab[i] << std::endl;
-       reader->AddVariable(names[i],&local_features[i]);
-     }
+     reader->AddVariable(names[i],&local_features[i]);
 
    // --- Book the MVA methods
 
@@ -197,26 +156,14 @@ TMVAWrapper::TMVAWrapper(const char *name, const char *title,RooArgList &ral,cha
  Double_t TMVAWrapper::evaluate() const 
  { 
 
+   // put the data into local storage from Roo...
    for (int i=0;i<num_features;i++)
-     {
-       //       std::cout << " loading feature " << names[i] << " from " << _rab[i] <<std::endl;
+     local_features[i] = ((RooAbsReal*)_actualVars.at(i))->getVal();
 
-       
-       if (_rab[i])
-	 {
-//     local_features[i] = _rab[i]->getVal();
-         local_features[i] = ((RooAbsReal*)_actualVars.at(i))->getVal();
-	   std::cout << " ( " << names[i] << " = " << local_features[i] << ") ";
-	 }
-       else
-	 {
-	   std::cout << " !! Error, no variable " << names[i] << " in arglist" << std::endl;
-	 }
-     }
-
+   // call the network -- we have already told it where to find the data
    Float_t val = (reader->EvaluateRegression("MLP method"))[0];
-   std::cout << "  --> val = " << val <<std::endl;
 
+   // return it
    return val ; 
  } 
 
