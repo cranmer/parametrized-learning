@@ -75,3 +75,5 @@ SciKitLearnWrapper/SciKitLearnWrapperDict.cxx
 SciKitLearnWrapper/SciKitLearnWrapperDict.h
 
 tex/parametrized-learning.synctex.gz
+
+TMVARegression_ttbar_14tev_jes1.root_MLP.weights.xml

@@ -150,6 +150,15 @@ def createPdfForAdaptive_tree(tree):
 		morph.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
 		print morph
 
+	# make dataset, add to workspace
+	w.factory('mwwbb[500,7000]')
+	w.factory('mx[350,1600]')
+	w.factory('target[-1,2]')
+	w.defineSet('inputvars','mwwbb,mx')
+	w.defineSet('treevars','mwwbb,mx,target')
+	alldata = ROOT.RooDataSet('alldata','',tree, w.set('treevars'))
+	getattr(w,'import')(alldata)
+
 	w.Print()
 	w.writeToFile("workspace_adaptive_tree.root")
 
@@ -158,6 +167,24 @@ def createPdfForAdaptive():
         f = ROOT.TFile("ttbar_14tev_jes1_eval.root")
         nt = f.Get("nto")
         createPdfForAdaptive_tree(nt)
+
+def plotScore():
+	ROOT.gSystem.Load( 'TMVAWrapper/libTMVAWrapper' )
+	ROOT.gROOT.ProcessLine(".L RooBSplineBases.cxx+")
+	ROOT.gROOT.ProcessLine(".L RooBSpline.cxx+")
+	
+	f = ROOT.TFile('workspace_adaptive_tree.root','r')
+	w = f.Get('w')
+	inputVars = ROOT.RooArgList(w.set('inputvars'))
+	inputVars.Print()
+	nn = ROOT.TMVAWrapper('nn','nn',inputVars,"TMVARegression_ttbar_14tev_jes1.root_MLP.weights.xml")
+	frame = w.var('mwwbb').frame()
+	for x in np.linspace(400,1600,20):
+		w.var('mx').setVal(x)
+		nn.plotOn(frame)
+	c1 = ROOT.TCanvas("c2",'',400,400)
+	frame.Draw()
+	c1.SaveAs('tmva.pdf')
 
 
 def plotAdaptive():
@@ -194,8 +221,8 @@ def fitAdaptive():
 	f = ROOT.TFile('workspace_adaptive_tree.root','r')
 	w = f.Get('w')
 
-	w.factory('CompositeFunctionPdf::sigtemplate(sigmorphfunc)')
-	w.factory('CompositeFunctionPdf::bkgtemplate(bkgmorphfunc)')
+	w.factory('CompositeFunctionPdf::sigtemplate(0morphfunc)')
+	w.factory('CompositeFunctionPdf::bkgtemplate(1morphfunc)')
 	w.factory('Uniform::baseline(score)')
 	w.factory('SUM::template(sigfrac[0,1]*sigtemplate,const[0.01]*baseline,bkgtemplate)')
 
@@ -204,27 +231,33 @@ def fitAdaptive():
 
 	c1 = ROOT.TCanvas('c1')
 	sframe = w.var('score').frame()
+	w.pdf('sigtemplate').plotOn(sframe)
+	w.pdf('0morph').plotOn(sframe)
+	w.pdf('1morph').plotOn(sframe)
+	w.pdf('sigtemplate').plotOn(sframe)
+	w.pdf('bkgtemplate').plotOn(sframe)
 	w.pdf('template').plotOn(sframe)
 	w.pdf('template').plotOn(sframe,ROOT.RooFit.Components('sigtemplate'),ROOT.RooFit.LineColor(ROOT.kRed))
 	w.pdf('template').plotOn(sframe,ROOT.RooFit.Components('bkgtemplate'),ROOT.RooFit.LineColor(ROOT.kGreen))
 	sframe.Draw()
 	c1.SaveAs('template.pdf')
 
-	#create a dataset for x, shortcut just repeat model
-	w.factory('Gaussian::g(x[-5,5],mu,sigma[0.5, 0, 2])')
-	w.factory('Exponential::e(x,tau[-.15,-3,0])')
-	w.factory('SUM::model(s[50,0,100]*g,b[100,0,1000]*e)')
-
-	x = w.var('x')
-	w.Print()
-	data = w.pdf('model').generate(ROOT.RooArgSet(x),150)
+	#create a dataset for 
+	data = w.data('alldata')
 
 	#need a RooAbsReal to evaluate NN(x,mu)
-	nn = ROOT.TMVAWrapper('nn','nn',x,mu)
+	#nn = ROOT.TMVAWrapper('nn','nn',x,mu)
+	print "make RooArgSet"
+	print "create TMVAWrapper "
+	inputVars = ROOT.RooArgList(w.set('inputvars'))
+	inputVars.Print()
+	nn = ROOT.TMVAWrapper('nn','nn',inputVars,"TMVARegression_ttbar_14tev_jes1.root_MLP.weights.xml")
+	#weightfile = "TMVARegression_alphavary.root_MLP.weights.xml"
 
 	print "get val = ",	nn.getVal()
 	getattr(w,'import')(ROOT.RooArgSet(nn),ROOT.RooFit.RecycleConflictNodes()) 
 	w.Print()	
+	return
 
 	#create nll based on pdf(NN(x,mu) | mu)
 	w.factory('EDIT::pdf(template,score=nn)')
@@ -292,7 +325,7 @@ if __name__ == '__main__':
 	'''
 	The main function that calls the individual steps of the procedure
 	'''
-
-        createPdfForAdaptive()
-        plotAdaptive()
-        fitAdaptive()
+	plotScore()
+	#createPdfForAdaptive()
+	#plotAdaptive()
+	fitAdaptive()
