@@ -62,7 +62,7 @@ def createdPdfForFixed():
 			#	(i+1)*chunk+shift], 30, alpha=0.3)
 			#sig part
 	
-			hist = ROOT.TH1F('{0}hist{1}'.format(name,i),"hist",30,-0.1,1.2)
+			hist = ROOT.TH1F('h{0}hist{1}'.format(name,i),"hist",30,-0.1,1.2)
 			fixedhists.append(hist)
 			for val in outputs[i*chunk+j*shift: (i+1)*chunk+j*shift]:
 				hist.Fill(val)
@@ -102,7 +102,7 @@ def createPdfForAdaptive_tree(tree):
                         var_points[int(tree.target)].append(tree.mx)
                         ind = var_points[int(tree.target)].index(tree.mx)
 
-			hist = ROOT.TH1F('{0}hist{1}'.format(int(tree.target),ind),"hist",bins,low,high)
+			hist = ROOT.TH1F('h{0}hist{1}'.format(int(tree.target),ind),"hist",bins,low,high)
 			adaptivehists[int(tree.target)].append(hist)
 
 #                if (i%1000==0):
@@ -132,12 +132,12 @@ def createPdfForAdaptive_tree(tree):
                 for ind in range(0,len(var_points[target])):
                         print "Building RooWorld stuff for target",target," index ",ind
                         print "   mx = ", var_points[target][ind], " mean = ", adaptivehists[target][ind].GetMean(), " rms = ", adaptivehists[target][ind].GetRMS()
-                        datahist = ROOT.RooDataHist('{0}datahist{1}'.format(target,ind),"hist", 
+                        datahist = ROOT.RooDataHist('dh{0}datahist{1}'.format(target,ind),"hist", 
                                                     ROOT.RooArgList(s), adaptivehists[target][ind])
                 
 			order=1
 			s.setBins(bins)
-			histpdf = ROOT.RooHistPdf('{0}histpdf{1}'.format(target,ind),"hist", 
+			histpdf = ROOT.RooHistPdf('hp{0}histpdf{1}'.format(target,ind),"hist", 
 				ROOT.RooArgSet(s), datahist,order)
 			histpdf.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
 	
@@ -145,8 +145,8 @@ def createPdfForAdaptive_tree(tree):
 			getattr(w,'import')(histpdf) # work around for morph = w.import(morph)
 			adpativedatahists[target].append(datahist)
 			adpativehistpdfs[target].append(histpdf)
-		w = makeBSpline(w,mu,s,adpativehistpdfs[target], var_points[target], '{0}morph'.format(target))
-		morph = w.pdf('{0}morph'.format(target))
+		w = makeBSpline(w,mu,s,adpativehistpdfs[target], var_points[target], 'm{0}morph'.format(target))
+		morph = w.pdf('m{0}morph'.format(target))
 		morph.specialIntegratorConfig(ROOT.kTRUE).method1D().setLabel('RooBinIntegrator')
 		print morph
 
@@ -204,8 +204,8 @@ def plotAdaptive():
 
 	for val in np.linspace(400,1500,100):
 		w.var('mu').setVal(val)
-		w.pdf('1morph').plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
-		w.pdf('0morph').plotOn(frame,ROOT.RooFit.LineColor(ROOT.kBlue))
+		w.pdf('m1morph').plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
+		w.pdf('m0morph').plotOn(frame,ROOT.RooFit.LineColor(ROOT.kBlue))
 	frame.Draw()
 	c1.SaveAs('root_bspline.pdf')
 
@@ -220,9 +220,10 @@ def fitAdaptive():
 
 	f = ROOT.TFile('workspace_adaptive_tree.root','r')
 	w = f.Get('w')
+	w.Print()
 
-	w.factory('CompositeFunctionPdf::sigtemplate(0morphfunc)')
-	w.factory('CompositeFunctionPdf::bkgtemplate(1morphfunc)')
+	w.factory('CompositeFunctionPdf::sigtemplate(fm0morphfunc)')
+	w.factory('CompositeFunctionPdf::bkgtemplate(fm1morphfunc)')
 	w.factory('Uniform::baseline(score)')
 	w.factory('SUM::template(sigfrac[0,1]*sigtemplate,const[0.01]*baseline,bkgtemplate)')
 
@@ -232,8 +233,8 @@ def fitAdaptive():
 	c1 = ROOT.TCanvas('c1')
 	sframe = w.var('score').frame()
 	w.pdf('sigtemplate').plotOn(sframe)
-	w.pdf('0morph').plotOn(sframe)
-	w.pdf('1morph').plotOn(sframe)
+	w.pdf('m0morph').plotOn(sframe)
+	w.pdf('m1morph').plotOn(sframe)
 	w.pdf('sigtemplate').plotOn(sframe)
 	w.pdf('bkgtemplate').plotOn(sframe)
 	w.pdf('template').plotOn(sframe)
@@ -307,7 +308,7 @@ def makeBSpline(w,interpParam, observable, pdfList, paramPoints,name='morph',):
 		pdfs.add(pdf)
 
 	#this makes a function
-	morphfunc = ROOT.RooStats.HistFactory.RooBSpline( name+'func', "morphfunc", pdfs, bspb, ROOT.RooArgSet() )
+	morphfunc = ROOT.RooStats.HistFactory.RooBSpline( 'f'+name+'func', "morphfunc", pdfs, bspb, ROOT.RooArgSet() )
 
 	#if you want to convert it into a PDF
 	morph = ROOT.RooRealSumPdf(name,name, ROOT.RooArgList(morphfunc), ROOT.RooArgList())
@@ -326,6 +327,6 @@ if __name__ == '__main__':
 	The main function that calls the individual steps of the procedure
 	'''
 	plotScore()
-	#createPdfForAdaptive()
+	createPdfForAdaptive()
 	#plotAdaptive()
 	fitAdaptive()
