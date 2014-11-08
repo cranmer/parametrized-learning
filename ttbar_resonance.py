@@ -121,10 +121,10 @@ def createPdfForAdaptive_tree(tree):
 
         # build RooWorld stuff
 	w = ROOT.RooWorkspace('w')
-	w.factory('mu[{0},{1}]'.format( var_points[0][0],var_points[0][len(var_points[0])-1]))
+	w.factory('mx[{0},{1}]'.format( var_points[0][0],var_points[0][len(var_points[0])-1]))
 	w.factory('score[{0},{1}]'.format(low,high))
 	s = w.var('score')
-	mu = w.var('mu')
+	mu = w.var('mx')
 
         adpativedatahists=[[],[]]
         adpativehistpdfs=[[],[]]
@@ -156,8 +156,16 @@ def createPdfForAdaptive_tree(tree):
 	w.factory('target[-1,2]')
 	w.defineSet('inputvars','mwwbb,mx')
 	w.defineSet('treevars','mwwbb,mx,target')
+	w.defineSet('obsvars','mwwbb')
 	alldata = ROOT.RooDataSet('alldata','',tree, w.set('treevars'))
+	alldata.Print()
+	toydata = alldata.reduce(ROOT.RooFit.Cut('mx==1000.'))
+	toydata.Print()
+	obsdata = toydata.reduce(ROOT.RooFit.SelectVars(w.set('obsvars')))
+	obsdata.Print()
+	obsdata = ROOT.RooDataSet('obsdata','',tree, w.set('obsvars'))
 	getattr(w,'import')(alldata)
+	getattr(w,'import')(obsdata)
 
 	w.Print()
 	w.writeToFile("workspace_adaptive_tree.root")
@@ -203,7 +211,7 @@ def plotAdaptive():
 	c1.SetLogy();
 
 	for val in np.linspace(400,1500,100):
-		w.var('mu').setVal(val)
+		w.var('mx').setVal(val)
 		w.pdf('m1morph').plotOn(frame,ROOT.RooFit.LineColor(ROOT.kRed))
 		w.pdf('m0morph').plotOn(frame,ROOT.RooFit.LineColor(ROOT.kBlue))
 	frame.Draw()
@@ -227,7 +235,7 @@ def fitAdaptive():
 	w.factory('Uniform::baseline(score)')
 	w.factory('SUM::template(sigfrac[0,1]*sigtemplate,const[0.01]*baseline,bkgtemplate)')
 
-	mu = w.var('mu')
+	mu = w.var('mx')
 	mu.setVal(0)
 
 	c1 = ROOT.TCanvas('c1')
@@ -244,7 +252,9 @@ def fitAdaptive():
 	c1.SaveAs('template.pdf')
 
 	#create a dataset for 
-	data = w.data('alldata')
+	data = w.data('obsdata')
+	data.Print()
+
 
 	#need a RooAbsReal to evaluate NN(x,mu)
 	#nn = ROOT.TMVAWrapper('nn','nn',x,mu)
@@ -261,30 +271,37 @@ def fitAdaptive():
 	w.Print()	
 	print "ok, almost done"
 	#create nll based on pdf(NN(x,mu) | mu)
-	w.factory('EDIT::pdftemp(template,score=nn)')
-	return
-	w.factory('EDIT::pdf(pdftemp,mu=mx)')
-	w.factory('EDIT::pdf(template,score=nn,mu=mx)')
+	w.factory('EDIT::pdf(template,score=nn)')
+	#w.factory('EDIT::pdf(pdftemp,mu=mx)')
+	#resetting mu->mux dies.
+	#w.factory('EDIT::pdf(template,score=nn,mu=mx)')
 	#wory that DataHist & HistPdf observable not being reset
 	pdf = w.pdf('pdf')
 	print 'pdf has expected events = ', pdf.expectedEvents(ROOT.RooArgSet(nn))
 	w.Print()
-	pdf.graphVizTree('pdf2bTMVA.dot')
-	#return
 
-	pdf.fitTo(data,ROOT.RooFit.Extended(False))
+	pdf.graphVizTree('pdf2bTMVA.dot')
+	mu = w.var('mx')
+	mu.setConstant(False)
+	mu.Print()
 
 
 	#construct likelihood and plot it
-	mu = w.var('mu')
-	nll = pdf.createNLL(data,ROOT.RooFit.Extended(False))
+	nll = pdf.createNLL(data)
+
+
+	#nll = pdf.createNLL(data,ROOT.RooFit.Extended(False))
 	#restrict NLL to relevant region in mu
-	frame=mu.frame(-.7,.7)
+	#frame=mu.frame(-.7,.7)
+	frame=mu.frame()
 	nll.plotOn(frame, ROOT.RooFit.ShiftToZero())
 	frame.SetMinimum(0)
 	frame.SetMaximum(10)
 	frame.Draw()
 	c1.SaveAs('fitAdaptiveTMVA.pdf')
+
+	pdf.fitTo(data,ROOT.RooFit.Extended(False))
+
 	return
 	
 
@@ -329,7 +346,7 @@ if __name__ == '__main__':
 	'''
 	The main function that calls the individual steps of the procedure
 	'''
-	plotScore()
+	#plotScore()
 	createPdfForAdaptive()
 	#plotAdaptive()
 	fitAdaptive()

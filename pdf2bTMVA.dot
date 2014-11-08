@@ -11,16 +11,14 @@ sigtemplate_pdf"];
 fm0morphfunc_pdf"];
 "bases" [ color=red, label="RooStats::HistFactory::RooBSplineBases
 bases"];
-"mu" [ color=blue, label="RooRealVar
-mu"];
+"mx" [ color=blue, label="RooRealVar
+mx"];
 "hp0histpdf0_pdf" [ color=red, label="RooHistPdf
 hp0histpdf0_pdf"];
 "nn" [ color=red, label="TMVAWrapper
 nn"];
 "mwwbb" [ color=blue, label="RooRealVar
 mwwbb"];
-"mx" [ color=blue, label="RooRealVar
-mx"];
 "hp0histpdf1_pdf" [ color=red, label="RooHistPdf
 hp0histpdf1_pdf"];
 "hp0histpdf2_pdf" [ color=red, label="RooHistPdf
@@ -73,14 +71,14 @@ hp1histpdf9_pdf"];
 hp1histpdf10_pdf"];
 "hp1histpdf11_pdf" [ color=red, label="RooHistPdf
 hp1histpdf11_pdf"];
-"sigtemplate_pdf" -> "fm0morphfunc_pdf";
-"nn" -> "mx";
-"nn" -> "mwwbb";
 "pdf" -> "sigtemplate_pdf";
 "pdf" -> "baseline_pdf";
 "pdf" -> "bkgtemplate_pdf";
 "pdf" -> "sigfrac";
 "pdf" -> "const";
+"nn" -> "mx";
+"nn" -> "mwwbb";
+"sigtemplate_pdf" -> "fm0morphfunc_pdf";
 "fm0morphfunc_pdf" -> "hp0histpdf0_pdf";
 "fm0morphfunc_pdf" -> "hp0histpdf1_pdf";
 "fm0morphfunc_pdf" -> "hp0histpdf2_pdf";
@@ -133,5 +131,5 @@ hp1histpdf11_pdf"];
 "hp1histpdf9_pdf" -> "nn";
 "hp1histpdf10_pdf" -> "nn";
 "hp1histpdf11_pdf" -> "nn";
-"bases" -> "mu";
+"bases" -> "mx";
 }

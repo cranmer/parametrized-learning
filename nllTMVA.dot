@@ -1,0 +1,10 @@
+digraph nll_pdf_alldata{
+"nll_pdf_alldata" [ color=red, label="RooNLLVar
+nll_pdf_alldata"];
+"const" [ color=blue, label="RooRealVar
+const"];
+"sigfrac" [ color=blue, label="RooRealVar
+sigfrac"];
+"nll_pdf_alldata" -> "sigfrac";
+"nll_pdf_alldata" -> "const";
+}
