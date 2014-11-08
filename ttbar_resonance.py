@@ -233,11 +233,11 @@ def fitAdaptive():
 	c1 = ROOT.TCanvas('c1')
 	sframe = w.var('score').frame()
 	w.pdf('sigtemplate').plotOn(sframe)
-	w.pdf('m0morph').plotOn(sframe)
-	w.pdf('m1morph').plotOn(sframe)
-	w.pdf('sigtemplate').plotOn(sframe)
-	w.pdf('bkgtemplate').plotOn(sframe)
-	w.pdf('template').plotOn(sframe)
+	w.pdf('m0morph').plotOn(sframe,ROOT.RooFit.LineColor(ROOT.kGreen))
+	w.pdf('m1morph').plotOn(sframe,ROOT.RooFit.LineColor(ROOT.kRed))
+	w.pdf('sigtemplate').plotOn(sframe,ROOT.RooFit.LineColor(ROOT.kGreen))
+	w.pdf('bkgtemplate').plotOn(sframe,ROOT.RooFit.LineColor(ROOT.kRed))
+	w.pdf('template').plotOn(sframe,ROOT.RooFit.LineColor(ROOT.kBlack))
 	w.pdf('template').plotOn(sframe,ROOT.RooFit.Components('sigtemplate'),ROOT.RooFit.LineColor(ROOT.kRed))
 	w.pdf('template').plotOn(sframe,ROOT.RooFit.Components('bkgtemplate'),ROOT.RooFit.LineColor(ROOT.kGreen))
 	sframe.Draw()
@@ -255,13 +255,16 @@ def fitAdaptive():
 	nn = ROOT.TMVAWrapper('nn','nn',inputVars,"TMVARegression_ttbar_14tev_jes1.root_MLP.weights.xml")
 	#weightfile = "TMVARegression_alphavary.root_MLP.weights.xml"
 
+	print "about to import"
 	print "get val = ",	nn.getVal()
 	getattr(w,'import')(ROOT.RooArgSet(nn),ROOT.RooFit.RecycleConflictNodes()) 
 	w.Print()	
-	return
-
+	print "ok, almost done"
 	#create nll based on pdf(NN(x,mu) | mu)
-	w.factory('EDIT::pdf(template,score=nn)')
+	w.factory('EDIT::pdftemp(template,score=nn)')
+	return
+	w.factory('EDIT::pdf(pdftemp,mu=mx)')
+	w.factory('EDIT::pdf(template,score=nn,mu=mx)')
 	#wory that DataHist & HistPdf observable not being reset
 	pdf = w.pdf('pdf')
 	print 'pdf has expected events = ', pdf.expectedEvents(ROOT.RooArgSet(nn))
