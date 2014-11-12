@@ -22,6 +22,7 @@ Notation:
 
 \begin{itemize}
  \item $x$: a vector of observed quantities for each event (energy, momenta, angles of particles)
+ \item $D$: a dataset of $D=\{x_1, \dots, x_n\}$
  \item $\theta$: parameters of a statistical model
 \item $f_c(x| \theta)$:  probability density function (statistical model) for $x$ for category $c\in\{0,1\}$.
 \item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
@@ -50,7 +51,7 @@ $f_0(x|\theta)$ for background and $f_1(x|\theta)$ for signal.  Often machine le
 
 These steps lead to a subsequent statistical analysis where one observes in data $\{x_e\}$, where $e$ is an event index running from $1$ to $n$. For each event, the classifier is evaluated and one performs inference on a parameter $\mu$ related to the presence of the signal contribution. In particular, one forms the statistical model
 \begin{equation}\label{eq:typicalML}
-p( \{ x_e \} \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( s(x_e) \, |\,  \theta)  + (1-\mu)\, f_0( s(x_e) \,|\, \theta) \,\right] \; ,
+f( D \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( s(x_e) \, |\,  \theta)  + (1-\mu)\, f_0( s(x_e) \,|\, \theta) \,\right] \; ,
 \end{equation}
 where $\mu=0$ is the null (background-only) hypothesis and $\mu>0$ is the alternate (signal-plus-background) hypothesis.\footnote{Sometimes there is an additional Poisson term when expected number of signal and background events is known.} Typically, we are interested in inference on $\mu$ and $\theta$ are nuisance parameters; though, sometimes $\theta$ may include some components that we are also wish to infer (like the mass of a new particle that affects the distribution $x$ for the signal events).
 
@@ -63,7 +64,7 @@ Nuisance parameters are an after thought in the typical usage of machine learnin
 
 The idea here is to combine the calibration of the distributions of the classifier output and a more optimal family of classifiers $s(x; \theta)$. Creating the family of classifiers is straight forward, one simply augments the training data with $x$ examples drawn from several values of $\theta$ and then includes the corresponding value of $\theta$ as an input to the classifier. Thus $\{x_e,c_e\} \to \{x_e,\theta_e, c_e\}$ leading to a parametrized learner $s(x)\to s(x;\theta)$. This leads to a complication: one does not know the value of $\theta$ to use when evaluating the parametrized classifier $s(x;\theta)$.  However, when performing statistical inference one will evaluate the likelihood of the data at a given value of $\theta$, so this is a natural choice.  Thus one arrives at the generalization of Eq.~\ref{eq:typicalML}
 \begin{equation}\label{eq:parametrizedML}
-p( \{ x_e \} \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( s(x_e;\theta) \, |\,  \theta)  + (1-\mu)\, f_0( s(x_e;\theta) \,|\, \theta) \,\right] \; .
+f( D \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( s(x_e;\theta) \, |\,  \theta)  + (1-\mu)\, f_0( s(x_e;\theta) \,|\, \theta) \,\right] \; .
 \end{equation}
 
 The construction in Eq.~\ref{eq:parametrizedML} presents a computational challenge as for each value of $\theta$ one has a new mapping $s: x\to\mathbb{R}$. The most naive realization of this would be to generate synthetic data $\{x_e\}$ according to $f_c(x|\theta)$, evaluate $s(x_e ; \theta)$, and then use a histogram, kernel density, or other non-parametric density estimation procedure to estimate $f_c( s | \theta)$. This approach is not realistic in situations where $f_c(x|\theta)$ is realized with expensive computer simulations; thus, some interpolation strategy or emulator over a fixed set of parameter points $\{\theta_i\}$ would typically be used.
@@ -80,6 +81,92 @@ are not easy to come by.
 More generally, there is an avenue of research associated to custom loss functions specifically designed 
 for these real world statistical problems. One direction might be to choose loss functions that make 
 some balance between the standard classification loss, take into account robustness with respect to nuisance parameters, and population-level quantities like type I and II error.
+
+\subsection{A different starting point}
+
+Instead of evolving from the traditional usage of ML in HEP, let's start from scratch with $f_c(x|\theta)$ and a well defined objective.  
+
+\subsubsection{Simple Hypothesis Testing}
+
+Consider the situation of simple hypothesis testing between the background-only $\mu=0$ and signal+background hypothesis $\mu=\mu_0=\nu_s/(\nu_s+\nu_b)$ for $\theta=\theta_0$.  Let us assume that not only can we use the $f_c(x|\theta_0)$ as a generative model, but that we can evaluate the probability density at any point $x$.  The statistical model is given by
+\begin{equation}\label{eq:NP}
+f( D \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( x_e \, |\,  \theta)  + (1-\mu)\, f_0( x_e \,|\, \theta) \,\right] \; .
+\end{equation}
+The objective is to find a  test statistic $T(D)$ (a map from the space of the data to $\mathbb{R}$)  
+and a threshold $k_\alpha$ that minimizes the rate of type-II error (i.e. $P(T(D) < k_\alpha | \mu=\mu_0, \theta_0) = \beta$ under the constraint of a fixed rate of type-I error ( i.e.  $P(T(D) > k_\alpha | \mu=0, \theta_0) = \alpha$ ).
+The Neyman-Pearson lemma states that the optimal test statistic is the likelihood ratio, or equivalently, the log-likelihood ratio 
+\begin{equation}
+T =  \log \frac{f(D | \mu=\mu_0, \theta_0)}{f(D | \mu=0, \theta_0)}
+\end{equation}
+When the $x_e$ are i.i.d., then the log-likelihood ratio expands into a sum
+\begin{equation}
+T =   \sum_{e=1}^n \underbrace{\log \left[ 1+c_1\frac {f_1(x_e | \theta_0) }{ f_0(x_e | \theta_0) } \right]}_{q(x_e)} + c_2\;,
+\end{equation}
+where $c_1=\mu/(1-\mu)$ and $c_2=\log(1-\mu)$ are constants for the simple hypothesis test.
+
+Here we see that the optimal $T$ for the experiment is composed of a sum over events of a linear linear function of the per-event function $q(x)$. A monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
+
+The important part of the per-event function $q(x)$ is that it defines contours in the feature space $x$. These contours are also equivalent to the function $f_1(x|\theta_0)/f_0(x|\theta_0)$, the signal-to-background ratio. If we can find a machine learner $s(x)$ that is a monotonic function of $f_1(x|\theta_0)/f_0(x|\theta_0)$ it will share the same contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function $q(x)$. 
+
+Postulate:
+\[
+T' = \sum_{e=1}^n \underbrace{\log \left[ 1+c_1\frac {f_1(s(x_e) | \theta_0) }{ f_0(s(x_e) | \theta_0) } \right]}_{q(s_e)} \;,
+\]
+leads to an equivalent test, where $s_e \equiv s(x_e)$
+\[
+f_c(s) = \int dx \, \delta(s-s(x)) \, f_c(x)  \,  |\partial s / \partial x|^{-1}
+\]
+
+
+
+Note, in order to form the hypothesis test, one still needs to build the build the $f_0(T|\theta)$ to calibrate the threshold  $T>k_\alpha$ that gives rise to a test of size $\alpha$. 
+
+
+
+Proof:
+
+First show $q(x_e) = q(s(x_e))$.
+\[
+\frac {f_1(s(x) | \theta_0) }{ f_0(s(x) | \theta_0) } = \frac { \int dx \delta(s-s(x)) \, f_1(x_e | \theta_0) J }{ \int dx \delta(s-s(x)) \, f_0(x_e | \theta_0) J } = \frac {f_1(x | \theta_0) }{ f_0(x | \theta_0) } 
+\]
+
+Second, show density is the same 
+
+\[
+f_c(q_x) = \int dx \delta(q_x-q_x(x)) f_c(x) / |\partial q_x / \partial x|
+\]
+
+\[
+f_c(q_s) = \int dx \delta(q_s-q_s(s(x))) \, f_c(x) \, / |\partial q_s / \partial x|
+\]
+
+
+\[
+f_c(q_s) = \int ds \delta(q_s-q_s(s)) \,f_c(s) \, / |\partial q_s / \partial s|
+\]
+
+
+This is the test statistic that one would naturally get from constructing the likelihood function for the 1-d distributions of the output of the machine learner
+\begin{equation}\label{eq:NP}
+f( \{s_e\} \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( s_e \, |\,  \theta)  + (1-\mu)\, f_0( s_e \,|\, \theta) \,\right] \; .
+\end{equation}
+Thus this motivates Eq.~\ref{eq:typicalML} in the more general case. 
+
+
+Question:
+Where does this fit in:
+\[
+T'' = \sum_{e=1}^n \underbrace{ \log \left[ 1+c_1 s(x_e) \right] }_{q'(s_e)} \;,
+\]
+
+
+
+Usefulness:
+If we can readily compute $f_c(x|\theta_0)$, then there would be no need for machine learning algorithms. However,  these densities are often difficult to compute though one can readily use them as a generative model to produce samples. In that case, one might wish to use a machine learning algorithm to find $s(x) \approx f_1(x|\theta_0) / f_0(x|\theta_0)$. 
+
+Conclusion, while it is possible to start directly with the Neyman-Pearson loss function of type-II error under the constraint of fixed size and try to find a per-experiment learner $T(D)$, it is more convenient to cast the problem in terms of learning a per-event function $s(x)$, and then calibrate it to be a linear function of $q(x)$.
+
+
 
 \section*{Acknowldgements}
 We would like to thank Yann LeCun, Philip Stark for their feedback on the

@@ -195,6 +195,14 @@ def plotScore():
 	c1.SaveAs('tmva.pdf')
 
 
+	frame = w.var('mx').frame()
+	w.var('mwwbb').setVal(800)
+	for x in np.linspace(400,1600,20):
+		w.var('mwwbb').setVal(x)
+		nn.plotOn(frame)
+	frame.Draw()
+	c1.SaveAs('tmva_vs_mx.pdf')
+
 def plotAdaptive():
 	'''
 	make plots of the output of the parametrized model
@@ -346,7 +354,7 @@ if __name__ == '__main__':
 	'''
 	The main function that calls the individual steps of the procedure
 	'''
-	#plotScore()
-	createPdfForAdaptive()
+	plotScore()
+	#createPdfForAdaptive()
 	#plotAdaptive()
-	fitAdaptive()
+	#fitAdaptive()
