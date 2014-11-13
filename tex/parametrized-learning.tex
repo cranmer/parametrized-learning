@@ -108,7 +108,7 @@ Here we see that the optimal $T$ for the experiment is composed of a sum over ev
 
 The important part of the per-event function $q(x)$ is that it defines contours in the feature space $x$. These contours are also equivalent to the function $f_1(x|\theta_0)/f_0(x|\theta_0)$, the signal-to-background ratio. If we can find a machine learner $s(x)$ that is a monotonic function of $f_1(x|\theta_0)/f_0(x|\theta_0)$ it will share the same contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function $q(x)$. 
 
-Postulate:
+\textbf{Postulate:}
 \[
 T' = \sum_{e=1}^n \underbrace{\log \left[ 1+c_1\frac {f_1(s(x_e) | \theta_0) }{ f_0(s(x_e) | \theta_0) } \right]}_{q(s_e)} \;,
 \]
@@ -123,14 +123,9 @@ Note, in order to form the hypothesis test, one still needs to build the build t
 
 
 
-Proof:
+\textbf{Proof (in progress):}
 
-First show $q(x_e) = q(s(x_e))$.
-\[
-\frac {f_1(s(x) | \theta_0) }{ f_0(s(x) | \theta_0) } = \frac { \int dx \delta(s-s(x)) \, f_1(x_e | \theta_0) J }{ \int dx \delta(s-s(x)) \, f_0(x_e | \theta_0) J } = \frac {f_1(x | \theta_0) }{ f_0(x | \theta_0) } 
-\]
-
-Second, show density is the same 
+We want to show density is the same 
 
 \[
 f_c(q_x) = \int dx \delta(q_x-q_x(x)) f_c(x) / |\partial q_x / \partial x|
@@ -139,6 +134,13 @@ f_c(q_x) = \int dx \delta(q_x-q_x(x)) f_c(x) / |\partial q_x / \partial x|
 \[
 f_c(q_s) = \int dx \delta(q_s-q_s(s(x))) \, f_c(x) \, / |\partial q_s / \partial x|
 \]
+sufficient to show $q(x_e) = q(s(x_e))$.  Here we use that $f_1(x)/f_0(x)=\textrm{const}$ for all points on the level-set $\Omega_c$ given by $ \delta(c-s(x))$. 
+\[
+\frac {f_1(c | \theta_0) }{ f_0(c | \theta_0) } = 
+\frac { \int dx \delta(c-s(x)) \, f_1(x_e | \theta_0) }{ \int dx \delta(c-s(x)) \, f_0(x | \theta_0)  } = 
+\frac {c \int dx \delta(c-s(x)) \, f_0(x | \theta_0)  }{ \int dx \delta(s-s(x)) \, f_0(x | \theta_0)  } = c =\frac {f_1(x | \theta_0) }{ f_0(x | \theta_0) } 
+\]
+
 
 
 \[
@@ -166,7 +168,36 @@ If we can readily compute $f_c(x|\theta_0)$, then there would be no need for mac
 
 Conclusion, while it is possible to start directly with the Neyman-Pearson loss function of type-II error under the constraint of fixed size and try to find a per-experiment learner $T(D)$, it is more convenient to cast the problem in terms of learning a per-event function $s(x)$, and then calibrate it to be a linear function of $q(x)$.
 
+\newpage
 
+Given $x\in \mathbb{R}^n$ and two smooth, real-valued functions $f_1(x)$ and $f_0(x)$ define 
+\[ 
+s(x)=\frac{f_1(x)}{f_2(x)}
+\].
+Define $g_1(c) = \int dx \delta(c - s(x) ) \, f_1(x)$ and $g_0(c) = \int dx \delta(c - s(x) ) \, f_0(x)$.
+I wish to show
+\[
+\frac{g_1(c)}{g_0(c)} = \frac{f_1(x)}{f_0(x)}
+\]
+$\forall x \ni s(x)=c$.
+
+Sketch of Proof: 
+let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the perpendicular direction to the surface at the point $x$. The  coordinate perpendicular to $\Omega$ can be written $y = x+\epsilon \hat{n}$. In these coordinates, the integral $\int dx \to \int d\Omega d\epsilon$, thus
+\[
+g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon|
+\]
+Similarly for $g_0(c)$. We can factor out of the integral $s(x)=f_1(x)/f_0(x)$ since it is constant over $\Omega$.
+Thus
+\[
+g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon| = s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|
+\]
+and we arrive at the result
+\[
+\frac{g_1(c)}{g_0(c)} = \frac{s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|}{ \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|} = \frac{f_1(x)}{f_0(x)} \;.
+\]
+
+
+\newpage
 
 \section*{Acknowldgements}
 We would like to thank Yann LeCun, Philip Stark for their feedback on the
