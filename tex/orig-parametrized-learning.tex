@@ -7,8 +7,7 @@
 								% TeX will automatically convert eps --> pdf in pdflatex		
 \usepackage{amssymb}
 
-\title{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}
-%\title{Calibrated, Parametrized Learning}
+\title{Calibrated, Parametrized Learning}
 \author{Kyle Cranmer and Daniel Whiteson}
 %\date{}							% Activate to display a given date or no date
 
@@ -19,128 +18,19 @@
 %\subsection{}
 
 
-In many areas of science, likelihood ratio tests  are established tools for statistical inference. 
-Directly constructing the likelihood ratio for high-dimensional observations 
-is often not possible or is computationally impractical. Here we demonstrate how 
-discriminative classifiers can be used to construct equivalent likelihood ratio tests when 
-a generative model for the data is available for calibration.  We use the following notation
+Notation:
 
 \begin{itemize}
- \item $x$: a vector of features
- \item $D$: a dataset of $D=\{x_1, \dots, x_n\}$, where $x_e$ are assumed to be i.i.d.
+ \item $x$: a vector of observed quantities for each event (energy, momenta, angles of particles)
+ \item $D$: a dataset of $D=\{x_1, \dots, x_n\}$
  \item $\theta$: parameters of a statistical model
-\item $f(x| \theta)$:  probability density  (statistical model) for $x$ 
-%\item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
-\item $s(x;\theta_0, \theta_1)$: real-valued discriminative classification score, parametrized by $\theta_0$ and $\theta_1$
-%\item $f( s | \theta )$ The probability density function for $s$ implied by $f(x|\theta)$ and $s(x)$
-\item $g( s(x; \theta_0, \theta_1) | \theta )$: The probability density  for $s$ implied by $f(x|\theta_0, \theta_1)$ and $s(x;\theta_0, \theta_1)$
+\item $f_c(x| \theta)$:  probability density function (statistical model) for $x$ for category $c\in\{0,1\}$.
+\item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
+\item $s(x;\theta)$: real-valued score from a parametrized machine learning classification algorithm (or any map $s: X\otimes \Theta \to\mathbb{R}$)
+\item $f_c( s | \theta )$ The probability density function for $s$ implied by $f_c(x|\theta)$ and $s(x)$
+\item $f_c( s(\cdot; \theta) | \theta )$ The probability density function for $s$ implied by $f_c(x|\theta)$ and $s(x;\theta)$
+
 \end{itemize}
-We will assume the $x_e$ are i.i.d., so that $f(D|\theta) = \prod_{e=1}^n f(x_e | \theta)$.
-
-In the setting where one is interested in simple hypothesis testing between a null $\theta=\theta_0$ against an alternate $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio 
-\begin{equation}
-T(D) = \prod_{e=1}^n \frac{ f(x_e|\theta_0)}{ f(x_e|\theta_1)}
-\end{equation}
-is the most powerful test statistic. In order to evaluate $T(D)$, one must be able to evaluate the probability density 
-$f(x| \theta)$ at any value $x$. However, it is increasingly common in science that one has a complex simulation that 
-can act as generative model  for $f(x|\theta)$, but one cannot evaluate the density directly. For instance, this is the case 
-high energy physics where the simulation of particle detectors can only be done in the `forward mode'. 
-
-Our main result is that one can form an equivalent test based on 
-%\begin{equation}
-%T'(D) = \prod_{e=1}^n \frac{ f(\,s(x_e; \theta_1, \theta_0) \mid \theta_1)}{ f(\,s(x_e; \theta_1, \theta_0)\mid\theta_0)}
-%\end{equation}
-\begin{equation}
-T'(D) = \prod_{e=1}^n \frac{ g(s_e | \theta_0)}{ g(s_e | \theta_1)}
-\end{equation}
-if 
-\begin{equation}
-s_e = s(x_e; \theta_0, \theta_1) = \frac{ f(x_e|\theta_0)}{ f(x_e|\theta_1)} \; 
-\end{equation}
-or some monotonic function of $s$. This will be proven below.
-This allows us to recast the original likelihood ratio test into an alternate form in which a discriminative classifier is 
-used to learn $s(x; \theta_1, \theta_0)$. The discriminative classifier can be trained with data $(x,y=0)$ generated 
-from $f(x|\theta_0)$ and $(x,y=1)$ generated from $f(x|\theta_1)$.
-
-While the original goal for hypothesis testing is to make a decision to accept or reject the null hypothesis based on the entire dataset $D$, the machine learning problem is an event-by-event classification problem. Of course, this follows from the fact that we assume the $x_e$ to be i.i.d.
-
-\section{Dimensionality reduction}
-
-
- The target hypothesis test is be based on 
-\begin{equation}
-\ln T =   \sum_{e=1}^n \underbrace{\log \left[ \frac {f(x_e | \theta_0) }{ f(x_e | \theta_1) } \right]}_{q(x_e)} \;.
-\end{equation}
-Here we see that the optimal $T$ for the experiment is composed of a sum over events of a linear linear function of the per-event function $q(x)$. A monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
-
-The important part of the per-event function $q(x)$ is that it defines iso-contours in the feature space $x$. As we will show, our goal is to learn a monotonic function of $f(x|\theta_0)/f(x|\theta_1)$ that shares the same iso-contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function $q(x)$. Our claim is that the generative model $f(x|\theta)$ can be used to calibrate $g(s|\theta)$ and that
-\begin{equation}
-\ln T' = \sum_{e=1}^n \underbrace{\log \left[ \frac {g(s_e | \theta_0) }{ g(s_e | \theta_1) } \right]}_{q(s_e)} \;,
-\end{equation}
-leads to an equivalent test. In particular, we need to show the density
-\begin{equation}
-f(q_x|\theta) = \int dx \delta(q_x-q_x(x)) f(x|\theta)  / | \hat{n} \cdot \nabla q_x  |
-\end{equation}
-is the same as
-\begin{equation}
-f(q_s|\theta) = \int dx \delta(q_s-q_s(s(x))) \, f(x|\theta) \, / | \hat{n} \cdot \nabla q_s  | \; .
-\end{equation}
-It is sufficient to show that $q(x_e) = q(s(x_e))$ $ \forall x\in\Omega_c$.
-
-
-For notational simplicity, let $f_0(x) = f(x|\theta_0)$, $f_1(x) = f(x|\theta_1)$, and $s(x)=s(x; \theta_1, \theta_0)$.
-The distribution of $x$ totally determines the distribution of $s$ via the change of variables $x\to s$. 
-In the application at hand, the function $s$ maps a high-dimensional feature vector $x$ to $\mathbb{R}^+$.
-Let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the orthonormal vector to $\Omega_c$ at the point $x$. The induced density $g_1(c)$ is given by 
-\begin{equation}
-g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega_c f_1(x)  / | \hat{n} \cdot \nabla s  |
-\end{equation}
-and a similar equation for $g_0(c)$. 
-%\textbf{Do we need Jacobian for x $\to$ s independent of delta function part, I think that's double counting?}
-
-
-
-
-
-\textbf{\flushleft Theorem 1:}
-We have the following equalities
-\begin{equation}
-\frac{g_1(c)}{g_0(c)} = s(x) = \frac{f_1(x)}{f_0(x)}  \;\hspace{3em} \forall x\in\Omega_c.
-\end{equation}
-\textbf{Proof}
-We can factor out of the integral $s(x)=f_1(x)/f_0(x)$ since it is constant over $\Omega_c$.
-Thus
-\begin{equation}
-g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega_c f_1(x) / | \hat{n} \cdot \nabla s  |= s(x) \int d\Omega_c f_0(x)  / | \hat{n} \cdot \nabla s  | \;,
-\end{equation}
-and the integrals cancel in the likelihood ratio
-\begin{equation}
-\frac{g_1(c)}{g_0(c)} = \frac{s(x) \int d\Omega_c f_0(x)/ | \hat{n} \cdot \nabla s  |}{ \int d\Omega_c f_0(x) / | \hat{n} \cdot \nabla s  |} = s(x) = \frac{f_1(x)}{f_0(x)}  \;\hspace{3em} \forall x\in\Omega_c.
-\end{equation}
-
-\bigskip
-In the case of simple hypothesis testing, $\theta_0$ and $\theta_1$ are specified and there is a unique map $s(x) =  s(x_e; \theta_0, \theta_1)$. In that case, the equivalent likelihood ratio test can be performed by first transforming the data to $D_s = \{s_1, \dots, s_e\}$, constructing the likelihoods
-\begin{equation}\label{eq:NP}
-g( D_s \,|\,  \theta) = \prod_{e=1}^n \,  g( s_e \, |\,  \theta)   \; 
-\end{equation}
-for $\theta=\{\theta_0,\theta_1\}$, and constructing the likelihood ratio based on $g(D_s|\theta_0)/g(D_s|\theta_1)$.
-
-
-
-\section{Composite hypotheses and the generalized likelihood ratio}
-
-In the case of composite hypotheses $\theta \in \Theta_0$ against an alternative $\theta \in \Theta_0^C$, the generalized likelihood ratio\footnote{Also known as the profile likelihood ratio.} test is commonly used
-\begin{equation}
-\lambda(x) =  \frac{ \sup_{\theta \in \Theta_0} f(\,x_e \mid \theta)}{ \sup_{\theta \in \Theta} f(\,x_e \mid\theta)} \; .
-\end{equation}
-This generalized likelihood ratio can be used both for hypothesis tests in the presence of nuisance parameters or to create confidence intervals with or without nuisance parameters.  Often, the parameter vector is broken into two components $\theta=(\mu,\nu)$, where the $\mu$ components are considered parameters of interest while the $\nu$ components are considered nuisance parameters. In that case $\Theta_0$ corresponds to all values of $\nu$ with $\mu$ fixed.
-
-
-
-SHOW how to find $\hat{\theta}$
-
-\section{Learning the correct mapping}
-
 
 \subsection{Typical usage of machine learning in HEP}
 
@@ -219,13 +109,13 @@ Here we see that the optimal $T$ for the experiment is composed of a sum over ev
 The important part of the per-event function $q(x)$ is that it defines contours in the feature space $x$. These contours are also equivalent to the function $f_1(x|\theta_0)/f_0(x|\theta_0)$, the signal-to-background ratio. If we can find a machine learner $s(x)$ that is a monotonic function of $f_1(x|\theta_0)/f_0(x|\theta_0)$ it will share the same contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function $q(x)$. 
 
 \textbf{Postulate:}
-\begin{equation}
+\[
 T' = \sum_{e=1}^n \underbrace{\log \left[ 1+c_1\frac {f_1(s(x_e) | \theta_0) }{ f_0(s(x_e) | \theta_0) } \right]}_{q(s_e)} \;,
-\end{equation}
+\]
 leads to an equivalent test, where $s_e \equiv s(x_e)$
-\begin{equation}
+\[
 f_c(s) = \int dx \, \delta(s-s(x)) \, f_c(x)  \,  |\partial s / \partial x|^{-1}
-\end{equation}
+\]
 
 
 
@@ -237,25 +127,25 @@ Note, in order to form the hypothesis test, one still needs to build the build t
 
 We want to show density is the same 
 
-\begin{equation}
+\[
 f_c(q_x) = \int dx \delta(q_x-q_x(x)) f_c(x) / |\partial q_x / \partial x|
-\end{equation}
+\]
 
-\begin{equation}
+\[
 f_c(q_s) = \int dx \delta(q_s-q_s(s(x))) \, f_c(x) \, / |\partial q_s / \partial x|
-\end{equation}
+\]
 sufficient to show $q(x_e) = q(s(x_e))$.  Here we use that $f_1(x)/f_0(x)=\textrm{const}$ for all points on the level-set $\Omega_c$ given by $ \delta(c-s(x))$. 
-\begin{equation}
+\[
 \frac {f_1(c | \theta_0) }{ f_0(c | \theta_0) } = 
 \frac { \int dx \delta(c-s(x)) \, f_1(x_e | \theta_0) }{ \int dx \delta(c-s(x)) \, f_0(x | \theta_0)  } = 
 \frac {c \int dx \delta(c-s(x)) \, f_0(x | \theta_0)  }{ \int dx \delta(s-s(x)) \, f_0(x | \theta_0)  } = c =\frac {f_1(x | \theta_0) }{ f_0(x | \theta_0) } 
-\end{equation}
+\]
 
 
 
-%\begin{equation}
+%\[
 %f_c(q_s) = \int ds \delta(q_s-q_s(s)) \,f_c(s) \, / |\partial q_s / \partial s|
-%\end{equation}
+%\]
 
 
 This is the test statistic that one would naturally get from constructing the likelihood function for the 1-d distributions of the output of the machine learner
@@ -267,9 +157,9 @@ Thus this motivates Eq.~\ref{eq:typicalML} in the more general case.
 
 Question:
 Where does this fit in:
-\begin{equation}
+\[
 T'' = \sum_{e=1}^n \underbrace{ \log \left[ 1+c_1 s(x_e) \right] }_{q'(s_e)} \;,
-\end{equation}
+\]
 
 
 
@@ -281,132 +171,45 @@ Conclusion, while it is possible to start directly with the Neyman-Pearson loss 
 \newpage
 
 Given $x\in \mathbb{R}^n$ and two smooth, real-valued functions $f_1(x)$ and $f_0(x)$ define 
-\begin{equation} 
+\[ 
 s(x)=\frac{f_1(x)}{f_2(x)}
-\end{equation}.
+\].
 Define $g_1(c) = \int dx \delta(c - s(x) ) \, f_1(x)$ and $g_0(c) = \int dx \delta(c - s(x) ) \, f_0(x)$.
 I wish to show
-\begin{equation}
+\[
 \frac{g_1(c)}{g_0(c)} = \frac{f_1(x)}{f_0(x)}
-\end{equation}
+\]
 $\forall x \ni s(x)=c$.
 
 Sketch of Proof: 
 let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the perpendicular direction to the surface at the point $x$. The  coordinate perpendicular to $\Omega$ can be written $y = x+\epsilon \hat{n}$. In these coordinates, the integral $\int dx \to \int d\Omega d\epsilon$, thus
-\begin{equation}
+\[
 g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon|
-\end{equation}
+\]
 Similarly for $g_0(c)$. We can factor out of the integral $s(x)=f_1(x)/f_0(x)$ since it is constant over $\Omega$.
 Thus
-\begin{equation}
+\[
 g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon| = s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|
-\end{equation}
+\]
 and we arrive at the result
-\begin{equation}
+\[
 \frac{g_1(c)}{g_0(c)} = \frac{s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|}{ \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|} = \frac{f_1(x)}{f_0(x)} \;.
-\end{equation}
+\]
 
 
+\newpage
 
+Discriminative classifiers calibrated with generative models for likelihood ratio based tests
 
-\subsection{misc notes}
+In many areas of science, likelihood ratio tests  are established tools for statistical inference. 
+Directly constructing the likelihood ratio for high-dimensional observations 
+is often not possible or is computationally impractical. Here we demonstrate how 
+discriminative classifiers can be used to construct equivalent likelihood ratio tests when 
+a generative model for the data is available for calibration. 
 
+\subsection{Simple Hypothesis Tests and the Neyman Pearson Lemma}
+\subsection{Composite Hypothesis  and generalized likelihood ratio tests}
 
-
-
-The distribution of $s$ is fully determined by the mapping $s(x_e; \theta_0, \theta_1)$ and the distribution $f(x)$, which we can write
-\begin{equation}
-g(s_e) = \int dx \, \delta(s_e-s(x)) \, f(x)  \; .
-\end{equation}
-\textbf{NEED Jacobian for x $\to$ s independent of delta function part, or double counting?}
-
-
-\textbf{Theorem 1:}
-Let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the orthonormal vector to the surface at the point $x$. The component perpendicular to $\Omega_c$ can be written $x+\epsilon \hat{n}$. In these coordinates, we rewrite integral $\int dx \to \int d\Omega_c d\epsilon$, thus
-\begin{equation}
-g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega_c f_1(x)  / | \hat{n} \cdot \nabla q_s  |
-\end{equation}
-Similarly for $g_0(c)$. We can factor out of the integral $s(x)=f_1(x)/f_0(x)$ since it is constant over $\Omega_c$.
-Thus
-\begin{equation}
-g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon| = s(x) \int d\Omega f_0(x)  / | \hat{n} \cdot \nabla q_s  |
-\end{equation}
-and we arrive at the result
-\begin{equation}
-\frac{g_1(c)}{g_0(c)} = \frac{s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|}{ \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|} = \frac{f_1(x)}{f_0(x)} \;\hspace{3em} \forall x\in\Omega_c.
-\end{equation}
-
-
-
-
-
-Define $g_1(c) = \int dx \delta(c - s(x) ) \, f_1(x)$ and $g_0(c) = \int dx \delta(c - s(x) ) \, f_0(x)$.
-I wish to show
-\begin{equation}
-\frac{g_1(c)}{g_0(c)} = \frac{f_1(x)}{f_0(x)}
-\end{equation}
-$\forall x \ni s(x)=c$.
-
-
-Given $x\in \mathbb{R}^n$ and two smooth, real-valued functions $f_1(x)$ and $f_0(x)$ define 
-\begin{equation} 
-s(x)=\frac{f_1(x)}{f_0(x)}
-\end{equation}.
-Define $g_1(c) = \int dx \delta(c - s(x) ) \, f_1(x)$ and $g_0(c) = \int dx \delta(c - s(x) ) \, f_0(x)$.
-I wish to show
-\begin{equation}
-\frac{g_1(c)}{g_0(c)} = \frac{f_1(x)}{f_0(x)}
-\end{equation}
-$\forall x \ni s(x)=c$.
-
-Sketch of Proof: 
-let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the perpendicular direction to the surface at the point $x$. The  coordinate perpendicular to $\Omega$ can be written $y = x+\epsilon \hat{n}$. In these coordinates, the integral $\int dx \to \int d\Omega d\epsilon$, thus
-\begin{equation}
-g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon|
-\end{equation}
-Similarly for $g_0(c)$. We can factor out of the integral $s(x)=f_1(x)/f_0(x)$ since it is constant over $\Omega$.
-Thus
-\begin{equation}
-g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon| = s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|
-\end{equation}
-and we arrive at the result
-\begin{equation}
-\frac{g_1(c)}{g_0(c)} = \frac{s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|}{ \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|} = \frac{f_1(x)}{f_0(x)} \;.
-\end{equation}
-
-
-
-
-
-
-
-Note, in order to form the hypothesis test, one still needs to build the build the $f_0(T|\theta)$ to calibrate the threshold  $T>k_\alpha$ that gives rise to a test of size $\alpha$. 
-
-
-
-\textbf{Proof (in progress):}
-
-We want to show density is the same 
-
-\begin{equation}
-f(q_x|\theta) = \int dx \delta(q_x-q_x(x)) f(x|\theta)  / | \hat{n} \cdot \nabla q_s  |
-\end{equation}
-
-\begin{equation}
-f(q_s|\theta) = \int dx \delta(q_s-q_s(s(x))) \, f(x|\theta) \, / | \hat{n} \cdot \nabla q_s  |
-\end{equation}
-sufficient to show $q(x_e) = q(s(x_e))$.  Here we use that $f_1(x)/f_0(x)=\textrm{const}$ for all points on the level-set $\Omega_c$ given by $ \delta(c-s(x))$. 
-\begin{equation}
-\frac {f_1(c | \theta_0) }{ f_0(c | \theta_0) } = 
-\frac { \int dx \delta(c-s(x)) \, f_1(x_e | \theta_0) }{ \int dx \delta(c-s(x)) \, f_0(x | \theta_0)  } = 
-\frac {c \int dx \delta(c-s(x)) \, f_0(x | \theta_0)  }{ \int dx \delta(s-s(x)) \, f_0(x | \theta_0)  } = c =\frac {f_1(x | \theta_0) }{ f_0(x | \theta_0) } 
-\end{equation}
-
-
-
-%\begin{equation}
-%f_c(q_s) = \int ds \delta(q_s-q_s(s)) \,f_c(s) \, / |\partial q_s / \partial s|
-%\end{equation}
 
 
 
