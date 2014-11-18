@@ -5,7 +5,10 @@
 %\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
 \usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
 								% TeX will automatically convert eps --> pdf in pdflatex		
-\usepackage{amssymb}
+\usepackage{amssymb, amsmath}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \title{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}
 %\title{Calibrated, Parametrized Learning}
@@ -131,13 +134,25 @@ for $\theta=\{\theta_0,\theta_1\}$, and constructing the likelihood ratio based 
 
 In the case of composite hypotheses $\theta \in \Theta_0$ against an alternative $\theta \in \Theta_0^C$, the generalized likelihood ratio\footnote{Also known as the profile likelihood ratio.} test is commonly used
 \begin{equation}
-\lambda(x) =  \frac{ \sup_{\theta \in \Theta_0} f(\,x_e \mid \theta)}{ \sup_{\theta \in \Theta} f(\,x_e \mid\theta)} \; .
+\lambda(x) =  \frac{ \sup_{\theta \in \Theta_0} f(D | \theta)}{ \sup_{\theta \in \Theta} f(D | \theta)} \; .
 \end{equation}
 This generalized likelihood ratio can be used both for hypothesis tests in the presence of nuisance parameters or to create confidence intervals with or without nuisance parameters.  Often, the parameter vector is broken into two components $\theta=(\mu,\nu)$, where the $\mu$ components are considered parameters of interest while the $\nu$ components are considered nuisance parameters. In that case $\Theta_0$ corresponds to all values of $\nu$ with $\mu$ fixed.
 
+Denote the maximum likelihood estimator
+\begin{equation}
+\hat{\theta} = \argmax_\theta  f(D | \theta)
+\end{equation}
+and the conditional maximum likelihood estimator
+\begin{equation}
+\hat{\hat{\theta}} = \argmax_{\theta \in \Theta_0}  f(D | \theta) \; .
+\end{equation}
 
-
-SHOW how to find $\hat{\theta}$
+It is not obvious that if we are working with the distributions $g(s|\theta)$ (for some particular $s(x; \theta_0, \theta_1)$ comparison) that we can find the same estimators. 
+Fortunately, there is a construction based on $g(s|\theta)$ that works. The maximum likelihood estimate is the same as the value that maximizes the ratio to $f(D|\theta_1)$ for some fixed value of $\theta_1$. This allows us to use Theorem~1 to find
+\begin{equation}
+\hat{\theta} = \argmax_\theta \frac{ f(D | \theta)}{ f(D | \theta_1)} = \argmax_\theta  \sum \ln \frac{f(x_e | \theta)}{f(x_e|\theta_1)} = \argmax_\theta  \sum \ln \frac{g(s(x_e; \theta, \theta_1) | \theta)}{g(s(x_e; \theta, \theta_1) |\theta_1)} \; .
+\end{equation}
+It is important that we include the denominator $g(s(x_e; \theta, \theta_1) |\theta_1)$ because this cancels Jacobian factors that change as we vary $\theta$.
 
 \section{Learning the correct mapping}
 
