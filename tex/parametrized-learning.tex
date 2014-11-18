@@ -12,7 +12,7 @@
 
 \title{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}
 %\title{Calibrated, Parametrized Learning}
-\author{Kyle Cranmer and Daniel Whiteson}
+\author{Kyle Cranmer}
 %\date{}							% Activate to display a given date or no date
 
 \begin{document}
@@ -36,8 +36,7 @@ a generative model for the data is available for calibration.  We use the follow
 %\item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
 \item $s(x;\theta_0, \theta_1)$: real-valued discriminative classification score, parametrized by $\theta_0$ and $\theta_1$
 %\item $f( s | \theta )$ The probability density function for $s$ implied by $f(x|\theta)$ and $s(x)$
-\item $g( s(x; \theta_0, \theta_1) | \theta )$: The probability density  for $s$ implied by $f(x|\theta_0, \theta_1)$ and $s(x;\theta_0, \theta_1)$
-\end{itemize}
+\item $g( s | \theta )$: The probability density  for $s(x; \theta_0, \theta_1)$ implied by $f(x|\theta_0, \theta_1)$ \end{itemize}
 We will assume the $x_e$ are i.i.d., so that $f(D|\theta) = \prod_{e=1}^n f(x_e | \theta)$.
 
 In the setting where one is interested in simple hypothesis testing between a null $\theta=\theta_0$ against an alternate $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio 
@@ -60,21 +59,21 @@ if
 \begin{equation}
 s_e = s(x_e; \theta_0, \theta_1) = \frac{ f(x_e|\theta_0)}{ f(x_e|\theta_1)} \; 
 \end{equation}
-or some monotonic function of $s$. This will be proven below.
+or some monotonic function of that ratio. This will be proven below.
 This allows us to recast the original likelihood ratio test into an alternate form in which a discriminative classifier is 
 used to learn $s(x; \theta_1, \theta_0)$. The discriminative classifier can be trained with data $(x,y=0)$ generated 
 from $f(x|\theta_0)$ and $(x,y=1)$ generated from $f(x|\theta_1)$.
 
-While the original goal for hypothesis testing is to make a decision to accept or reject the null hypothesis based on the entire dataset $D$, the machine learning problem is an event-by-event classification problem. Of course, this follows from the fact that we assume the $x_e$ to be i.i.d.
+While the original goal for frequentist hypothesis testing is to make a decision to accept or reject the null hypothesis based on the entire dataset $D$, the machine learning problem is an event-by-event classification problem. Of course, this follows from the fact that we assume the $x_e$ to be i.i.d.
 
 \section{Dimensionality reduction}
 
 
- The target hypothesis test is be based on 
+ The target hypothesis test is based on 
 \begin{equation}
 \ln T =   \sum_{e=1}^n \underbrace{\log \left[ \frac {f(x_e | \theta_0) }{ f(x_e | \theta_1) } \right]}_{q(x_e)} \;.
 \end{equation}
-Here we see that the optimal $T$ for the experiment is composed of a sum over events of a linear linear function of the per-event function $q(x)$. A monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
+Here we see that the optimal $T$ for the experiment is composed of a sum over events of a  linear function of the per-event function $q(x)$. A monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
 
 The important part of the per-event function $q(x)$ is that it defines iso-contours in the feature space $x$. As we will show, our goal is to learn a monotonic function of $f(x|\theta_0)/f(x|\theta_1)$ that shares the same iso-contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function $q(x)$. Our claim is that the generative model $f(x|\theta)$ can be used to calibrate $g(s|\theta)$ and that
 \begin{equation}
@@ -148,7 +147,7 @@ and the conditional maximum likelihood estimator
 \end{equation}
 
 It is not obvious that if we are working with the distributions $g(s|\theta)$ (for some particular $s(x; \theta_0, \theta_1)$ comparison) that we can find the same estimators. 
-Fortunately, there is a construction based on $g(s|\theta)$ that works. The maximum likelihood estimate is the same as the value that maximizes the ratio to $f(D|\theta_1)$ for some fixed value of $\theta_1$. This allows us to use Theorem~1 to find
+Fortunately, there is a construction based on $g(s|\theta)$ that works. The maximum likelihood estimate is the same as the value that maximizes the ratio with respect to $f(D|\theta_1)$ for some fixed value of $\theta_1$. This allows us to use Theorem~1 to find
 \begin{equation}
 \hat{\theta} = \argmax_\theta \frac{ f(D | \theta)}{ f(D | \theta_1)} = \argmax_\theta  \sum \ln \frac{f(x_e | \theta)}{f(x_e|\theta_1)} = \argmax_\theta  \sum \ln \frac{g(s(x_e; \theta, \theta_1) | \theta)}{g(s(x_e; \theta, \theta_1) |\theta_1)} \; .
 \end{equation}
@@ -466,13 +465,15 @@ We have shown that a parametrized family of discriminative classifiers $s(x; \th
 
 
 \section*{Acknowldgements}
-We would like to thank Yann LeCun, Philip Stark, and Pierre Baldi for their feedback on the
-project early in its conception and Bal\'azs K\'egl for discussions about the Kaggle challenge and 
-non-standard loss functions. KC would like to thank in particular Alex Ihler for challenging discussions that 
-led to a reformulation of the initial idea and Shimon Whiteson for patient feedback in that process. 
-KC would also like to thank Yuri Shirman for reassuring discussions on elementary vector calculus.
+KC would like to thank in particular 
+Daniel Whiteson for discussions and encouragement throughout the project, 
+Alex Ihler for challenging discussions that 
+led to a reformulation of the initial idea, and Shimon Whiteson for patient feedback in that process. 
+KC would also like to thank Yann LeCun, Philip Stark, and Pierre Baldi for their feedback on the
+project early in its conception, Bal\'azs K\'egl for discussions about the Kaggle challenge and 
+non-standard loss functions, and Yuri Shirman for reassuring discussions on elementary vector calculus.
 KC is supported by the US National Science Foundation grants PHY-0854724 and PHY-0955626. 
-KC would like to thank UC-Irvine for their hospitality while this research was carried out and the 
+KC is grateful to UC-Irvine for their hospitality while this research was carried out and the 
 Moore and Sloan foundations for their generous support of the data science environment at NYU.
 
 \end{document} 
