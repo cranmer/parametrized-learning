@@ -6,6 +6,8 @@
 \usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
 								% TeX will automatically convert eps --> pdf in pdflatex		
 \usepackage{amssymb, amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -61,10 +63,10 @@ s_e = s(x_e; \theta_0, \theta_1) = \frac{ f(x_e|\theta_0)}{ f(x_e|\theta_1)} \;
 \end{equation}
 or some monotonic function of that ratio. This will be proven below.
 This allows us to recast the original likelihood ratio test into an alternate form in which a discriminative classifier is 
-used to learn $s(x; \theta_1, \theta_0)$. The discriminative classifier can be trained with data $(x,y=0)$ generated 
-from $f(x|\theta_0)$ and $(x,y=1)$ generated from $f(x|\theta_1)$.
+used to learn $s(x; \theta_0, \theta_1)$. The discriminative classifier can be trained with data $(x,y=0)$ generated 
+from $f(x|\theta_0)$ and $(x,y=1)$ generated from $f(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the discriminative classifier explicitly parametrized in terms of $(\theta_0, \theta_1)$.
 
-While the original goal for frequentist hypothesis testing is to make a decision to accept or reject the null hypothesis based on the entire dataset $D$, the machine learning problem is an event-by-event classification problem. Of course, this follows from the fact that we assume the $x_e$ to be i.i.d.
+While the original goal for frequentist hypothesis testing is to make a decision to accept or reject the null hypothesis based on the entire dataset $D$, the machine learning problem is an event-by-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
 
 \section{Dimensionality reduction}
 
@@ -129,7 +131,7 @@ for $\theta=\{\theta_0,\theta_1\}$, and constructing the likelihood ratio based 
 
 
 
-\section{Composite hypotheses and the generalized likelihood ratio}
+\section{Composite hypotheses and the generalized likelihood ratio}\label{S:GLR}
 
 In the case of composite hypotheses $\theta \in \Theta_0$ against an alternative $\theta \in \Theta_0^C$, the generalized likelihood ratio\footnote{Also known as the profile likelihood ratio.} test is commonly used
 \begin{equation}
@@ -153,7 +155,7 @@ Fortunately, there is a construction based on $g(s|\theta)$ that works. The maxi
 \end{equation}
 It is important that we include the denominator $g(s(x_e; \theta, \theta_1) |\theta_1)$ because this cancels Jacobian factors that change as we vary $\theta$.
 
-\section{Learning the correct mapping and its distribution}
+\section{Learning the correct mapping and its distribution}\label{S:classifier}
 
 Thus far we have shown that likelihood ratio tests based on $f(x|\theta_0)/f(x|\theta_1)$ with high dimensional features $x$ can be reproduced via hypothesis tests based on the univariate densities $g(s|\theta)$ for the very special dimensionality reduction map $s(x|\theta_0, \theta_1)$. The motivation for this is that often it is not possible to evaluate the density $f(x|\theta)$ at a given point $x$.  This approach is not useful if it is not possible to approximate $s(x|\theta_0, \theta_1)$ and $g(s|\theta)$ without evaluating the density $f(x|\theta)$. In order for this approach to be useful, we need to be able to approximate both based on samples $\{(x,\theta)\}$ drawn from the generative model $f(x|\theta)$.  
 
@@ -188,36 +190,86 @@ Once the classifier is trained, we can use the generative model and any univaria
 This treatment shows that in the asymptotic limit of samples from the generative model, that we can approximate arbitrarily well the original likelihood ratio test. With finite training data for $\hat{s}(x)$ and samples to approximate $\hat{g}(x)$ it will be necessary to be more specific about the what loss function we are interested in for approximating the likelihood ratio test. This will depend in general on the ultimate goal of the test and is left as a subject for future work.
 
 
+\subsection{Training a parametrized, discriminative classifier}
+
+Our goal is to train a family of discriminative classifiers parametrized by $\theta_0$ and $\theta_1$, the 
+parameters associated to the null and alternate hypotheses, respectively. While this could be done independently
+for all $\theta_0$ and $\theta_1$, it is desirable and convenient to have a smooth evolution of the classification score as a function of the parameters. Thus, we anticipate a single learning stage based on training data with input $(x, \theta_0, \theta_1)_i$ and target $y_i$. Somewhat unusually, the unknown values of the parameters are taken
+as input to the classifier, as latent variables who's values will be specified via the enveloping (generalized) likelihood ratio test. We denote the learned family of classifiers $\hat{s}(x; \theta_0, \theta_0)$, and anticipate the training based roughly on the following algorithmic flow.
+\begin{algorithm}
+\caption{Training the parametrized classifier}\label{euclid}
+\begin{algorithmic}
+\STATE initialize trainingData = \{\}
+\FOR{ $\theta_0$ in $\Theta$ }
+	\FOR{ $\theta_1$ in $\Theta$ }
+		\STATE generate $x_i^0 \sim f(x|\theta_0)$
+		\STATE append $\{ (x_i^0, \theta_0, \theta_1, y=0) \}$ to trainingData
+		\STATE generate $x_i^1 \sim f(x|\theta_1)$
+		\STATE append $\{ (x_i^1, \theta_0, \theta_1, y=1) \}$ to trainingData
+	\ENDFOR
+\ENDFOR
+\STATE use trainingData to learn $\hat{s}(x; \theta_0, \theta_0)$
+\end{algorithmic}
+\end{algorithm}
+
+
 \section{Typical usage of machine learning in HEP}
 
 In high-energy physics (HEP) we are often searching for the properties of some 
 class of events, generically referred to as \textit{signal}, in the presence of a separate class 
 of \textit{background} events. For each event we measure some quantities $x$ that have corresponding distributions 
-$f_b(x|\nu)$ for background and $f_s(x|\nu)$ for signal.  Often machine learning classification algorithms are trained on large samples of synthetic data $\{x_i, c_i\}$ generated with some nominal values of the parameters $\nu_0$, where $c=0$ corresponds to background and $c=1$ corresponds to signal. The resulting classifier is denoted $s(x)$. Based on this classifier and large samples of synthetic data drawn from $f_c(x | \nu)$ we construct the distribution  $g_c(s | \nu)$. An example of the distributions of the distribution of $s$ for the signal and background events with $\nu=\nu_0$ is shown in Figure~\ref{fig:tmva}.
+$f_b(x|\nu)$ for background and $f_s(x|\nu)$ for signal, where $\nu$ are nuisance parameters describing uncertainties in the underlying physics prediction or response of the measurement device. In the simple setup, the total model is a mixture of the signal and background components, and $\mu$ is the mixture coefficient associate dot the signal component. The generative model in this case is
+\begin{equation}\label{eq:hepGen}
+f( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu f_s( x_e \, |\,  \nu)  + (1-\mu)\, f_b( x_e \,|\, \nu) \,\right] \; ,
+\end{equation}
+New particle searches correspond to the hypothesis test $\mu=0$, and are generally formulated with the
+generalized likelihood ratio profiling over $\nu$.
+
+
+Often machine learning classification algorithms are trained on large samples of synthetic data $\{x_i, y_i\}$ generated with some nominal values of the parameters $\nu_0$, where $y=0$ corresponds to background and $y=1$ corresponds to signal. Following the result of Section~\ref{S:classifier}, the resulting classifier approximates the likelihood ratio of the mixture components $f_s(x|\nu_0)/(f_s(x|\nu_0)+f_b(x|\nu_0))$, which is one to one with the likelihood ratio of the null to the alternate $f(x|\mu=0,\nu_0)/f(x|\mu,\nu_0)$ for all $\mu$. The resulting classifier is denoted $\hat s(x)$. Based on this classifier and large samples of synthetic data drawn from $f_s(x | \nu)$ and $f_b(x | \nu)$ we construct the distributions  $g_s(\hat s | \nu)$ and $g_b(\hat s | \nu)$. An example of the distributions of the distribution of $\hat s$ for the signal and background events with $\nu=\nu_0$ is shown in Figure~\ref{fig:tmva}.
 
 
 \begin{figure}[htbp]
 \begin{center}
  \includegraphics[height=2in]{example-TMVA-BDT.pdf}
  \includegraphics[height=2in]{example-TMVA-ROC.pdf}
-\caption{Left: an example of the distributions $f_b(s|\nu)$ and $f_s(s|\nu)$ when the classifier $s$ is a boosted-decision tree (BDT). Right: the corresponding ROC curve (right) for this and other classifiers. Figures taken from TMVA manual.}
+\caption{Left: an example of the distributions $g_b(\hat s|\nu)$ and $g_s(\hat s|\nu)$ when the classifier $s$ is a boosted-decision tree (BDT). Right: the corresponding ROC curve (right) for this and other classifiers. (Figures taken from TMVA manual.)}
 \label{fig:tmva}
 \end{center}
 \end{figure}
+\bigskip
 
 These steps lead to a subsequent statistical analysis where one observes in data $D=(x_1, \dots, x_n)$. For each event, the classifier is evaluated and one performs inference on a parameter $\mu$ related to the presence of the signal contribution. In particular, one forms the statistical model
 \begin{equation}\label{eq:typicalML}
-f( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu g_s( s(x_e) \, |\,  \nu)  + (1-\mu)\, g_b( s(x_e) \,|\, \nu) \,\right] \; ,
+g( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu g_s( \hat s(x_e) \, |\,  \nu)  + (1-\mu)\, g_b( \hat s(x_e) \,|\, \nu) \,\right] \; ,
 \end{equation}
 where $\mu=0$ is the null (background-only) hypothesis and $\mu>0$ is the alternate (signal-plus-background) hypothesis.\footnote{Sometimes there is an additional Poisson term when expected number of signal and background events is known, which is referred to as an extended likelihood.} Typically, we are interested in inference on $\mu$ and $\nu$ are nuisance parameters.
 
 \subsection{Comments on typical usage of machine learning in HEP}
 
-Nuisance parameters are an after thought in the typical usage of machine learning in HEP. In fact, most machine learning discussions would only consider $f_b(x)$ and $f_s(x)$. However, as experimentalists we know that we must account for various forms of systematic uncertainty, parametrized by nuisance parameters $\nu$. In practice, we take the classifier as fixed and then propagate uncertainty through the classifier as in Eq.~\ref{eq:typicalML}. Building the distribution $g(s|\nu)$ for values of $\nu$ other than the nominal $\nu_0$ used to train the classifier can be thought of as a calibration necessary for classical statistical inference; however, this classifier is clearly not optimal for $\nu \ne \nu_0$.
+Nuisance parameters are an after thought in the typical usage of machine learning in HEP. In fact, most machine learning discussions would only consider $f_b(x)$ and $f_s(x)$. However, as experimentalists we know that we must account for various forms of systematic uncertainty, parametrized by nuisance parameters $\nu$. In practice, we take the classifier as fixed and then propagate uncertainty through the classifier as in Eq.~\ref{eq:typicalML}. Building the distribution $g(\hat s|\nu)$ for values of $\nu$ other than the nominal $\nu_0$ used to train the classifier can be thought of as a calibration necessary for classical statistical inference; however, this classifier is clearly not optimal for $\nu \ne \nu_0$.
 
 \subsection{A more powerful  approach}
 
-The idea here is to combine the calibration of the distributions of the classifier output and a more optimal family of classifiers $s(x; \nu_0, \nu_1)$. Creating the family of classifiers is straight forward, one simply augments the training data with $x$ examples drawn from several values of $\nu$ and then includes the corresponding value of $\nu$ as an input to the classifier. Thus $\{x_e,c_e\} \to \{x_e,\nu_{0,e},\nu_{1,e}, c_e\}$ leading to a parametrized learner $s(x)\to s(x;\nu_0, \nu_1)$. This leads to a complication: one does not know the value of $\nu$ to use when evaluating the parametrized classifier $s(x;\nu_0, \nu_1)$, so one cannot simply pre-compute $s_e$ before performing the likelihood fit.  However, when performing a likelihood ratio test, one can calculate the maximum likelihood estimate and conditional maximum likelihood estimate according to Eq.~\ref{eq:mle} and then form the equivalent likelihood ratio test according to Eq.~\ref{eq:equivLRtest}. 
+The standard use of machine learning in HEP can be improved by training a parametrized, discriminative classifier corresponding to the generalized likelihood ratio test 
+\begin{equation}
+\lambda(\mu) = \frac{f(D|\mu, \hat{\hat{\nu}})}{f(D|\hat \mu, {\hat{\nu}})} \;,
+\end{equation}
+following the approach outlined in Section~\ref{S:GLR}. 
+
+There is an interesting distinction between this approach and the standard use in which the classifier is trained for a fixed $\nu_0$. In the standard use one trains a classifier for signal vs. background, which is equivalent (in an ideal setting) to training a classifier for  null (background-only) vs. alternate (signal-plus-backgound) as 
+\begin{equation}
+ \frac{f(x| 0, \nu_0)}{f(x|\hat \mu, \nu_0)} =  \frac{f_b(x| \nu_0)}{ \mu f_s( x_e \, |\,  \nu_0)  + (1-\mu)\, f_b( x_e \,|\, \nu_0)} = \left[ c_1 + c_2   \frac{f_s(x| \nu_0)}{ f_b( x_e \,|\, \nu_0)} \right ]^{-1} \; ,
+\end{equation}
+and $c_1$ and $c_2$ are constants. Specifically, the two approaches likelihood ratios are in one-to-one correspondence, so an ideal algorithm would lead to equivalent tests. In contrast, in the case of the generalized likelihood ratio test 
+\begin{equation}
+ \frac{f(x| 0, \hat{\hat{ \nu}})}{f(x|\hat \mu, \hat\nu)} =  \frac{f_b(x| \hat{\hat{ \nu}})}{ \hat \mu f_s( x_e \, |\,  \hat\nu)  + (1- \hat \mu )\, f_b( x_e \,|\, \hat \nu)} \; ,
+\end{equation}
+the background components don't cancel and there is an additional term $f_b(x| \hat{\hat{ \nu}})/f_b(x| {\hat{ \nu}})$.
+In practice, with classifiers of finite capacity, there will be some tradeoff between taking into account this additional term and the more challenging learning problem when $\mu$ is very small. 
+
+%
+%The idea here is to combine the calibration of the distributions of the classifier output and a more optimal family of classifiers $\hat s(x; \nu_0, \nu_1)$. Creating the family of classifiers is straight forward, one simply augments the training data with $x$ examples drawn from several values of $\nu$ and then includes the corresponding value of $\nu$ as an input to the classifier. Thus $\{x_e,c_e\} \to \{x_e,\nu_{0,e},\nu_{1,e}, c_e\}$ leading to a parametrized learner $\hat s(x)\to \hat s(x;\nu_0, \nu_1)$. This leads to a complication: one does not know the value of $\nu$ to use when evaluating the parametrized classifier $\hat s(x;\nu_0, \nu_1)$, so one cannot simply pre-compute $\hat s_e$ before performing the likelihood fit.  However, when performing a likelihood ratio test, one can calculate the maximum likelihood estimate and conditional maximum likelihood estimate according to Eq.~\ref{eq:mle} and then form the equivalent likelihood ratio test according to Eq.~\ref{eq:equivLRtest}. 
 
 
 %Equivalently, once one has determined $\hat{\theta}$ and $\hat{\hat{\theta}}$, then one can specify the parameters of the mapping $s(x;\hat{\hat{\theta}}, \hat{\theta})$ and then following Eq.~\ref{eq:NP} form the likelihood
@@ -465,7 +517,7 @@ We have shown that a parametrized family of discriminative classifiers $s(x; \th
 
 
 \section*{Acknowldgements}
-KC would like to thank in particular 
+KC would like to thank  
 Daniel Whiteson for discussions and encouragement throughout the project, 
 Alex Ihler for challenging discussions that 
 led to a reformulation of the initial idea, and Shimon Whiteson for patient feedback in that process. 
