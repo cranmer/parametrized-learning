@@ -77,13 +77,13 @@ While the original goal for frequentist hypothesis testing is to make a decision
 \end{equation}
 Here we see that the optimal $T$ for the experiment is composed of a sum over events of a  linear function of the per-event function $q(x)$. A monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
 
-The important part of the per-event function $q(x)$ is that it defines iso-contours in the feature space $x$. As we will show, our goal is to learn a monotonic function of $f(x|\theta_0)/f(x|\theta_1)$ that shares the same iso-contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function $q(x)$. Our claim is that the generative model $f(x|\theta)$ can be used to calibrate $g(s|\theta)$ and that
+The important part of the per-event function $q(x)$ is that it defines iso-contours in the feature space $x$. As we will show, our goal is to learn a monotonic function of $f(x|\theta_0)/f(x|\theta_1)$ that shares the same iso-contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function of $q(x)$. Our claim is that the generative model $f(x|\theta)$ can be used to calibrate $g(s|\theta)$ and that
 \begin{equation}
 \ln T' = \sum_{e=1}^n \underbrace{\log \left[ \frac {g(s_e | \theta_0) }{ g(s_e | \theta_1) } \right]}_{q(s_e)} \;,
 \end{equation}
 leads to an equivalent test. In particular, we need to show the density
 \begin{equation}
-f(q_x|\theta) = \int dx \delta(q_x-q_x(x)) f(x|\theta)  / | \hat{n} \cdot \nabla q_x  |
+f(q_x|\theta) = \int dx \delta(q_x-q_x(x)) f(x|\theta)  / | \hat{n} \cdot \nabla q_x  | 
 \end{equation}
 is the same as
 \begin{equation}
@@ -159,21 +159,21 @@ It is important that we include the denominator $g(s(x_e; \theta, \theta_1) |\th
 
 Thus far we have shown that likelihood ratio tests based on $f(x|\theta_0)/f(x|\theta_1)$ with high dimensional features $x$ can be reproduced via hypothesis tests based on the univariate densities $g(s|\theta)$ for the very special dimensionality reduction map $s(x|\theta_0, \theta_1)$. The motivation for this is that often it is not possible to evaluate the density $f(x|\theta)$ at a given point $x$.  This approach is not useful if it is not possible to approximate $s(x|\theta_0, \theta_1)$ and $g(s|\theta)$ without evaluating the density $f(x|\theta)$. In order for this approach to be useful, we need to be able to approximate both based on samples $\{(x,\theta)\}$ drawn from the generative model $f(x|\theta)$.  
 
-Denote the approximate dimensionality reduction map $\hat{s}(x; \theta_0, \theta_1)$ and its distribution $\hat{g}(\hat{s}|\theta)$. In general we will be interested in the machine learning problem that approximates these distributions based on samples $\{(x, \theta)\}$ drawn from the generative model $f(x|\theta)$.  In particular, 
+Denote the approximate dimensionality reduction map $\hat{s}(x; \theta_0, \theta_1)$ and its distribution $\hat{g}(\hat{s}|\theta)$. In general we will be interested in the machine learning problem that approximates these distributions based on samples $\{x_i\}$ drawn from the generative model $f(x|\theta)$.  In particular, 
 is there a loss function such that the function $\hat{s}(x)$ that minimizes the expected loss leads to a function
 that is one-to-one with $f(x|\theta_0)/f(x|\theta_1)$?
 
 
 \subsection{The standard discriminative classification setting} For fixed $\theta_0$ and $\theta_1$ we can generate 
 large samples from each model and train a classifier. To be concrete, let's use $f(x|\theta_0)$ to generate training 
-data $(x_i, \theta_i=\theta_0, y_i=0)$ and $f(x|\theta_1)$ to generate training data $(x_i, \theta_i=\theta_1, y_i=1)$. 
+data $(x_i,  y_i=0)$ and $f(x|\theta_1)$ to generate training data $(x_i , y_i=1)$. 
 If we use the squared-loss function, then the expected loss is
 \begin{equation}
 \mathbb{E}[L] = \int dx f(x|\theta_0)  (  \hat{s}(x) )^2  + \int dx f(x|\theta_1)  ( 1 - \hat{s}(x) )^2 \; .
 \end{equation}
 The function $\hat{s}(x) = f(x|\theta_1)/(f(x|\theta_0)+f(x|\theta_1))$ minimizes this expected loss.
 
-Proof: Consider a variation about $\hat{s}(x) = f(x|\theta_1)/(f(x|\theta_0)+f(x|\theta_1))$ given by $\hat{s}'(x) = \hat{s}(x) +h(x)$. The change in the expected loss is given by 
+Proof (Sketch): Consider a variation about $\hat{s}(x) = f(x|\theta_1)/(f(x|\theta_0)+f(x|\theta_1))$ given by $\hat{s}'(x) = \hat{s}(x) +h(x)$. The change in the expected loss is given by 
 \begin{equation}
 \Delta = \mathbb{E}[L_{\hat{s}'}]-\mathbb{E}[L_{\hat{s}}] = \int dx f(x|\theta_0)  (h^2(x) + 2 h(x)  \hat{s}(x) )  + f(x|\theta_1)   (h^2(x) - 2 h(x) + 2 h(x) \hat{s}(x)  \; .
 \end{equation}
@@ -187,15 +187,15 @@ The conclusion is that standard classification with a quadratic loss function an
 
 Once the classifier is trained, we can use the generative model and any univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{g}(x|\theta)$.
 
-This treatment shows that in the asymptotic limit of samples from the generative model, that we can approximate arbitrarily well the original likelihood ratio test. With finite training data for $\hat{s}(x)$ and samples to approximate $\hat{g}(x)$ it will be necessary to be more specific about the what loss function we are interested in for approximating the likelihood ratio test. This will depend in general on the ultimate goal of the test and is left as a subject for future work.
+This treatment shows that in the asymptotic limit of large samples from the generative model, that we can approximate arbitrarily well the original likelihood ratio test. With finite training data for $\hat{s}(x)$ and samples to approximate $\hat{g}(x)$ it will be necessary to be more specific about the what loss function we are interested in for approximating the likelihood ratio test. This will depend in general on the ultimate goal of the test. We know that in the case of composite hypothesis tests that there is in general, not uniformly most powerful test, thus it is likely that a decision theoretic approach taking into account some weighting or utility over the space $\Theta$ is necessary. This is left as a subject for future work.
 
 
 \subsection{Training a parametrized, discriminative classifier}
 
-Our goal is to train a family of discriminative classifiers parametrized by $\theta_0$ and $\theta_1$, the 
+We are left with the practical question of how to train a family of discriminative classifiers parametrized by $\theta_0$ and $\theta_1$, the 
 parameters associated to the null and alternate hypotheses, respectively. While this could be done independently
 for all $\theta_0$ and $\theta_1$, it is desirable and convenient to have a smooth evolution of the classification score as a function of the parameters. Thus, we anticipate a single learning stage based on training data with input $(x, \theta_0, \theta_1)_i$ and target $y_i$. Somewhat unusually, the unknown values of the parameters are taken
-as input to the classifier, as latent variables who's values will be specified via the enveloping (generalized) likelihood ratio test. We denote the learned family of classifiers $\hat{s}(x; \theta_0, \theta_0)$, and anticipate the training based roughly on the following algorithmic flow.
+as input to the classifier, as latent variables whose values will be specified via the enveloping (generalized) likelihood ratio test. We denote the learned family of classifiers $\hat{s}(x; \theta_0, \theta_0)$, and anticipate the training based roughly on the following algorithmic flow.
 \begin{algorithm}
 \caption{Training the parametrized classifier}\label{euclid}
 \begin{algorithmic}
@@ -208,10 +208,18 @@ as input to the classifier, as latent variables who's values will be specified v
 		\STATE append $\{ (x_i^1, \theta_0, \theta_1, y=1) \}$ to trainingData
 	\ENDFOR
 \ENDFOR
-\STATE use trainingData to learn $\hat{s}(x; \theta_0, \theta_0)$
+\STATE use trainingData to learn $\hat{s}(x; \theta_0, \theta_1)$
 \end{algorithmic}
-\end{algorithm}
+\end{algorithm}%\vspace{-1.5em}
 
+While the function $f(x|\theta_1)/(f(x|\theta_0)+f(x|\theta_1))$ will minimize the expected squared loss based on 
+training data produced according to the algorithm above, it is not clear how training data from $\theta'_0 \ne \theta_0$ and $\theta'_1 \ne \theta_1$ will influence a real world classifier with finite capacity. This is left as an area for future work.
+
+\subsection{Embedding the classifier into the likelihood}
+
+In most settings that make use of likelihood ratio tests, the probability densities directly model the observed data via $f(x|\theta)$. In the case of a fixed classifier $\hat s(x)$ it is possible to pre-compute $\hat s_e=\hat s(x_e)$. In the parametrized setting this it is not possible to pre-compute $\hat s(x; \theta_0, \theta_1)$ for all values of $\theta_0$ and $\theta_1$, so we must computationally we must embed the classifier into the likelihood function to carry out the composition $g\circ s$. A concrete realization of this has been performed for probability models implemented with the \texttt{RooFit} probabilistic programing language and discriminative classifiers implemented with \texttt{scikit-learn} and \texttt{TMVA}.
+
+In both cases, constructing the density $\hat g(\hat s|\theta)$ requires running the generative model at $\theta$, and in the context of a likelihood fit this would mean that the optimization algorithm that is trying to maximize $\theta$ needs access to the generative model $f(x|\theta)$. This can be  impractical when the generative model is computationally expensive or has high-latency (for instance some human intervention is required to reconfigure the generative model).  In practice, one may want to interpolate the distribution between discrete values of $\theta$ to produce a continuous parametrization for $\hat g(s | \theta)$. In such cases, the properties of the interpolation algorithm should be part of the considerations of the over-arching optimization problem.
 
 \section{Typical usage of machine learning in HEP}
 
