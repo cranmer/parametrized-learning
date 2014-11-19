@@ -5,10 +5,16 @@
 %\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
 \usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
 								% TeX will automatically convert eps --> pdf in pdflatex		
-\usepackage{amssymb}
+\usepackage{amssymb, amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
-\title{Calibrated, Parametrized Learning}
-\author{Kyle Cranmer and Daniel Whiteson}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\title{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}
+%\title{Calibrated, Parametrized Learning}
+\author{Kyle Cranmer}
 %\date{}							% Activate to display a given date or no date
 
 \begin{document}
@@ -18,75 +24,516 @@
 %\subsection{}
 
 
-Notation:
+In many areas of science, likelihood ratio tests  are established tools for statistical inference. 
+Directly constructing the likelihood ratio for high-dimensional observations 
+is often not possible or is computationally impractical. Here we demonstrate how 
+discriminative classifiers can be used to construct equivalent likelihood ratio tests when 
+a generative model for the data is available for calibration.  We use the following notation
 
 \begin{itemize}
- \item $x$: a vector of observed quantities for each event (energy, momenta, angles of particles)
+ \item $x$: a vector of features
+ \item $D$: a dataset of $D=\{x_1, \dots, x_n\}$, where $x_e$ are assumed to be i.i.d.
  \item $\theta$: parameters of a statistical model
-\item $f_c(x| \theta)$:  probability density function (statistical model) for $x$ for category $c\in\{0,1\}$.
-\item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
-\item $s(x;\theta)$: real-valued score from a parametrized machine learning classification algorithm (or any map $s: X\otimes \Theta \to\mathbb{R}$)
-\item $f_c( s | \theta )$ The probability density function for $s$ implied by $f_c(x|\theta)$ and $s(x)$
-\item $f_c( s(\cdot; \theta) | \theta )$ The probability density function for $s$ implied by $f_c(x|\theta)$ and $s(x;\theta)$
+\item $f(x| \theta)$:  probability density  (statistical model) for $x$ 
+%\item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
+\item $s(x;\theta_0, \theta_1)$: real-valued discriminative classification score, parametrized by $\theta_0$ and $\theta_1$
+%\item $f( s | \theta )$ The probability density function for $s$ implied by $f(x|\theta)$ and $s(x)$
+\item $g( s | \theta )$: The probability density  for $s(x; \theta_0, \theta_1)$ implied by $f(x|\theta_0, \theta_1)$ \end{itemize}
+We will assume the $x_e$ are i.i.d., so that $f(D|\theta) = \prod_{e=1}^n f(x_e | \theta)$.
 
-\end{itemize}
+In the setting where one is interested in simple hypothesis testing between a null $\theta=\theta_0$ against an alternate $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio 
+\begin{equation}
+T(D) = \prod_{e=1}^n \frac{ f(x_e|\theta_0)}{ f(x_e|\theta_1)}
+\end{equation}
+is the most powerful test statistic. In order to evaluate $T(D)$, one must be able to evaluate the probability density 
+$f(x| \theta)$ at any value $x$. However, it is increasingly common in science that one has a complex simulation that 
+can act as generative model  for $f(x|\theta)$, but one cannot evaluate the density directly. For instance, this is the case 
+high energy physics where the simulation of particle detectors can only be done in the `forward mode'. 
 
-\subsection{Typical usage of machine learning in HEP}
+Our main result is that one can form an equivalent test based on 
+%\begin{equation}
+%T'(D) = \prod_{e=1}^n \frac{ f(\,s(x_e; \theta_1, \theta_0) \mid \theta_1)}{ f(\,s(x_e; \theta_1, \theta_0)\mid\theta_0)}
+%\end{equation}
+\begin{equation}\label{eq:equivLRtest}
+T'(D) = \prod_{e=1}^n \frac{ g(s_e | \theta_0)}{ g(s_e | \theta_1)}
+\end{equation}
+if 
+\begin{equation}
+s_e = s(x_e; \theta_0, \theta_1) = \frac{ f(x_e|\theta_0)}{ f(x_e|\theta_1)} \; 
+\end{equation}
+or some monotonic function of that ratio. This will be proven below.
+This allows us to recast the original likelihood ratio test into an alternate form in which a discriminative classifier is 
+used to learn $s(x; \theta_0, \theta_1)$. The discriminative classifier can be trained with data $(x,y=0)$ generated 
+from $f(x|\theta_0)$ and $(x,y=1)$ generated from $f(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the discriminative classifier explicitly parametrized in terms of $(\theta_0, \theta_1)$.
 
-In high-energy physics (HEP) we typically are searching for or measuring the properties of some 
+While the original goal for frequentist hypothesis testing is to make a decision to accept or reject the null hypothesis based on the entire dataset $D$, the machine learning problem is an event-by-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
+
+\section{Dimensionality reduction}
+
+
+ The target hypothesis test is based on 
+\begin{equation}
+\ln T =   \sum_{e=1}^n \underbrace{\log \left[ \frac {f(x_e | \theta_0) }{ f(x_e | \theta_1) } \right]}_{q(x_e)} \;.
+\end{equation}
+Here we see that the optimal $T$ for the experiment is composed of a sum over events of a  linear function of the per-event function $q(x)$. A monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
+
+The important part of the per-event function $q(x)$ is that it defines iso-contours in the feature space $x$. As we will show, our goal is to learn a monotonic function of $f(x|\theta_0)/f(x|\theta_1)$ that shares the same iso-contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function of $q(x)$. Our claim is that the generative model $f(x|\theta)$ can be used to calibrate $g(s|\theta)$ and that
+\begin{equation}
+\ln T' = \sum_{e=1}^n \underbrace{\log \left[ \frac {g(s_e | \theta_0) }{ g(s_e | \theta_1) } \right]}_{q(s_e)} \;,
+\end{equation}
+leads to an equivalent test. In particular, we need to show the density
+\begin{equation}
+f(q_x|\theta) = \int dx \delta(q_x-q_x(x)) f(x|\theta)  / | \hat{n} \cdot \nabla q_x  | 
+\end{equation}
+is the same as
+\begin{equation}
+f(q_s|\theta) = \int dx \delta(q_s-q_s(s(x))) \, f(x|\theta) \, / | \hat{n} \cdot \nabla q_s  | \; .
+\end{equation}
+It is sufficient to show that $q(x_e) = q(s(x_e))$ $ \forall x\in\Omega_c$.
+
+
+For notational simplicity, let $f_0(x) = f(x|\theta_0)$, $f_1(x) = f(x|\theta_1)$, and $s(x)=s(x; \theta_1, \theta_0)$.
+The distribution of $x$ totally determines the distribution of $s$ via the change of variables $x\to s$. 
+In the application at hand, the function $s$ maps a high-dimensional feature vector $x$ to $\mathbb{R}^+$.
+Let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the orthonormal vector to $\Omega_c$ at the point $x$. The induced density $g_1(c)$ is given by 
+\begin{equation}
+g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega_c f_1(x)  / | \hat{n} \cdot \nabla s  |
+\end{equation}
+and a similar equation for $g_0(c)$. 
+%\textbf{Do we need Jacobian for x $\to$ s independent of delta function part, I think that's double counting?}
+
+
+
+
+
+\textbf{\flushleft Theorem 1:}
+We have the following equalities
+\begin{equation}
+\frac{g_1(c)}{g_0(c)} = s(x) = \frac{f_1(x)}{f_0(x)}  \;\hspace{3em} \forall x\in\Omega_c.
+\end{equation}
+\textbf{Proof}
+We can factor out of the integral $s(x)=f_1(x)/f_0(x)$ since it is constant over $\Omega_c$.
+Thus
+\begin{equation}
+g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega_c f_1(x) / | \hat{n} \cdot \nabla s  |= s(x) \int d\Omega_c f_0(x)  / | \hat{n} \cdot \nabla s  | \;,
+\end{equation}
+and the integrals cancel in the likelihood ratio
+\begin{equation}
+\frac{g_1(c)}{g_0(c)} = \frac{s(x) \int d\Omega_c f_0(x)/ | \hat{n} \cdot \nabla s  |}{ \int d\Omega_c f_0(x) / | \hat{n} \cdot \nabla s  |} = s(x) = \frac{f_1(x)}{f_0(x)}  \;\hspace{3em} \forall x\in\Omega_c.
+\end{equation}
+
+\bigskip
+In the case of simple hypothesis testing, $\theta_0$ and $\theta_1$ are specified and there is a unique map $s(x) =  s(x_e; \theta_0, \theta_1)$. In that case, the equivalent likelihood ratio test can be performed by first transforming the data to $D_s = \{s_1, \dots, s_e\}$, constructing the likelihoods
+\begin{equation}\label{eq:NP}
+g( D_s \,|\,  \theta) = \prod_{e=1}^n \,  g( s_e \, |\,  \theta)   \; 
+\end{equation}
+for $\theta=\{\theta_0,\theta_1\}$, and constructing the likelihood ratio based on $g(D_s|\theta_0)/g(D_s|\theta_1)$.
+
+
+
+\section{Composite hypotheses and the generalized likelihood ratio}\label{S:GLR}
+
+In the case of composite hypotheses $\theta \in \Theta_0$ against an alternative $\theta \in \Theta_0^C$, the generalized likelihood ratio\footnote{Also known as the profile likelihood ratio.} test is commonly used
+\begin{equation}
+\lambda(x) =  \frac{ \sup_{\theta \in \Theta_0} f(D | \theta)}{ \sup_{\theta \in \Theta} f(D | \theta)} \; .
+\end{equation}
+This generalized likelihood ratio can be used both for hypothesis tests in the presence of nuisance parameters or to create confidence intervals with or without nuisance parameters.  Often, the parameter vector is broken into two components $\theta=(\mu,\nu)$, where the $\mu$ components are considered parameters of interest while the $\nu$ components are considered nuisance parameters. In that case $\Theta_0$ corresponds to all values of $\nu$ with $\mu$ fixed.
+
+Denote the maximum likelihood estimator
+\begin{equation}\label{eq:mle}
+\hat{\theta} = \argmax_\theta  f(D | \theta)
+\end{equation}
+and the conditional maximum likelihood estimator
+\begin{equation}
+\hat{\hat{\theta}} = \argmax_{\theta \in \Theta_0}  f(D | \theta) \; .
+\end{equation}
+
+It is not obvious that if we are working with the distributions $g(s|\theta)$ (for some particular $s(x; \theta_0, \theta_1)$ comparison) that we can find the same estimators. 
+Fortunately, there is a construction based on $g(s|\theta)$ that works. The maximum likelihood estimate is the same as the value that maximizes the ratio with respect to $f(D|\theta_1)$ for some fixed value of $\theta_1$. This allows us to use Theorem~1 to find
+\begin{equation}
+\hat{\theta} = \argmax_\theta \frac{ f(D | \theta)}{ f(D | \theta_1)} = \argmax_\theta  \sum \ln \frac{f(x_e | \theta)}{f(x_e|\theta_1)} = \argmax_\theta  \sum \ln \frac{g(s(x_e; \theta, \theta_1) | \theta)}{g(s(x_e; \theta, \theta_1) |\theta_1)} \; .
+\end{equation}
+It is important that we include the denominator $g(s(x_e; \theta, \theta_1) |\theta_1)$ because this cancels Jacobian factors that change as we vary $\theta$.
+
+\section{Learning the correct mapping and its distribution}\label{S:classifier}
+
+Thus far we have shown that likelihood ratio tests based on $f(x|\theta_0)/f(x|\theta_1)$ with high dimensional features $x$ can be reproduced via hypothesis tests based on the univariate densities $g(s|\theta)$ for the very special dimensionality reduction map $s(x|\theta_0, \theta_1)$. The motivation for this is that often it is not possible to evaluate the density $f(x|\theta)$ at a given point $x$.  This approach is not useful if it is not possible to approximate $s(x|\theta_0, \theta_1)$ and $g(s|\theta)$ without evaluating the density $f(x|\theta)$. In order for this approach to be useful, we need to be able to approximate both based on samples $\{(x,\theta)\}$ drawn from the generative model $f(x|\theta)$.  
+
+Denote the approximate dimensionality reduction map $\hat{s}(x; \theta_0, \theta_1)$ and its distribution $\hat{g}(\hat{s}|\theta)$. In general we will be interested in the machine learning problem that approximates these distributions based on samples $\{x_i\}$ drawn from the generative model $f(x|\theta)$.  In particular, 
+is there a loss function such that the function $\hat{s}(x)$ that minimizes the expected loss leads to a function
+that is one-to-one with $f(x|\theta_0)/f(x|\theta_1)$?
+
+
+\subsection{The standard discriminative classification setting} For fixed $\theta_0$ and $\theta_1$ we can generate 
+large samples from each model and train a classifier. To be concrete, let's use $f(x|\theta_0)$ to generate training 
+data $(x_i,  y_i=0)$ and $f(x|\theta_1)$ to generate training data $(x_i , y_i=1)$. 
+If we use the squared-loss function, then the expected loss is
+\begin{equation}
+\mathbb{E}[L] = \int dx f(x|\theta_0)  (  \hat{s}(x) )^2  + \int dx f(x|\theta_1)  ( 1 - \hat{s}(x) )^2 \; .
+\end{equation}
+The function $\hat{s}(x) = f(x|\theta_1)/(f(x|\theta_0)+f(x|\theta_1))$ minimizes this expected loss.
+
+Proof (Sketch): Consider a variation about $\hat{s}(x) = f(x|\theta_1)/(f(x|\theta_0)+f(x|\theta_1))$ given by $\hat{s}'(x) = \hat{s}(x) +h(x)$. The change in the expected loss is given by 
+\begin{equation}
+\Delta = \mathbb{E}[L_{\hat{s}'}]-\mathbb{E}[L_{\hat{s}}] = \int dx f(x|\theta_0)  (h^2(x) + 2 h(x)  \hat{s}(x) )  + f(x|\theta_1)   (h^2(x) - 2 h(x) + 2 h(x) \hat{s}(x)  \; .
+\end{equation}
+using $\hat{s}(x) = f(x|\theta_1)/(f(x|\theta_0)+f(x|\theta_1))$ we obtain
+\begin{equation}
+\Delta =  \int dx (f(x|\theta_0)+f(x|\theta_1))  h^2(x) >0    \; .
+\end{equation}
+Thus any variation on $\hat{s}(x) = f(x|\theta_1)/(f(x|\theta_0)+f(x|\theta_1))$ has a larger expected loss.
+
+The conclusion is that standard classification with a quadratic loss function and training data as described above will approximate a discriminative classifier needed to produce an equivalent likelihood ratio test.
+
+Once the classifier is trained, we can use the generative model and any univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{g}(x|\theta)$.
+
+This treatment shows that in the asymptotic limit of large samples from the generative model, that we can approximate arbitrarily well the original likelihood ratio test. With finite training data for $\hat{s}(x)$ and samples to approximate $\hat{g}(x)$ it will be necessary to be more specific about the what loss function we are interested in for approximating the likelihood ratio test. This will depend in general on the ultimate goal of the test. We know that in the case of composite hypothesis tests that there is in general, not uniformly most powerful test, thus it is likely that a decision theoretic approach taking into account some weighting or utility over the space $\Theta$ is necessary. This is left as a subject for future work.
+
+
+\subsection{Training a parametrized, discriminative classifier}
+
+We are left with the practical question of how to train a family of discriminative classifiers parametrized by $\theta_0$ and $\theta_1$, the 
+parameters associated to the null and alternate hypotheses, respectively. While this could be done independently
+for all $\theta_0$ and $\theta_1$, it is desirable and convenient to have a smooth evolution of the classification score as a function of the parameters. Thus, we anticipate a single learning stage based on training data with input $(x, \theta_0, \theta_1)_i$ and target $y_i$. Somewhat unusually, the unknown values of the parameters are taken
+as input to the classifier, as latent variables whose values will be specified via the enveloping (generalized) likelihood ratio test. We denote the learned family of classifiers $\hat{s}(x; \theta_0, \theta_0)$, and anticipate the training based roughly on the following algorithmic flow.
+\begin{algorithm}
+\caption{Training the parametrized classifier}\label{euclid}
+\begin{algorithmic}
+\STATE initialize trainingData = \{\}
+\FOR{ $\theta_0$ in $\Theta$ }
+	\FOR{ $\theta_1$ in $\Theta$ }
+		\STATE generate $x_i^0 \sim f(x|\theta_0)$
+		\STATE append $\{ (x_i^0, \theta_0, \theta_1, y=0) \}$ to trainingData
+		\STATE generate $x_i^1 \sim f(x|\theta_1)$
+		\STATE append $\{ (x_i^1, \theta_0, \theta_1, y=1) \}$ to trainingData
+	\ENDFOR
+\ENDFOR
+\STATE use trainingData to learn $\hat{s}(x; \theta_0, \theta_1)$
+\end{algorithmic}
+\end{algorithm}%\vspace{-1.5em}
+
+While the function $f(x|\theta_1)/(f(x|\theta_0)+f(x|\theta_1))$ will minimize the expected squared loss based on 
+training data produced according to the algorithm above, it is not clear how training data from $\theta'_0 \ne \theta_0$ and $\theta'_1 \ne \theta_1$ will influence a real world classifier with finite capacity. This is left as an area for future work.
+
+\subsection{Embedding the classifier into the likelihood}
+
+In most settings that make use of likelihood ratio tests, the probability densities directly model the observed data via $f(x|\theta)$. In the case of a fixed classifier $\hat s(x)$ it is possible to pre-compute $\hat s_e=\hat s(x_e)$. In the parametrized setting this it is not possible to pre-compute $\hat s(x; \theta_0, \theta_1)$ for all values of $\theta_0$ and $\theta_1$, so we must computationally we must embed the classifier into the likelihood function to carry out the composition $g\circ s$. A concrete realization of this has been performed for probability models implemented with the \texttt{RooFit} probabilistic programing language and discriminative classifiers implemented with \texttt{scikit-learn} and \texttt{TMVA}.
+
+In both cases, constructing the density $\hat g(\hat s|\theta)$ requires running the generative model at $\theta$, and in the context of a likelihood fit this would mean that the optimization algorithm that is trying to maximize $\theta$ needs access to the generative model $f(x|\theta)$. This can be  impractical when the generative model is computationally expensive or has high-latency (for instance some human intervention is required to reconfigure the generative model).  In practice, one may want to interpolate the distribution between discrete values of $\theta$ to produce a continuous parametrization for $\hat g(s | \theta)$. In such cases, the properties of the interpolation algorithm should be part of the considerations of the over-arching optimization problem.
+
+\section{Typical usage of machine learning in HEP}
+
+In high-energy physics (HEP) we are often searching for the properties of some 
 class of events, generically referred to as \textit{signal}, in the presence of a separate class 
 of \textit{background} events. For each event we measure some quantities $x$ that have corresponding distributions 
-$f_0(x|\theta)$ for background and $f_1(x|\theta)$ for signal.  Often machine learning classification algorithms are trained on large samples of synthetic data $\{x_i, c_i\}$ generated with some nominal values of the parameters $\theta_0$, where $c=0$ corresponds to background and $c=1$ corresponds to signal. The resulting classifier is denoted $s(x)$. Based on this classifier and large samples of synthetic data drawn from $f_c(x | \theta)$ we construct the distribution  $f_c(s | \theta)$. An example of the distributions of the distribution of $s$ for the signal and background events with $\theta=\theta_0$ is shown in Figure~\ref{fig:tmva}.
+$f_b(x|\nu)$ for background and $f_s(x|\nu)$ for signal, where $\nu$ are nuisance parameters describing uncertainties in the underlying physics prediction or response of the measurement device. In the simple setup, the total model is a mixture of the signal and background components, and $\mu$ is the mixture coefficient associate dot the signal component. The generative model in this case is
+\begin{equation}\label{eq:hepGen}
+f( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu f_s( x_e \, |\,  \nu)  + (1-\mu)\, f_b( x_e \,|\, \nu) \,\right] \; ,
+\end{equation}
+New particle searches correspond to the hypothesis test $\mu=0$, and are generally formulated with the
+generalized likelihood ratio profiling over $\nu$.
+
+
+Often machine learning classification algorithms are trained on large samples of synthetic data $\{x_i, y_i\}$ generated with some nominal values of the parameters $\nu_0$, where $y=0$ corresponds to background and $y=1$ corresponds to signal. Following the result of Section~\ref{S:classifier}, the resulting classifier approximates the likelihood ratio of the mixture components $f_s(x|\nu_0)/(f_s(x|\nu_0)+f_b(x|\nu_0))$, which is one to one with the likelihood ratio of the null to the alternate $f(x|\mu=0,\nu_0)/f(x|\mu,\nu_0)$ for all $\mu$. The resulting classifier is denoted $\hat s(x)$. Based on this classifier and large samples of synthetic data drawn from $f_s(x | \nu)$ and $f_b(x | \nu)$ we construct the distributions  $g_s(\hat s | \nu)$ and $g_b(\hat s | \nu)$. An example of the distributions of the distribution of $\hat s$ for the signal and background events with $\nu=\nu_0$ is shown in Figure~\ref{fig:tmva}.
 
 
 \begin{figure}[htbp]
 \begin{center}
  \includegraphics[height=2in]{example-TMVA-BDT.pdf}
  \includegraphics[height=2in]{example-TMVA-ROC.pdf}
-\caption{Left: an example of the distributions $f_0(s|\theta)$ and $f_1(s|\theta)$ when the classifier $s$ is a boosted-decision tree (BDT). Right: the corresponding ROC curve (right) for this and other classifiers. Figures taken from TMVA manual.}
+\caption{Left: an example of the distributions $g_b(\hat s|\nu)$ and $g_s(\hat s|\nu)$ when the classifier $s$ is a boosted-decision tree (BDT). Right: the corresponding ROC curve (right) for this and other classifiers. (Figures taken from TMVA manual.)}
 \label{fig:tmva}
 \end{center}
 \end{figure}
+\bigskip
 
-These steps lead to a subsequent statistical analysis where one observes in data $\{x_e\}$, where $e$ is an event index running from $1$ to $n$. For each event, the classifier is evaluated and one performs inference on a parameter $\mu$ related to the presence of the signal contribution. In particular, one forms the statistical model
+These steps lead to a subsequent statistical analysis where one observes in data $D=(x_1, \dots, x_n)$. For each event, the classifier is evaluated and one performs inference on a parameter $\mu$ related to the presence of the signal contribution. In particular, one forms the statistical model
 \begin{equation}\label{eq:typicalML}
-p( \{ x_e \} \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( s(x_e) \, |\,  \theta)  + (1-\mu)\, f_0( s(x_e) \,|\, \theta) \,\right] \; ,
+g( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu g_s( \hat s(x_e) \, |\,  \nu)  + (1-\mu)\, g_b( \hat s(x_e) \,|\, \nu) \,\right] \; ,
 \end{equation}
-where $\mu=0$ is the null (background-only) hypothesis and $\mu>0$ is the alternate (signal-plus-background) hypothesis.\footnote{Sometimes there is an additional Poisson term when expected number of signal and background events is known.} Typically, we are interested in inference on $\mu$ and $\theta$ are nuisance parameters; though, sometimes $\theta$ may include some components that we are also wish to infer (like the mass of a new particle that affects the distribution $x$ for the signal events).
-
+where $\mu=0$ is the null (background-only) hypothesis and $\mu>0$ is the alternate (signal-plus-background) hypothesis.\footnote{Sometimes there is an additional Poisson term when expected number of signal and background events is known, which is referred to as an extended likelihood.} Typically, we are interested in inference on $\mu$ and $\nu$ are nuisance parameters.
 
 \subsection{Comments on typical usage of machine learning in HEP}
 
-Nuisance parameters are an after thought in the typical usage of machine learning in HEP. In fact, most machine learning discussions would only consider $f_0(x)$ and $f_1(x)$. However, as experimentalists we know that we must account for various forms of systematic uncertainty, parametrized by $\theta$. In practice, we take the classifier as fixed and then propagate uncertainty through the classifier as in Eq.~\ref{eq:typicalML}. Building the distribution $f(s(x)|\theta)$ for values of $\theta$ other than the nominal $\theta_0$ used to train the classifier can be thought of as a calibration necessary for classical statistical inference; however, this classifier is clearly not optimal for $\theta \ne \theta_0$.
+Nuisance parameters are an after thought in the typical usage of machine learning in HEP. In fact, most machine learning discussions would only consider $f_b(x)$ and $f_s(x)$. However, as experimentalists we know that we must account for various forms of systematic uncertainty, parametrized by nuisance parameters $\nu$. In practice, we take the classifier as fixed and then propagate uncertainty through the classifier as in Eq.~\ref{eq:typicalML}. Building the distribution $g(\hat s|\nu)$ for values of $\nu$ other than the nominal $\nu_0$ used to train the classifier can be thought of as a calibration necessary for classical statistical inference; however, this classifier is clearly not optimal for $\nu \ne \nu_0$.
 
 \subsection{A more powerful  approach}
 
-The idea here is to combine the calibration of the distributions of the classifier output and a more optimal family of classifiers $s(x; \theta)$. Creating the family of classifiers is straight forward, one simply augments the training data with $x$ examples drawn from several values of $\theta$ and then includes the corresponding value of $\theta$ as an input to the classifier. Thus $\{x_e,c_e\} \to \{x_e,\theta_e, c_e\}$ leading to a parametrized learner $s(x)\to s(x;\theta)$. This leads to a complication: one does not know the value of $\theta$ to use when evaluating the parametrized classifier $s(x;\theta)$.  However, when performing statistical inference one will evaluate the likelihood of the data at a given value of $\theta$, so this is a natural choice.  Thus one arrives at the generalization of Eq.~\ref{eq:typicalML}
-\begin{equation}\label{eq:parametrizedML}
-p( \{ x_e \} \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( s(x_e;\theta) \, |\,  \theta)  + (1-\mu)\, f_0( s(x_e;\theta) \,|\, \theta) \,\right] \; .
+The standard use of machine learning in HEP can be improved by training a parametrized, discriminative classifier corresponding to the generalized likelihood ratio test 
+\begin{equation}
+\lambda(\mu) = \frac{f(D|\mu, \hat{\hat{\nu}})}{f(D|\hat \mu, {\hat{\nu}})} \;,
 \end{equation}
+following the approach outlined in Section~\ref{S:GLR}. 
 
-The construction in Eq.~\ref{eq:parametrizedML} presents a computational challenge as for each value of $\theta$ one has a new mapping $s: x\to\mathbb{R}$. The most naive realization of this would be to generate synthetic data $\{x_e\}$ according to $f_c(x|\theta)$, evaluate $s(x_e ; \theta)$, and then use a histogram, kernel density, or other non-parametric density estimation procedure to estimate $f_c( s | \theta)$. This approach is not realistic in situations where $f_c(x|\theta)$ is realized with expensive computer simulations; thus, some interpolation strategy or emulator over a fixed set of parameter points $\{\theta_i\}$ would typically be used.
+There is an interesting distinction between this approach and the standard use in which the classifier is trained for a fixed $\nu_0$. In the standard use one trains a classifier for signal vs. background, which is equivalent (in an ideal setting) to training a classifier for  null (background-only) vs. alternate (signal-plus-backgound) as 
+\begin{equation}
+ \frac{f(x| 0, \nu_0)}{f(x|\hat \mu, \nu_0)} =  \frac{f_b(x| \nu_0)}{ \mu f_s( x_e \, |\,  \nu_0)  + (1-\mu)\, f_b( x_e \,|\, \nu_0)} = \left[ c_1 + c_2   \frac{f_s(x| \nu_0)}{ f_b( x_e \,|\, \nu_0)} \right ]^{-1} \; ,
+\end{equation}
+and $c_1$ and $c_2$ are constants. Specifically, the two approaches likelihood ratios are in one-to-one correspondence, so an ideal algorithm would lead to equivalent tests. In contrast, in the case of the generalized likelihood ratio test 
+\begin{equation}
+ \frac{f(x| 0, \hat{\hat{ \nu}})}{f(x|\hat \mu, \hat\nu)} =  \frac{f_b(x| \hat{\hat{ \nu}})}{ \hat \mu f_s( x_e \, |\,  \hat\nu)  + (1- \hat \mu )\, f_b( x_e \,|\, \hat \nu)} \; ,
+\end{equation}
+the background components don't cancel and there is an additional term $f_b(x| \hat{\hat{ \nu}})/f_b(x| {\hat{ \nu}})$.
+In practice, with classifiers of finite capacity, there will be some tradeoff between taking into account this additional term and the more challenging learning problem when $\mu$ is very small. 
 
-\section{Possible Extensions}
-The approach describe thus far has been agnostic as to the type of classifier used to produce $s(x)$ and $s(x; \theta)$. In practice, we have used standard packages for the training of these learners. In particular, the loss function for these learning algorithms is based on classification performance of individual $(x_e, c_e)$ feature $\to$ target examples. However, in overarching statistical procedure that uses the statistical model in Eq.~\ref{eq:typicalML} or \ref{eq:parametrizedML} the quantity we wish to optimize is a property of an entire dataset $\{x_e\}$ or ensembles of datasets that can be generated from the statistical models $f_c(x|\theta)$. 
+%
+%The idea here is to combine the calibration of the distributions of the classifier output and a more optimal family of classifiers $\hat s(x; \nu_0, \nu_1)$. Creating the family of classifiers is straight forward, one simply augments the training data with $x$ examples drawn from several values of $\nu$ and then includes the corresponding value of $\nu$ as an input to the classifier. Thus $\{x_e,c_e\} \to \{x_e,\nu_{0,e},\nu_{1,e}, c_e\}$ leading to a parametrized learner $\hat s(x)\to \hat s(x;\nu_0, \nu_1)$. This leads to a complication: one does not know the value of $\nu$ to use when evaluating the parametrized classifier $\hat s(x;\nu_0, \nu_1)$, so one cannot simply pre-compute $\hat s_e$ before performing the likelihood fit.  However, when performing a likelihood ratio test, one can calculate the maximum likelihood estimate and conditional maximum likelihood estimate according to Eq.~\ref{eq:mle} and then form the equivalent likelihood ratio test according to Eq.~\ref{eq:equivLRtest}. 
 
-For example, in typical hypothesis testing problems posed in the Neyman-Pearson context one would be interested in minimizing type II error under a fixed rate of typeI error rate. In the presence of systematic uncertainty and nuisance parameters, the loss function may become more complicated. The recent Higgs boson machine learning challenge hosted by Kaggle, the evaluation was the approximate median significance (AMS) that characterized the power of a hypothesis test between $\mu=0$ (the background only hypothesis) and $\mu=\mu_0$ (the signal+background hypothesis, where $\mu_0$ is a small number reflecting the small Higgs signal that would be found in addition to the much larger background process) in the presence of uncertainty on the background normalization. 
-Interestingly, the top entries to the challenge did not improve by focusing on this alternative loss function 
-in training their classifier, but instead used it for the optimization of a threshold on the score (a working point on the ROC curve) that was related to the way the challenge was designed. This suggests that the standard 
-classification loss functions lead to similar optimizations and that refinements for the custom loss functions
-are not easy to come by.
 
-More generally, there is an avenue of research associated to custom loss functions specifically designed 
-for these real world statistical problems. One direction might be to choose loss functions that make 
-some balance between the standard classification loss, take into account robustness with respect to nuisance parameters, and population-level quantities like type I and II error.
+%Equivalently, once one has determined $\hat{\theta}$ and $\hat{\hat{\theta}}$, then one can specify the parameters of the mapping $s(x;\hat{\hat{\theta}}, \hat{\theta})$ and then following Eq.~\ref{eq:NP} form the likelihood
+%\begin{equation}\label{eq:parametrizedML}
+%g( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu g_s( s(x_e;\nu_0, \nu_1) \, |\,  \nu)  + (1-\mu)\, g_b( s(x_e;\nu_0, \nu_1) \,|\, \nu) \,\right] \; ,
+%\end{equation}
+%which is a natural generalization of Eq.~\ref{eq:typicalML}.
+
+%The construction in Eq.~\ref{eq:parametrizedML} presents a computational challenge as for each value of $\nu$ one has a new mapping $s: x\to\mathbb{R}$. The most naive realization of this would be to generate synthetic data $\{x_e\}$ according to $f_c(x|\nu)$, evaluate $s(x_e ; \nu_0, \nu_1)$, and then use a histogram, kernel density, or other non-parametric density estimation procedure to estimate $g_c( s | \nu)$. This approach is not realistic in situations where $f_c(x|\nu)$ is realized with expensive computer simulations; thus, some interpolation strategy or emulator over a fixed set of parameter points $\{\nu_i\}$ would typically be used.
+
+\section{Conclusions}
+
+We have shown that a parametrized family of discriminative classifiers $s(x; \theta_0, \theta_1)$ trained and calibrated with a generative model $f(x|\theta)$ can be used to approximate statistical inference likelihoodased on the  ratio $f(x|\theta_0)/f(x|\theta_1)$ when it is not possible to evaluate the densities $f(x|\theta)$ for an arbitrary $x$. This approach leverages the power of machine learning in a classical statistical setting.
+
+%\section{Possible Extensions}
+%The approach describe thus far has been agnostic as to the type of classifier used to produce $s(x)$ and $s(x; \nu)$. In practice, we have used standard packages for the training of these learners. In particular, the loss function for these learning algorithms is based on classification performance of individual $(x_e, c_e)$ feature $\to$ target examples. However, in overarching statistical procedure that uses the statistical model in Eq.~\ref{eq:typicalML} or \ref{eq:parametrizedML} the quantity we wish to optimize is a property of an entire dataset $\{x_e\}$ or ensembles of datasets that can be generated from the statistical models $f_c(x|\theta)$. 
+%
+%For example, in typical hypothesis testing problems posed in the Neyman-Pearson context one would be interested in minimizing type II error under a fixed rate of typeI error rate. In the presence of systematic uncertainty and nuisance parameters, the loss function may become more complicated. The recent Higgs boson machine learning challenge hosted by Kaggle, the evaluation was the approximate median significance (AMS) that characterized the power of a hypothesis test between $\mu=0$ (the background only hypothesis) and $\mu=\mu_0$ (the signal+background hypothesis, where $\mu_0$ is a small number reflecting the small Higgs signal that would be found in addition to the much larger background process) in the presence of uncertainty on the background normalization. 
+%Interestingly, the top entries to the challenge did not improve by focusing on this alternative loss function 
+%in training their classifier, but instead used it for the optimization of a threshold on the score (a working point on the ROC curve) that was related to the way the challenge was designed. This suggests that the standard 
+%classification loss functions lead to similar optimizations and that refinements for the custom loss functions
+%are not easy to come by.
+%
+%More generally, there is an avenue of research associated to custom loss functions specifically designed 
+%for these real world statistical problems. One direction might be to choose loss functions that make 
+%some balance between the standard classification loss, take into account robustness with respect to nuisance parameters, and population-level quantities like type I and II error.
+%
+%\subsection{A different starting point}
+%
+%Instead of evolving from the traditional usage of ML in HEP, let's start from scratch with $f_c(x|\theta)$ and a well defined objective.  
+%
+%\subsubsection{Simple Hypothesis Testing}
+%
+%Consider the situation of simple hypothesis testing between the background-only $\mu=0$ and signal+background hypothesis $\mu=\mu_0=\nu_s/(\nu_s+\nu_b)$ for $\theta=\theta_0$.  Let us assume that not only can we use the $f_c(x|\theta_0)$ as a generative model, but that we can evaluate the probability density at any point $x$.  The statistical model is given by
+%\begin{equation}\label{eq:NP}
+%f( D \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( x_e \, |\,  \theta)  + (1-\mu)\, f_b( x_e \,|\, \theta) \,\right] \; .
+%\end{equation}
+%The objective is to find a  test statistic $T(D)$ (a map from the space of the data to $\mathbb{R}$)  
+%and a threshold $k_\alpha$ that minimizes the rate of type-II error (i.e. $P(T(D) < k_\alpha | \mu=\mu_0, \theta_0) = \beta$ under the constraint of a fixed rate of type-I error ( i.e.  $P(T(D) > k_\alpha | \mu=0, \theta_0) = \alpha$ ).
+%The Neyman-Pearson lemma states that the optimal test statistic is the likelihood ratio, or equivalently, the log-likelihood ratio 
+%\begin{equation}
+%T =  \log \frac{f(D | \mu=\mu_0, \theta_0)}{f(D | \mu=0, \theta_0)}
+%\end{equation}
+%When the $x_e$ are i.i.d., then the log-likelihood ratio expands into a sum
+%\begin{equation}
+%T =   \sum_{e=1}^n \underbrace{\log \left[ 1+c_1\frac {f_1(x_e | \theta_0) }{ f_b(x_e | \theta_0) } \right]}_{q(x_e)} + c_2\;,
+%\end{equation}
+%where $c_1=\mu/(1-\mu)$ and $c_2=\log(1-\mu)$ are constants for the simple hypothesis test.
+%
+%Here we see that the optimal $T$ for the experiment is composed of a sum over events of a linear linear function of the per-event function $q(x)$. A monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
+%
+%The important part of the per-event function $q(x)$ is that it defines contours in the feature space $x$. These contours are also equivalent to the function $f_1(x|\theta_0)/f_b(x|\theta_0)$, the signal-to-background ratio. If we can find a machine learner $s(x)$ that is a monotonic function of $f_1(x|\theta_0)/f_b(x|\theta_0)$ it will share the same contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function $q(x)$. 
+%
+%\textbf{Postulate:}
+%\begin{equation}
+%T' = \sum_{e=1}^n \underbrace{\log \left[ 1+c_1\frac {f_1(s(x_e) | \theta_0) }{ f_b(s(x_e) | \theta_0) } \right]}_{q(s_e)} \;,
+%\end{equation}
+%leads to an equivalent test, where $s_e \equiv s(x_e)$
+%\begin{equation}
+%f_c(s) = \int dx \, \delta(s-s(x)) \, f_c(x)  \,  |\partial s / \partial x|^{-1}
+%\end{equation}
+%
+%
+%
+%Note, in order to form the hypothesis test, one still needs to build the build the $f_0(T|\theta)$ to calibrate the threshold  $T>k_\alpha$ that gives rise to a test of size $\alpha$. 
+%
+%
+%
+%\textbf{Proof (in progress):}
+%
+%We want to show density is the same 
+%
+%\begin{equation}
+%f_c(q_x) = \int dx \delta(q_x-q_x(x)) f_c(x) / |\partial q_x / \partial x|
+%\end{equation}
+%
+%\begin{equation}
+%f_c(q_s) = \int dx \delta(q_s-q_s(s(x))) \, f_c(x) \, / |\partial q_s / \partial x|
+%\end{equation}
+%sufficient to show $q(x_e) = q(s(x_e))$.  Here we use that $f_1(x)/f_0(x)=\textrm{const}$ for all points on the level-set $\Omega_c$ given by $ \delta(c-s(x))$. 
+%\begin{equation}
+%\frac {f_1(c | \theta_0) }{ f_0(c | \theta_0) } = 
+%\frac { \int dx \delta(c-s(x)) \, f_1(x_e | \theta_0) }{ \int dx \delta(c-s(x)) \, f_0(x | \theta_0)  } = 
+%\frac {c \int dx \delta(c-s(x)) \, f_0(x | \theta_0)  }{ \int dx \delta(s-s(x)) \, f_0(x | \theta_0)  } = c =\frac {f_1(x | \theta_0) }{ f_0(x | \theta_0) } 
+%\end{equation}
+%
+%
+%
+%%\begin{equation}
+%%f_c(q_s) = \int ds \delta(q_s-q_s(s)) \,f_c(s) \, / |\partial q_s / \partial s|
+%%\end{equation}
+%
+%
+%This is the test statistic that one would naturally get from constructing the likelihood function for the 1-d distributions of the output of the machine learner
+%\begin{equation}\label{eq:NP}
+%f( \{s_e\} \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu f_1( s_e \, |\,  \theta)  + (1-\mu)\, f_0( s_e \,|\, \theta) \,\right] \; .
+%\end{equation}
+%Thus this motivates Eq.~\ref{eq:typicalML} in the more general case. 
+%
+%
+%Question:
+%Where does this fit in:
+%\begin{equation}
+%T'' = \sum_{e=1}^n \underbrace{ \log \left[ 1+c_1 s(x_e) \right] }_{q'(s_e)} \;,
+%\end{equation}
+%
+%
+%
+%Usefulness:
+%If we can readily compute $f_c(x|\theta_0)$, then there would be no need for machine learning algorithms. However,  these densities are often difficult to compute though one can readily use them as a generative model to produce samples. In that case, one might wish to use a machine learning algorithm to find $s(x) \approx f_1(x|\theta_0) / f_0(x|\theta_0)$. 
+%
+%Conclusion, while it is possible to start directly with the Neyman-Pearson loss function of type-II error under the constraint of fixed size and try to find a per-experiment learner $T(D)$, it is more convenient to cast the problem in terms of learning a per-event function $s(x)$, and then calibrate it to be a linear function of $q(x)$.
+%
+%\newpage
+%
+%Given $x\in \mathbb{R}^n$ and two smooth, real-valued functions $f_1(x)$ and $f_0(x)$ define 
+%\begin{equation} 
+%s(x)=\frac{f_1(x)}{f_2(x)}
+%\end{equation}.
+%Define $g_1(c) = \int dx \delta(c - s(x) ) \, f_1(x)$ and $g_0(c) = \int dx \delta(c - s(x) ) \, f_0(x)$.
+%I wish to show
+%\begin{equation}
+%\frac{g_1(c)}{g_0(c)} = \frac{f_1(x)}{f_0(x)}
+%\end{equation}
+%$\forall x \ni s(x)=c$.
+%
+%Sketch of Proof: 
+%let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the perpendicular direction to the surface at the point $x$. The  coordinate perpendicular to $\Omega$ can be written $y = x+\epsilon \hat{n}$. In these coordinates, the integral $\int dx \to \int d\Omega d\epsilon$, thus
+%\begin{equation}
+%g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon|
+%\end{equation}
+%Similarly for $g_0(c)$. We can factor out of the integral $s(x)=f_1(x)/f_0(x)$ since it is constant over $\Omega$.
+%Thus
+%\begin{equation}
+%g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon| = s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|
+%\end{equation}
+%and we arrive at the result
+%\begin{equation}
+%\frac{g_1(c)}{g_0(c)} = \frac{s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|}{ \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|} = \frac{f_1(x)}{f_0(x)} \;.
+%\end{equation}
+%
+%
+%
+%
+%\subsection{misc notes}
+%
+%
+%
+%
+%The distribution of $s$ is fully determined by the mapping $s(x_e; \theta_0, \theta_1)$ and the distribution $f(x)$, which we can write
+%\begin{equation}
+%g(s_e) = \int dx \, \delta(s_e-s(x)) \, f(x)  \; .
+%\end{equation}
+%\textbf{NEED Jacobian for x $\to$ s independent of delta function part, or double counting?}
+%
+%
+%\textbf{Theorem 1:}
+%Let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the orthonormal vector to the surface at the point $x$. The component perpendicular to $\Omega_c$ can be written $x+\epsilon \hat{n}$. In these coordinates, we rewrite integral $\int dx \to \int d\Omega_c d\epsilon$, thus
+%\begin{equation}
+%g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega_c f_1(x)  / | \hat{n} \cdot \nabla q_s  |
+%\end{equation}
+%Similarly for $g_0(c)$. We can factor out of the integral $s(x)=f_1(x)/f_0(x)$ since it is constant over $\Omega_c$.
+%Thus
+%\begin{equation}
+%g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon| = s(x) \int d\Omega f_0(x)  / | \hat{n} \cdot \nabla q_s  |
+%\end{equation}
+%and we arrive at the result
+%\begin{equation}
+%\frac{g_1(c)}{g_0(c)} = \frac{s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|}{ \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|} = \frac{f_1(x)}{f_0(x)} \;\hspace{3em} \forall x\in\Omega_c.
+%\end{equation}
+%
+%
+%
+%
+%
+%Define $g_1(c) = \int dx \delta(c - s(x) ) \, f_1(x)$ and $g_0(c) = \int dx \delta(c - s(x) ) \, f_0(x)$.
+%I wish to show
+%\begin{equation}
+%\frac{g_1(c)}{g_0(c)} = \frac{f_1(x)}{f_0(x)}
+%\end{equation}
+%$\forall x \ni s(x)=c$.
+%
+%
+%Given $x\in \mathbb{R}^n$ and two smooth, real-valued functions $f_1(x)$ and $f_0(x)$ define 
+%\begin{equation} 
+%s(x)=\frac{f_1(x)}{f_0(x)}
+%\end{equation}.
+%Define $g_1(c) = \int dx \delta(c - s(x) ) \, f_1(x)$ and $g_0(c) = \int dx \delta(c - s(x) ) \, f_0(x)$.
+%I wish to show
+%\begin{equation}
+%\frac{g_1(c)}{g_0(c)} = \frac{f_1(x)}{f_0(x)}
+%\end{equation}
+%$\forall x \ni s(x)=c$.
+%
+%Sketch of Proof: 
+%let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the perpendicular direction to the surface at the point $x$. The  coordinate perpendicular to $\Omega$ can be written $y = x+\epsilon \hat{n}$. In these coordinates, the integral $\int dx \to \int d\Omega d\epsilon$, thus
+%\begin{equation}
+%g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon|
+%\end{equation}
+%Similarly for $g_0(c)$. We can factor out of the integral $s(x)=f_1(x)/f_0(x)$ since it is constant over $\Omega$.
+%Thus
+%\begin{equation}
+%g_1(c) = \int dx \delta(c-s(x)) f_1(x) = \int d\Omega f_1(x) / |\partial s(x)/\partial \epsilon| = s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|
+%\end{equation}
+%and we arrive at the result
+%\begin{equation}
+%\frac{g_1(c)}{g_0(c)} = \frac{s(x) \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|}{ \int d\Omega f_0(x) / |\partial s(x)/\partial \epsilon|} = \frac{f_1(x)}{f_0(x)} \;.
+%\end{equation}
+%
+%
+%
+%
+%
+%
+%
+%Note, in order to form the hypothesis test, one still needs to build the build the $f_0(T|\theta)$ to calibrate the threshold  $T>k_\alpha$ that gives rise to a test of size $\alpha$. 
+%
+%
+%
+%\textbf{Proof (in progress):}
+%
+%We want to show density is the same 
+%
+%\begin{equation}
+%f(q_x|\theta) = \int dx \delta(q_x-q_x(x)) f(x|\theta)  / | \hat{n} \cdot \nabla q_s  |
+%\end{equation}
+%
+%\begin{equation}
+%f(q_s|\theta) = \int dx \delta(q_s-q_s(s(x))) \, f(x|\theta) \, / | \hat{n} \cdot \nabla q_s  |
+%\end{equation}
+%sufficient to show $q(x_e) = q(s(x_e))$.  Here we use that $f_1(x)/f_0(x)=\textrm{const}$ for all points on the level-set $\Omega_c$ given by $ \delta(c-s(x))$. 
+%\begin{equation}
+%\frac {f_1(c | \theta_0) }{ f_0(c | \theta_0) } = 
+%\frac { \int dx \delta(c-s(x)) \, f_1(x_e | \theta_0) }{ \int dx \delta(c-s(x)) \, f_0(x | \theta_0)  } = 
+%\frac {c \int dx \delta(c-s(x)) \, f_0(x | \theta_0)  }{ \int dx \delta(s-s(x)) \, f_0(x | \theta_0)  } = c =\frac {f_1(x | \theta_0) }{ f_0(x | \theta_0) } 
+%\end{equation}
+%
+%
+%
+%%\begin{equation}
+%%f_c(q_s) = \int ds \delta(q_s-q_s(s)) \,f_c(s) \, / |\partial q_s / \partial s|
+%%\end{equation}
+%
+%
+
 
 \section*{Acknowldgements}
-We would like to thank Yann LeCun, Philip Stark for their feedback on the
-project early in its conception and Bal\'azs K\'egl for discussions about the Kaggle challenge and 
-non-standard loss functions.
+KC would like to thank  
+Daniel Whiteson for discussions and encouragement throughout the project, 
+Alex Ihler for challenging discussions that 
+led to a reformulation of the initial idea, and Shimon Whiteson for patient feedback in that process. 
+KC would also like to thank Yann LeCun, Philip Stark, and Pierre Baldi for their feedback on the
+project early in its conception, Bal\'azs K\'egl for discussions about the Kaggle challenge and 
+non-standard loss functions, and Yuri Shirman for reassuring discussions on elementary vector calculus.
 KC is supported by the US National Science Foundation grants PHY-0854724 and PHY-0955626. 
-KC would like to thank UC-Irvine for their hospitality while this research was carried out and the 
+KC is grateful to UC-Irvine for their hospitality while this research was carried out and the 
 Moore and Sloan foundations for their generous support of the data science environment at NYU.
 
 \end{document} 

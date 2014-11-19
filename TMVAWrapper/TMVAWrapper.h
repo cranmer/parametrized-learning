@@ -46,26 +46,35 @@ public:
 
 protected:
 
-
-  RooAbsReal *_rab[10];
-  
+  // number of input features
   int num_features;
+
+  // feature names, from XML, used to connect to RooStuff
   std::vector<TString> names;
 
+  // evaluate the NN
   Double_t evaluate() const ;
 
+  // name of the weights file
   char weights[1000];
 
 private:
 
-
+  // extract info from XML
+  // looks like order of RooArgList needs to be same as in the XML file
   void findVariables(TXMLNode *node);
-  void getListOfVars(char weights[100]);
+  void getListOfVars(char weights[1000]);
   
   TMVA::Reader *reader ;
-  mutable Float_t local_features[10];
+
+  // input variable storage space
+  const static int _max_vars=1000;
+  mutable Float_t local_features[_max_vars];
+
+  // result
   Float_t target;
 
+  // connection to Roo inputs
   RooListProxy _actualVars;
 
   ClassDef(TMVAWrapper,1) // Your description goes here...
