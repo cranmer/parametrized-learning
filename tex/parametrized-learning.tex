@@ -1,7 +1,8 @@
 \documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
 
 \usepackage{jmlr2e}
-
+\usepackage{lineno}
+\linenumbers
 %\jmlrheading{1}{2014}{X-XX}{4/00}{10/00}{Kyle Cranmer}
 
 %\ShortHeadings{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}{Kyle Cranmer}
@@ -123,7 +124,7 @@ p(y=1 | x) = \frac{p(x|y=1)}{p(x|y=0)+p(x|y=1)} = \frac{f(x|\theta_1)}{f(x|\thet
 which is monotone with the desired likelihood ratio $f(x|\theta_1)/f(x|\theta_0)$ and free from the
 complications of the prior $\pi(\theta)$ that is undefined in the frequentist context.
 
-Since the prior $p(y)$ has no clear meaning for the test at hand and because the classifier score $p(x|y)$ may not be well calibrated, we choose to denote the classifier score $s(x)$ and simply think of it as a deterministic dimensionality reduction map $s: X \to \mathbb{R}$. 
+Since the prior $p(y)$ has no clear meaning for the test at hand and because the classifier score $p(y|x)$ may not be well calibrated, we choose to denote the classifier score $s(x)$ and simply think of it as a deterministic dimensionality reduction map $s: X \to \mathbb{R}$. 
 
 
 
