@@ -1,4 +1,12 @@
 \documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+
+\usepackage{jmlr2e}
+
+%\jmlrheading{1}{2014}{X-XX}{4/00}{10/00}{Kyle Cranmer}
+
+%\ShortHeadings{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}{Kyle Cranmer}
+
+
 \usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
 \geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
 %\geometry{landscape}                		% Activate for for rotated page geometry
@@ -19,6 +27,31 @@
 %\date{}							% Activate to display a given date or no date
 
 \begin{document}
+
+
+\author{\name Kyle Cranmer \email kyle.cranmer@nyu.edu \\
+       \addr Center for Cosmology and Particle Physics\\
+       Center for Data Science\\
+       New York University \\
+       New York, NY 10003, USA
+}
+
+%\editor{Leslie Pack Kaelbling}
+\editor{}
+
+\maketitle
+
+\begin{abstract}%   <- trailing '%' for backward compatibility of .sty file
+words
+\end{abstract}
+%
+%\begin{keywords}
+%  Bayesian Networks, Mixture Models, Chow-Liu Trees
+%\end{keywords}
+
+
+
+
 \maketitle
 
 \section{Introduction}
@@ -314,6 +347,14 @@ In practice, with classifiers of finite capacity, there will be some tradeoff be
 
 %The construction in Eq.~\ref{eq:parametrizedML} presents a computational challenge as for each value of $\nu$ one has a new mapping $s: x\to\mathbb{R}$. The most naive realization of this would be to generate synthetic data $\{x_e\}$ according to $f_c(x|\nu)$, evaluate $s(x_e ; \nu_0, \nu_1)$, and then use a histogram, kernel density, or other non-parametric density estimation procedure to estimate $g_c( s | \nu)$. This approach is not realistic in situations where $f_c(x|\nu)$ is realized with expensive computer simulations; thus, some interpolation strategy or emulator over a fixed set of parameter points $\{\nu_i\}$ would typically be used.
 
+\subsection{Related work}
+
+Refs to include:
+\cite{ClaytonScott,AndrewY.Ng,SamT.Roweis,EricP.Xing,SujaySanghavi,BiancaZadrozny,Zadrozny2001,TommiJaakkola}
+
+\cite{JMLR:v14:tong13a}
+
+
 \section{Conclusions}
 
 We have shown that a parametrized family of discriminative classifiers $s(x; \theta_0, \theta_1)$ trained and calibrated with a generative model $f(x|\theta)$ can be used to approximate statistical inference likelihoodased on the  ratio $f(x|\theta_0)/f(x|\theta_1)$ when it is not possible to evaluate the densities $f(x|\theta)$ for an arbitrary $x$. This approach leverages the power of machine learning in a classical statistical setting.
@@ -550,11 +591,6 @@ We have shown that a parametrized family of discriminative classifiers $s(x; \th
 %
 
 
-Related work:
-"Classification with hybrid generative/discriminative models"
-
-Refs to include:
-\cite{ClaytonScott,AndrewY.Ng,SamT.Roweis,EricP.Xing,SujaySanghavi,BiancaZadrozny,Zadrozny2001,TommiJaakkola}
 
 \section*{Acknowldgements}
 KC would like to thank  
@@ -568,7 +604,7 @@ KC is supported by the US National Science Foundation grants PHY-0854724 and PHY
 KC is grateful to UC-Irvine for their hospitality while this research was carried out and the 
 Moore and Sloan foundations for their generous support of the data science environment at NYU.
 
-\bibliographystyle{unsrt}
+\bibliographystyle{natbib}
 \bibliography{learning.bib}
 %\begin{thebibliography}
 %\parametrized-learning}

@@ -1,41 +1,68 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{9}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem{ClaytonScott}
-Robert~Nowak {Clayton Scott}.
-\newblock {A Neyman-Pearson approach to statistical learning}.
-
-\bibitem{AndrewY.Ng}
+\bibitem[{Andrew Y. Ng}()]{AndrewY.Ng}
 Michael I.~Jordan {Andrew Y. Ng}.
 \newblock {On Discriminative vs. Generative classifiers: A comparison of
   logistic regression and naive Bayes}.
+\newblock URL
+  \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.19.9829\&rank=1}.
 
-\bibitem{SamT.Roweis}
-Lawrence K.~Saul {Sam T. Roweis}.
-\newblock {Nonlinear dimensionality reduction by locally linear embedding}.
-
-\bibitem{EricP.Xing}
-Michael I. Jordan Stuart~Russell {Eric P. Xing}, Andrew Y.~Ng.
-\newblock {Distance Metric Learning, With Application To Clustering With
-  Side-Information}.
-
-\bibitem{SujaySanghavi}
-Alan~Willsky {Sujay Sanghavi}, Vincent~Tan.
-\newblock {Learning graphical models for hypothesis testing and
-  classification}.
-
-\bibitem{BiancaZadrozny}
+\bibitem[{Bianca Zadrozny}()]{BiancaZadrozny}
 Charles~Elkan {Bianca Zadrozny}.
 \newblock {Obtaining calibrated probability estimates from decision trees and
   naive Bayesian classifiers}.
+\newblock URL
+  \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.29.3039}.
 
-\bibitem{Zadrozny2001}
+\bibitem[{Clayton Scott}()]{ClaytonScott}
+Robert~Nowak {Clayton Scott}.
+\newblock {A Neyman-Pearson approach to statistical learning}.
+\newblock URL
+  \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.103.6850\&rank=5}.
+
+\bibitem[{Eric P. Xing}()]{EricP.Xing}
+Michael I. Jordan Stuart~Russell {Eric P. Xing}, Andrew Y.~Ng.
+\newblock {Distance Metric Learning, With Application To Clustering With
+  Side-Information}.
+\newblock URL
+  \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.6509\&rank=4}.
+
+\bibitem[{Sam T. Roweis}()]{SamT.Roweis}
+Lawrence K.~Saul {Sam T. Roweis}.
+\newblock {Nonlinear dimensionality reduction by locally linear embedding}.
+\newblock URL
+  \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.111.3313}.
+
+\bibitem[{Sujay Sanghavi}()]{SujaySanghavi}
+Alan~Willsky {Sujay Sanghavi}, Vincent~Tan.
+\newblock {Learning graphical models for hypothesis testing and
+  classification}.
+\newblock URL
+  \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.368.4311}.
+
+\bibitem[{Tommi Jaakkola}()]{TommiJaakkola}
+David~Haussler {Tommi Jaakkola}.
+\newblock {Exploiting Generative Models in Discriminative Classifiers}.
+\newblock URL
+  \url{http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.44.7709}.
+
+\bibitem[{Xin Tong}(2013)]{JMLR:v14:tong13a}
+{Xin Tong}.
+\newblock {A Plug-in Approach to Neyman-Pearson Classification}.
+\newblock \emph{Journal of Machine Learning Research}, 14:\penalty0 3011--3040,
+  2013.
+\newblock URL \url{http://jmlr.org/papers/v14/tong13a.html}.
+
+\bibitem[Zadrozny and Elkan(2001)]{Zadrozny2001}
 Bianca Zadrozny and Charles Elkan.
 \newblock {Obtaining calibrated probability estimates from decision trees and
   naive Bayesian classifiers}.
 \newblock pages 609--616, June 2001.
-
-\bibitem{TommiJaakkola}
-David~Haussler {Tommi Jaakkola}.
-\newblock {Exploiting Generative Models in Discriminative Classifiers}.
+\newblock URL \url{http://dl.acm.org/citation.cfm?id=645530.655658}.
 
 \end{thebibliography}
