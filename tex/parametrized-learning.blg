@@ -1,0 +1,64 @@
+This is BibTeX, Version 0.99d (TeX Live 2013)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: parametrized-learning.aux
+The style file: unsrt.bst
+Database file #1: learning.bib.bib
+Warning--empty journal in ClaytonScott
+Warning--empty year in ClaytonScott
+Warning--empty journal in AndrewY.Ng
+Warning--empty year in AndrewY.Ng
+Warning--empty journal in SamT.Roweis
+Warning--empty year in SamT.Roweis
+Too many commas in name 1 of "{Eric P. Xing}, Andrew Y. Ng, Michael I. Jordan, Stuart Russell" for entry EricP.Xing
+while executing---line 944 of file unsrt.bst
+Warning--empty journal in EricP.Xing
+Warning--empty year in EricP.Xing
+Warning--empty journal in SujaySanghavi
+Warning--empty year in SujaySanghavi
+Warning--empty journal in BiancaZadrozny
+Warning--empty year in BiancaZadrozny
+Warning--empty journal in Zadrozny2001
+Warning--empty journal in TommiJaakkola
+Warning--empty year in TommiJaakkola
+You've used 8 entries,
+            1791 wiz_defined-function locations,
+            479 strings with 4603 characters,
+and the built_in function-call counts, 1220 in all, are:
+= -- 91
+> -- 36
+< -- 1
++ -- 17
+- -- 9
+* -- 62
+:= -- 198
+add.period$ -- 17
+call.type$ -- 8
+change.case$ -- 8
+chr.to.int$ -- 0
+cite$ -- 23
+duplicate$ -- 74
+empty$ -- 128
+format.name$ -- 9
+if$ -- 256
+int.to.chr$ -- 0
+int.to.str$ -- 8
+missing$ -- 8
+newline$ -- 36
+num.names$ -- 8
+pop$ -- 47
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 37
+stack$ -- 0
+substring$ -- 32
+swap$ -- 9
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 15
+while$ -- 11
+width$ -- 9
+write$ -- 61
+(There was 1 error message)

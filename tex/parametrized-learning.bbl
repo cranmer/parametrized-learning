@@ -1,0 +1,41 @@
+\begin{thebibliography}{1}
+
+\bibitem{ClaytonScott}
+Robert~Nowak {Clayton Scott}.
+\newblock {A Neyman-Pearson approach to statistical learning}.
+
+\bibitem{AndrewY.Ng}
+Michael I.~Jordan {Andrew Y. Ng}.
+\newblock {On Discriminative vs. Generative classifiers: A comparison of
+  logistic regression and naive Bayes}.
+
+\bibitem{SamT.Roweis}
+Lawrence K.~Saul {Sam T. Roweis}.
+\newblock {Nonlinear dimensionality reduction by locally linear embedding}.
+
+\bibitem{EricP.Xing}
+Michael I. Jordan Stuart~Russell {Eric P. Xing}, Andrew Y.~Ng.
+\newblock {Distance Metric Learning, With Application To Clustering With
+  Side-Information}.
+
+\bibitem{SujaySanghavi}
+Alan~Willsky {Sujay Sanghavi}, Vincent~Tan.
+\newblock {Learning graphical models for hypothesis testing and
+  classification}.
+
+\bibitem{BiancaZadrozny}
+Charles~Elkan {Bianca Zadrozny}.
+\newblock {Obtaining calibrated probability estimates from decision trees and
+  naive Bayesian classifiers}.
+
+\bibitem{Zadrozny2001}
+Bianca Zadrozny and Charles Elkan.
+\newblock {Obtaining calibrated probability estimates from decision trees and
+  naive Bayesian classifiers}.
+\newblock pages 609--616, June 2001.
+
+\bibitem{TommiJaakkola}
+David~Haussler {Tommi Jaakkola}.
+\newblock {Exploiting Generative Models in Discriminative Classifiers}.
+
+\end{thebibliography}

@@ -8,6 +8,7 @@
 \usepackage{amssymb, amsmath}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{xfrac}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -67,6 +68,31 @@ used to learn $s(x; \theta_0, \theta_1)$. The discriminative classifier can be t
 from $f(x|\theta_0)$ and $(x,y=1)$ generated from $f(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the discriminative classifier explicitly parametrized in terms of $(\theta_0, \theta_1)$.
 
 While the original goal for frequentist hypothesis testing is to make a decision to accept or reject the null hypothesis based on the entire dataset $D$, the machine learning problem is an event-by-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
+
+\section{Comments on classification and frequentist hypothesis tests}
+
+Significant literature exists around generative classifiers and discriminative classifiers. Typically, generative classifiers learn a model for the joint probability $p(x,y)$, of the inputs $x$ and the classification label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative classifiers model the posterior $p(y|x)$ directly. For classification tasks, one then thresholds on $p(y|x)$. In both cases this description in terms of a posterior requires a prior distribution for $p(y)$, which is either modeled explicitly or learned from the training data. 
+This formulation of classification is somewhat confusing in the setting of the current work. 
+
+First of all, the generative model $f(x|\theta)$ here is a generative statistical model, not a generative classifier. We think of the  $f(x|\theta)$ along the lines of a traditional scientific theory, able to make predictions about $x$ and being motivated by domain-specific considerations. For example, in the context of high energy particle physics $f(x|\theta)$ is based on quantum field theory and a detailed simulation of the particle detector and data processing algorithms that transform raw sensor data into the feature vector $x$. The point here is to make the distinction of $f(x|\theta)$ in this context from a generic generative classifier like normal discriminate analysis or naive Bayes. 
+
+Secondly, we are not interested in thresholded classification on individual events $x_e$, but are interested in a thresholded hypothesis test on an entire data set based on the likelihood ratio test statistic $T(D)$.  
+Additionally, we know that both discriminative and generative classifier scores are often poorly calibrated. 
+We wish to have well calibrated statements, but not about $p(y|x)$ but p-values associated to $P(T(D) > k |\theta)$.
+
+Lastly, in the setting of frequentist hypothesis we do not have a prior $\pi(\theta)$. 
+While we can use the generative models to produce training data $(x,y=0)$ generated 
+from $f(x|\theta_0)$ and $(x,y=1)$ generated from $f(x|\theta_1)$, the relative mix $p(y)$ 
+is arbitrary.  When $p(y=0)=p(y=1)=\sfrac{1}{2}$, then 
+\begin{equation}
+p(y=1 | x) = \frac{p(x|y=1)}{p(x|y=0)+p(x|y=1)} = \frac{f(x|\theta_1)}{f(x|\theta_0)+f(x|\theta_1))} \;,
+\end{equation}
+which is monotone with the desired likelihood ratio $f(x|\theta_1)/f(x|\theta_0)$ and free from the
+complications of the prior $\pi(\theta)$ that is undefined in the frequentist context.
+
+Since the prior $p(y)$ has no clear meaning for the test at hand and because the classifier score $p(x|y)$ may not be well calibrated, we choose to denote the classifier score $s(x)$ and simply think of it as a deterministic dimensionality reduction map $s: X \to \mathbb{R}$. 
+
+
 
 \section{Dimensionality reduction}
 
@@ -524,6 +550,12 @@ We have shown that a parametrized family of discriminative classifiers $s(x; \th
 %
 
 
+Related work:
+"Classification with hybrid generative/discriminative models"
+
+Refs to include:
+\cite{ClaytonScott,AndrewY.Ng,SamT.Roweis,EricP.Xing,SujaySanghavi,BiancaZadrozny,Zadrozny2001,TommiJaakkola}
+
 \section*{Acknowldgements}
 KC would like to thank  
 Daniel Whiteson for discussions and encouragement throughout the project, 
@@ -535,5 +567,11 @@ non-standard loss functions, and Yuri Shirman for reassuring discussions on elem
 KC is supported by the US National Science Foundation grants PHY-0854724 and PHY-0955626. 
 KC is grateful to UC-Irvine for their hospitality while this research was carried out and the 
 Moore and Sloan foundations for their generous support of the data science environment at NYU.
+
+\bibliographystyle{unsrt}
+\bibliography{learning.bib}
+%\begin{thebibliography}
+%\parametrized-learning}
+%\end{thebibliography
 
 \end{document} 
