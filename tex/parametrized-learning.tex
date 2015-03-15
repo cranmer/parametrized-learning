@@ -73,7 +73,7 @@ a generative model for the data is available for calibration.  We use the follow
 %\item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
 \item $s(x;\theta_0, \theta_1)$: real-valued discriminative classification score, parametrized by $\theta_0$ and $\theta_1$
 %\item $f( s | \theta )$ The probability density function for $s$ implied by $f(x|\theta)$ and $s(x)$
-\item $g( s | \theta )$: The probability density  for $s(x; \theta_0, \theta_1)$ implied by $f(x|\theta_0, \theta_1)$ \end{itemize}
+\item $g( s | \theta )$: The probability density  for $s(x; \theta_0, \theta_1)$ implied by $f(x|\theta)$ \end{itemize}
 We will assume the $x_e$ are i.i.d., so that $f(D|\theta) = \prod_{e=1}^n f(x_e | \theta)$.
 
 In the setting where one is interested in simple hypothesis testing between a null $\theta=\theta_0$ against an alternate $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio 
@@ -94,9 +94,9 @@ T'(D) = \prod_{e=1}^n \frac{ g(s_e | \theta_0)}{ g(s_e | \theta_1)}
 \end{equation}
 if 
 \begin{equation}
-s_e = s(x_e; \theta_0, \theta_1) = \frac{ f(x_e|\theta_0)}{ f(x_e|\theta_1)} \; 
+s_e = s(x_e; \theta_0, \theta_1) = M\left(\frac{ f(x_e|\theta_0)}{ f(x_e|\theta_1)} \right) \; 
 \end{equation}
-or some monotonic function of that ratio. This will be proven below.
+where $M$ is any monotonic function. This will be proven below.
 This allows us to recast the original likelihood ratio test into an alternate form in which a discriminative classifier is 
 used to learn $s(x; \theta_0, \theta_1)$. The discriminative classifier can be trained with data $(x,y=0)$ generated 
 from $f(x|\theta_0)$ and $(x,y=1)$ generated from $f(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the discriminative classifier explicitly parametrized in terms of $(\theta_0, \theta_1)$.
@@ -112,9 +112,9 @@ First of all, the generative model $f(x|\theta)$ here is a generative statistica
 
 Secondly, we are not interested in thresholded classification on individual events $x_e$, but are interested in a thresholded hypothesis test on an entire data set based on the likelihood ratio test statistic $T(D)$.  
 Additionally, we know that both discriminative and generative classifier scores are often poorly calibrated. 
-We wish to have well calibrated statements, but not about $p(y|x)$ but p-values associated to $P(T(D) > k |\theta)$.
+We wish to have well calibrated statements regarding p-values defined by $P(T(D) > k |\theta)$, not well calibrated posterior probabilities $p(y|x)$.
 
-Lastly, in the setting of frequentist hypothesis we do not have a prior $\pi(\theta)$. 
+Lastly, in the setting of frequentist hypothesis tests, we do not have a prior $\pi(\theta)$. 
 While we can use the generative models to produce training data $(x,y=0)$ generated 
 from $f(x|\theta_0)$ and $(x,y=1)$ generated from $f(x|\theta_1)$, the relative mix $p(y)$ 
 is arbitrary.  When $p(y=0)=p(y=1)=\sfrac{1}{2}$, then 
@@ -149,11 +149,11 @@ is the same as
 \begin{equation}
 f(q_s|\theta) = \int dx \delta(q_s-q_s(s(x))) \, f(x|\theta) \, / | \hat{n} \cdot \nabla q_s  | \; .
 \end{equation}
-It is sufficient to show that $q(x_e) = q(s(x_e))$ $ \forall x\in\Omega_c$.
+It is sufficient to show that $q(x) = q(s(x))$ $ \forall x\in\Omega_c$.
 
 
 For notational simplicity, let $f_0(x) = f(x|\theta_0)$, $f_1(x) = f(x|\theta_1)$, and $s(x)=s(x; \theta_1, \theta_0)$.
-The distribution of $x$ totally determines the distribution of $s$ via the change of variables $x\to s$. 
+The distribution of $x$ totally determines the distribution of $s$. 
 In the application at hand, the function $s$ maps a high-dimensional feature vector $x$ to $\mathbb{R}^+$.
 Let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the orthonormal vector to $\Omega_c$ at the point $x$. The induced density $g_1(c)$ is given by 
 \begin{equation}
@@ -245,9 +245,9 @@ Thus any variation on $\hat{s}(x) = f(x|\theta_1)/(f(x|\theta_0)+f(x|\theta_1))$
 
 The conclusion is that standard classification with a quadratic loss function and training data as described above will approximate a discriminative classifier needed to produce an equivalent likelihood ratio test.
 
-Once the classifier is trained, we can use the generative model and any univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{g}(x|\theta)$.
+Once the classifier is trained, we can use the generative model and any univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{g}(\hat{s}|\theta)$.
 
-This treatment shows that in the asymptotic limit of large samples from the generative model, that we can approximate arbitrarily well the original likelihood ratio test. With finite training data for $\hat{s}(x)$ and samples to approximate $\hat{g}(x)$ it will be necessary to be more specific about the what loss function we are interested in for approximating the likelihood ratio test. This will depend in general on the ultimate goal of the test. We know that in the case of composite hypothesis tests that there is in general, not uniformly most powerful test, thus it is likely that a decision theoretic approach taking into account some weighting or utility over the space $\Theta$ is necessary. This is left as a subject for future work.
+This treatment shows that in the asymptotic limit of large samples from the generative model, that we can approximate arbitrarily well the original likelihood ratio test. With finite training data for $\hat{s}(x)$ and samples to approximate $\hat{g}(\hat{s}|\theta)$ it will be necessary to be more specific about the what loss function we are interested in for approximating the likelihood ratio test. This will depend in general on the ultimate goal of the test. We know that in the case of composite hypothesis tests that there is in general no uniformly most powerful test, thus it is likely that a decision theoretic approach taking into account some weighting or utility over the space $\Theta$ is necessary. This is left as a subject for future work.
 
 
 \subsection{Training a parametrized, discriminative classifier}
@@ -277,7 +277,7 @@ training data produced according to the algorithm above, it is not clear how tra
 
 \subsection{Embedding the classifier into the likelihood}
 
-In most settings that make use of likelihood ratio tests, the probability densities directly model the observed data via $f(x|\theta)$. In the case of a fixed classifier $\hat s(x)$ it is possible to pre-compute $\hat s_e=\hat s(x_e)$. In the parametrized setting this it is not possible to pre-compute $\hat s(x; \theta_0, \theta_1)$ for all values of $\theta_0$ and $\theta_1$, so we must computationally we must embed the classifier into the likelihood function to carry out the composition $g\circ s$. A concrete realization of this has been performed for probability models implemented with the \texttt{RooFit} probabilistic programing language and discriminative classifiers implemented with \texttt{scikit-learn} and \texttt{TMVA}.
+In most settings that make use of likelihood ratio tests, the probability densities directly model the observed data via $f(x|\theta)$. In the case of a fixed classifier $\hat s(x)$ it is possible to pre-compute $\hat s_e=\hat s(x_e)$. In the parametrized setting this it is not possible to pre-compute $\hat s(x; \theta_0, \theta_1)$ for all values of $\theta_0$ and $\theta_1$, so  we must embed the classifier into the likelihood function to carry out the composition $g\circ s$. A concrete realization of this has been performed for probability models implemented with the \texttt{RooFit} probabilistic programing language and discriminative classifiers implemented with \texttt{scikit-learn} and \texttt{TMVA}.
 
 In both cases, constructing the density $\hat g(\hat s|\theta)$ requires running the generative model at $\theta$, and in the context of a likelihood fit this would mean that the optimization algorithm that is trying to maximize $\theta$ needs access to the generative model $f(x|\theta)$. This can be  impractical when the generative model is computationally expensive or has high-latency (for instance some human intervention is required to reconfigure the generative model).  In practice, one may want to interpolate the distribution between discrete values of $\theta$ to produce a continuous parametrization for $\hat g(s | \theta)$. In such cases, the properties of the interpolation algorithm should be part of the considerations of the over-arching optimization problem.
 
@@ -286,7 +286,10 @@ In both cases, constructing the density $\hat g(\hat s|\theta)$ requires running
 In high-energy physics (HEP) we are often searching for the properties of some 
 class of events, generically referred to as \textit{signal}, in the presence of a separate class 
 of \textit{background} events. For each event we measure some quantities $x$ that have corresponding distributions 
-$f_b(x|\nu)$ for background and $f_s(x|\nu)$ for signal, where $\nu$ are nuisance parameters describing uncertainties in the underlying physics prediction or response of the measurement device. In the simple setup, the total model is a mixture of the signal and background components, and $\mu$ is the mixture coefficient associate dot the signal component. The generative model in this case is
+$f_b(x|\nu)$ for background and $f_s(x|\nu)$ for signal, where $\nu$ are nuisance parameters describing 
+uncertainties in the underlying physics prediction or response of the measurement device. In the simple setup, the 
+total model is a mixture of the signal and background components, and $\mu$ is the mixture coefficient associate 
+dot the signal component. The generative model in this case is
 \begin{equation}\label{eq:hepGen}
 f( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu f_s( x_e \, |\,  \nu)  + (1-\mu)\, f_b( x_e \,|\, \nu) \,\right] \; ,
 \end{equation}
@@ -329,12 +332,40 @@ There is an interesting distinction between this approach and the standard use i
 \begin{equation}
  \frac{f(x| 0, \nu_0)}{f(x|\hat \mu, \nu_0)} =  \frac{f_b(x| \nu_0)}{ \mu f_s( x_e \, |\,  \nu_0)  + (1-\mu)\, f_b( x_e \,|\, \nu_0)} = \left[ c_1 + c_2   \frac{f_s(x| \nu_0)}{ f_b( x_e \,|\, \nu_0)} \right ]^{-1} \; ,
 \end{equation}
-and $c_1$ and $c_2$ are constants. Specifically, the two approaches likelihood ratios are in one-to-one correspondence, so an ideal algorithm would lead to equivalent tests. In contrast, in the case of the generalized likelihood ratio test 
+and $c_1$ and $c_2$ are constants. Specifically, the two  likelihood ratios are in one-to-one correspondence, so an ideal algorithm would lead to equivalent tests. In contrast, in the case of the generalized likelihood ratio test 
 \begin{equation}
  \frac{f(x| 0, \hat{\hat{ \nu}})}{f(x|\hat \mu, \hat\nu)} =  \frac{f_b(x| \hat{\hat{ \nu}})}{ \hat \mu f_s( x_e \, |\,  \hat\nu)  + (1- \hat \mu )\, f_b( x_e \,|\, \hat \nu)} \; ,
 \end{equation}
 the background components don't cancel and there is an additional term $f_b(x| \hat{\hat{ \nu}})/f_b(x| {\hat{ \nu}})$.
 In practice, with classifiers of finite capacity, there will be some tradeoff between taking into account this additional term and the more challenging learning problem when $\mu$ is very small. 
+
+\subsection{Decomposing tests between mixture models into their components}
+
+It is common that the generative model for the low-level features is a mixture model of several components
+\begin{equation}
+f(x|\theta)=\sum_c w_c(\theta) f_c(x| \theta) \;.
+\end{equation}
+In the case of particle physics, the distributions $f(x|\theta)$ is not a Gaussian Mixture Model, but mixture of  complicated distributions associated to relatively few types of particle interactions. Moreover, when searching for a new particle, the null hypothesis would correspond to some of the coefficients $w_c=0$ while the alternate ``signal-plus-background'' hypothesis would have $0<w_{c\in \rm signal} \ll w_{c\in \rm background}$. In some cases $w_{c\in \rm signal} / w_{c\in \rm background} <10^{-6}$, which means the alternate hypothesis is a small perturbation to the null hypothesis. This can be a challenge for typical classifiers because they should devote their capacity to the region where $f_{c\in \rm signal}(x) / f_{c\in \rm background}(x)$ is relatively large. Lastly, even when the distributions $f_c(x|\theta)$ are well known, it is often the case that the coefficients are uncertain or treated as completely unknown. These all present challenges to machine learning algorithms that aim to learn $s(x; \theta_0, \theta_1)$.
+
+%\begin{equation}
+%\frac{f(x|\theta_0)}{f(x|\theta_1)}= \frac{\sum_c w_c(\theta_0) f_c(x| \theta_0)}{\sum_c w_c(\theta_1) f_c(x| \theta_1)} 
+%\end{equation}
+%
+%\begin{equation}
+%\frac{f(x|\theta_0)}{f(x|\theta_1)}= \sum_c \frac{ w_c(\theta_0) f_c(x| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) f_{c'}(x| \theta_1)} 
+%\end{equation}
+
+However, it is possible to re-write the target likelihood ratio between two mixture models in terms of pairwise classification problems. 
+\begin{eqnarray}
+\frac{f(x|\theta_0)}{f(x|\theta_1)} & =& \frac{\sum_c w_c(\theta_0) f_c(x| \theta_0)}{\sum_c w_c(\theta_1) f_c(x| \theta_1)} 
+\\
+%&=& \sum_c \frac{ w_c(\theta_0) f_c(x| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) f_{c'}(x| \theta_1)} \\
+%&=& \sum_c \left[ \frac{\sum_{c'} w_{c'}(\theta_1) f_{c'}(x| \theta_1)}{ w_c(\theta_0) f_c(x| \theta_0)}  \right]^{-1} \\
+&=& \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ f_{c'}(x| \theta_1)}{  f_c(x| \theta_0)}  \right]^{-1} \\
+&=& \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ g_{c'}(s_{c,c',\theta_0, \theta_1}| \theta_1)}{ g_c(s_{c,c',\theta_0, \theta_1}| \theta_0)}  \right]^{-1} 
+\end{eqnarray}
+The second line is a trivial, but useful decomposition into pair-wise classification between $f_{c'}(x|\theta_1)$ and $f_c(x|\theta_0)$.  The third line uses the previous results to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the mixture model are the coefficients $w_c$, then the distributions $g_{c}(s_{c,c',\theta_0, \theta_1}| \theta_1)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before performing the generalized likelihood ratio test).
+
 
 %
 %The idea here is to combine the calibration of the distributions of the classifier output and a more optimal family of classifiers $\hat s(x; \nu_0, \nu_1)$. Creating the family of classifiers is straight forward, one simply augments the training data with $x$ examples drawn from several values of $\nu$ and then includes the corresponding value of $\nu$ as an input to the classifier. Thus $\{x_e,c_e\} \to \{x_e,\nu_{0,e},\nu_{1,e}, c_e\}$ leading to a parametrized learner $\hat s(x)\to \hat s(x;\nu_0, \nu_1)$. This leads to a complication: one does not know the value of $\nu$ to use when evaluating the parametrized classifier $\hat s(x;\nu_0, \nu_1)$, so one cannot simply pre-compute $\hat s_e$ before performing the likelihood fit.  However, when performing a likelihood ratio test, one can calculate the maximum likelihood estimate and conditional maximum likelihood estimate according to Eq.~\ref{eq:mle} and then form the equivalent likelihood ratio test according to Eq.~\ref{eq:equivLRtest}. 
