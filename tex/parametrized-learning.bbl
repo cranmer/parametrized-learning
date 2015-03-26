@@ -1,4 +1,4 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{16}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -25,12 +25,41 @@ Robert~Nowak {Clayton Scott}.
 \newblock URL
   \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.103.6850\&rank=5}.
 
+\bibitem[Cowan et~al.(2010)Cowan, Cranmer, Gross, and Vitells]{Cowan:2010js}
+Glen Cowan, Kyle Cranmer, Eilam Gross, and Ofer Vitells.
+\newblock {Asymptotic formulae for likelihood-based tests of new physics}.
+\newblock \emph{Eur.Phys.J.}, C71:\penalty0 1554, July 2010.
+\newblock \doi{10.1140/epjc/s10052-011-1554-0}.
+\newblock URL \url{http://arxiv.org/abs/1007.1727}.
+
 \bibitem[{Eric P. Xing}()]{EricP.Xing}
 Michael I. Jordan Stuart~Russell {Eric P. Xing}, Andrew Y.~Ng.
 \newblock {Distance Metric Learning, With Application To Clustering With
   Side-Information}.
 \newblock URL
   \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.6509\&rank=4}.
+
+\bibitem[Hocker et~al.(2007)Hocker, Stelzer, Tegenfeldt, Voss, Voss,
+  et~al.]{Hocker:2007ht}
+Andreas Hocker, J.~Stelzer, F.~Tegenfeldt, H.~Voss, K.~Voss, et~al.
+\newblock {TMVA - Toolkit for Multivariate Data Analysis}.
+\newblock \emph{PoS}, ACAT:\penalty0 040, 2007.
+
+\bibitem[Pedregosa et~al.(2011)Pedregosa, Varoquaux, Gramfort, Michel, Thirion,
+  Grisel, Blondel, Prettenhofer, Weiss, Dubourg, Vanderplas, Passos,
+  Cournapeau, Brucher, Perrot, and Duchesnay]{scikit-learn}
+F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel,
+  M.~Blondel, P.~Prettenhofer, R.~Weiss, V.~Dubourg, J.~Vanderplas, A.~Passos,
+  D.~Cournapeau, M.~Brucher, M.~Perrot, and E.~Duchesnay.
+\newblock Scikit-learn: Machine learning in {P}ython.
+\newblock \emph{Journal of Machine Learning Research}, 12:\penalty0 2825--2830,
+  2011.
+
+\bibitem[Rajat~Raina and McCallum(2003)]{McCallum}
+Andrew Y.~Ng Rajat~Raina, Yirong~Shen and Andrew McCallum.
+\newblock Classification with hybrid generative/discriminative models.
+\newblock 2003.
+\newblock URL \url{\url{http://works.bepress.com/andrew\_mccallum/38}}.
 
 \bibitem[{Sam T. Roweis}()]{SamT.Roweis}
 Lawrence K.~Saul {Sam T. Roweis}.
@@ -45,11 +74,30 @@ Alan~Willsky {Sujay Sanghavi}, Vincent~Tan.
 \newblock URL
   \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.368.4311}.
 
+\bibitem[{The ATLAS Collaboration}(2012)]{Aad:2012tfa}
+{The ATLAS Collaboration}.
+\newblock {Observation of a new particle in the search for the Standard Model
+  Higgs boson with the ATLAS detector at the LHC}.
+\newblock \emph{Phys.Lett.}, B716:\penalty0 1--29, 2012.
+\newblock \doi{10.1016/j.physletb.2012.08.020}.
+
+\bibitem[{The CMS Collaboration}(2012)]{Chatrchyan:2012ufa}
+{The CMS Collaboration}.
+\newblock {Observation of a new boson at a mass of 125 GeV with the CMS
+  experiment at the LHC}.
+\newblock \emph{Phys.Lett.}, B716:\penalty0 30--61, 2012.
+\newblock \doi{10.1016/j.physletb.2012.08.021}.
+
 \bibitem[{Tommi Jaakkola}()]{TommiJaakkola}
 David~Haussler {Tommi Jaakkola}.
 \newblock {Exploiting Generative Models in Discriminative Classifiers}.
 \newblock URL
   \url{http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.44.7709}.
+
+\bibitem[Verkerke and Kirkby(2003)]{Verkerke:2003ir}
+Wouter Verkerke and David~P. Kirkby.
+\newblock {The RooFit toolkit for data modeling}.
+\newblock \emph{eConf}, C0303241:\penalty0 MOLT007, 2003.
 
 \bibitem[{Xin Tong}(2013)]{JMLR:v14:tong13a}
 {Xin Tong}.

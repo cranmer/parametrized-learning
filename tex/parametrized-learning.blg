@@ -2,14 +2,19 @@ This is BibTeX, Version 0.99d (TeX Live 2013)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: parametrized-learning.aux
 The style file: plainnat.bst
-Illegal, another \bibstyle command---line 29 of file parametrized-learning.aux
+Illegal, another \bibstyle command---line 37 of file parametrized-learning.aux
  : \bibstyle
  :          {natbib}
 I'm skipping whatever remains of this command
 Database file #1: learning.bib.bib
+Warning--I didn't find a database entry for ""
 Too many commas in name 1 of "{Eric P. Xing}, Andrew Y. Ng, Michael I. Jordan, Stuart Russell" for entry EricP.Xing
 while executing---line 1347 of file plainnat.bst
 Too many commas in name 1 of "{Eric P. Xing}, Andrew Y. Ng, Michael I. Jordan, Stuart Russell" for entry EricP.Xing
+while executing---line 1347 of file plainnat.bst
+Name 1 in "Rajat Raina, Yirong Shen, Andrew Y. Ng, and Andrew McCallum" has a comma at the end for entry McCallum
+while executing---line 1347 of file plainnat.bst
+Name 1 in "Rajat Raina, Yirong Shen, Andrew Y. Ng, and Andrew McCallum" has a comma at the end for entry McCallum
 while executing---line 1347 of file plainnat.bst
 Warning--empty journal in AndrewY.Ng
 Warning--empty year in AndrewY.Ng
@@ -27,6 +32,11 @@ while executing---line 1429 of file plainnat.bst
 Warning--empty journal in EricP.Xing
 Warning--empty year in EricP.Xing
 Warning--empty year in EricP.Xing
+Name 1 in "Rajat Raina, Yirong Shen, Andrew Y. Ng, and Andrew McCallum" has a comma at the end for entry McCallum
+while executing---line 1429 of file plainnat.bst
+Name 1 in "Rajat Raina, Yirong Shen, Andrew Y. Ng, and Andrew McCallum" has a comma at the end for entry McCallum
+while executing---line 1429 of file plainnat.bst
+Warning--empty journal in McCallum
 Warning--empty journal in SamT.Roweis
 Warning--empty year in SamT.Roweis
 Warning--empty year in SamT.Roweis
@@ -37,45 +47,45 @@ Warning--empty journal in TommiJaakkola
 Warning--empty year in TommiJaakkola
 Warning--empty year in TommiJaakkola
 Warning--empty journal in Zadrozny2001
-You've used 9 entries,
+You've used 16 entries,
             2773 wiz_defined-function locations,
-            644 strings with 6629 characters,
-and the built_in function-call counts, 3183 in all, are:
-= -- 283
-> -- 101
-< -- 10
-+ -- 39
-- -- 30
-* -- 217
-:= -- 493
-add.period$ -- 29
-call.type$ -- 9
-change.case$ -- 37
-chr.to.int$ -- 9
-cite$ -- 40
-duplicate$ -- 182
-empty$ -- 297
-format.name$ -- 41
-if$ -- 650
+            696 strings with 8076 characters,
+and the built_in function-call counts, 7054 in all, are:
+= -- 615
+> -- 405
+< -- 14
++ -- 142
+- -- 126
+* -- 560
+:= -- 1122
+add.period$ -- 55
+call.type$ -- 16
+change.case$ -- 89
+chr.to.int$ -- 16
+cite$ -- 55
+duplicate$ -- 324
+empty$ -- 554
+format.name$ -- 148
+if$ -- 1431
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 9
-newline$ -- 55
-num.names$ -- 36
-pop$ -- 115
+missing$ -- 16
+newline$ -- 95
+num.names$ -- 64
+pop$ -- 206
 preamble$ -- 1
-purify$ -- 28
+purify$ -- 73
 quote$ -- 0
-skip$ -- 111
+skip$ -- 230
 stack$ -- 0
-substring$ -- 81
-swap$ -- 11
+substring$ -- 203
+swap$ -- 18
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 99
-warning$ -- 22
-while$ -- 32
+type$ -- 176
+warning$ -- 23
+while$ -- 62
 width$ -- 0
-write$ -- 113
-(There were 5 error messages)
+write$ -- 212
+(There were 9 error messages)
