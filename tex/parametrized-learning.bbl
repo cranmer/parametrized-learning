@@ -1,4 +1,4 @@
-\begin{thebibliography}{16}
+\begin{thebibliography}{13}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -32,18 +32,21 @@ Glen Cowan, Kyle Cranmer, Eilam Gross, and Ofer Vitells.
 \newblock \doi{10.1140/epjc/s10052-011-1554-0}.
 \newblock URL \url{http://arxiv.org/abs/1007.1727}.
 
-\bibitem[{Eric P. Xing}()]{EricP.Xing}
-Michael I. Jordan Stuart~Russell {Eric P. Xing}, Andrew Y.~Ng.
-\newblock {Distance Metric Learning, With Application To Clustering With
-  Side-Information}.
-\newblock URL
-  \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.6509\&rank=4}.
-
 \bibitem[Hocker et~al.(2007)Hocker, Stelzer, Tegenfeldt, Voss, Voss,
   et~al.]{Hocker:2007ht}
 Andreas Hocker, J.~Stelzer, F.~Tegenfeldt, H.~Voss, K.~Voss, et~al.
 \newblock {TMVA - Toolkit for Multivariate Data Analysis}.
 \newblock \emph{PoS}, ACAT:\penalty0 040, 2007.
+
+\bibitem[Ihler et~al.(2004)Ihler, Fisher, and Willsky]{Ihler2004}
+A.T. Ihler, J.W. Fisher, and A.S. Willsky.
+\newblock {Nonparametric Hypothesis Tests for Statistical Dependency}.
+\newblock \emph{IEEE Transactions on Signal Processing}, 52\penalty0
+  (8):\penalty0 2234--2249, August 2004.
+\newblock ISSN 1053-587X.
+\newblock \doi{10.1109/TSP.2004.830994}.
+\newblock URL
+  \url{http://ieeexplore.ieee.org/lpdocs/epic03/wrapper.htm?arnumber=1315943}.
 
 \bibitem[Pedregosa et~al.(2011)Pedregosa, Varoquaux, Gramfort, Michel, Thirion,
   Grisel, Blondel, Prettenhofer, Weiss, Dubourg, Vanderplas, Passos,
@@ -60,19 +63,6 @@ Andrew Y.~Ng Rajat~Raina, Yirong~Shen and Andrew McCallum.
 \newblock Classification with hybrid generative/discriminative models.
 \newblock 2003.
 \newblock URL \url{\url{http://works.bepress.com/andrew\_mccallum/38}}.
-
-\bibitem[{Sam T. Roweis}()]{SamT.Roweis}
-Lawrence K.~Saul {Sam T. Roweis}.
-\newblock {Nonlinear dimensionality reduction by locally linear embedding}.
-\newblock URL
-  \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.111.3313}.
-
-\bibitem[{Sujay Sanghavi}()]{SujaySanghavi}
-Alan~Willsky {Sujay Sanghavi}, Vincent~Tan.
-\newblock {Learning graphical models for hypothesis testing and
-  classification}.
-\newblock URL
-  \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.368.4311}.
 
 \bibitem[{The ATLAS Collaboration}(2012)]{Aad:2012tfa}
 {The ATLAS Collaboration}.
@@ -105,12 +95,5 @@ Wouter Verkerke and David~P. Kirkby.
 \newblock \emph{Journal of Machine Learning Research}, 14:\penalty0 3011--3040,
   2013.
 \newblock URL \url{http://jmlr.org/papers/v14/tong13a.html}.
-
-\bibitem[Zadrozny and Elkan(2001)]{Zadrozny2001}
-Bianca Zadrozny and Charles Elkan.
-\newblock {Obtaining calibrated probability estimates from decision trees and
-  naive Bayesian classifiers}.
-\newblock pages 609--616, June 2001.
-\newblock URL \url{http://dl.acm.org/citation.cfm?id=645530.655658}.
 
 \end{thebibliography}

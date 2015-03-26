@@ -7,11 +7,6 @@ Illegal, another \bibstyle command---line 37 of file parametrized-learning.aux
  :          {natbib}
 I'm skipping whatever remains of this command
 Database file #1: learning.bib.bib
-Warning--I didn't find a database entry for ""
-Too many commas in name 1 of "{Eric P. Xing}, Andrew Y. Ng, Michael I. Jordan, Stuart Russell" for entry EricP.Xing
-while executing---line 1347 of file plainnat.bst
-Too many commas in name 1 of "{Eric P. Xing}, Andrew Y. Ng, Michael I. Jordan, Stuart Russell" for entry EricP.Xing
-while executing---line 1347 of file plainnat.bst
 Name 1 in "Rajat Raina, Yirong Shen, Andrew Y. Ng, and Andrew McCallum" has a comma at the end for entry McCallum
 while executing---line 1347 of file plainnat.bst
 Name 1 in "Rajat Raina, Yirong Shen, Andrew Y. Ng, and Andrew McCallum" has a comma at the end for entry McCallum
@@ -25,67 +20,53 @@ Warning--empty year in BiancaZadrozny
 Warning--empty journal in ClaytonScott
 Warning--empty year in ClaytonScott
 Warning--empty year in ClaytonScott
-Too many commas in name 1 of "{Eric P. Xing}, Andrew Y. Ng, Michael I. Jordan, Stuart Russell" for entry EricP.Xing
-while executing---line 1429 of file plainnat.bst
-Too many commas in name 1 of "{Eric P. Xing}, Andrew Y. Ng, Michael I. Jordan, Stuart Russell" for entry EricP.Xing
-while executing---line 1429 of file plainnat.bst
-Warning--empty journal in EricP.Xing
-Warning--empty year in EricP.Xing
-Warning--empty year in EricP.Xing
 Name 1 in "Rajat Raina, Yirong Shen, Andrew Y. Ng, and Andrew McCallum" has a comma at the end for entry McCallum
 while executing---line 1429 of file plainnat.bst
 Name 1 in "Rajat Raina, Yirong Shen, Andrew Y. Ng, and Andrew McCallum" has a comma at the end for entry McCallum
 while executing---line 1429 of file plainnat.bst
 Warning--empty journal in McCallum
-Warning--empty journal in SamT.Roweis
-Warning--empty year in SamT.Roweis
-Warning--empty year in SamT.Roweis
-Warning--empty journal in SujaySanghavi
-Warning--empty year in SujaySanghavi
-Warning--empty year in SujaySanghavi
 Warning--empty journal in TommiJaakkola
 Warning--empty year in TommiJaakkola
 Warning--empty year in TommiJaakkola
-Warning--empty journal in Zadrozny2001
-You've used 16 entries,
+You've used 13 entries,
             2773 wiz_defined-function locations,
-            696 strings with 8076 characters,
-and the built_in function-call counts, 7054 in all, are:
-= -- 615
-> -- 405
-< -- 14
-+ -- 142
-- -- 126
-* -- 560
-:= -- 1122
-add.period$ -- 55
-call.type$ -- 16
-change.case$ -- 89
-chr.to.int$ -- 16
-cite$ -- 55
-duplicate$ -- 324
-empty$ -- 554
-format.name$ -- 148
-if$ -- 1431
+            685 strings with 7575 characters,
+and the built_in function-call counts, 6129 in all, are:
+= -- 536
+> -- 384
+< -- 9
++ -- 133
+- -- 120
+* -- 516
+:= -- 987
+add.period$ -- 48
+call.type$ -- 13
+change.case$ -- 78
+chr.to.int$ -- 13
+cite$ -- 39
+duplicate$ -- 259
+empty$ -- 462
+format.name$ -- 137
+if$ -- 1235
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 16
-newline$ -- 95
-num.names$ -- 64
-pop$ -- 206
+missing$ -- 13
+newline$ -- 82
+num.names$ -- 52
+pop$ -- 160
 preamble$ -- 1
-purify$ -- 73
+purify$ -- 65
 quote$ -- 0
-skip$ -- 230
+skip$ -- 187
 stack$ -- 0
-substring$ -- 203
-swap$ -- 18
-text.length$ -- 1
+substring$ -- 196
+swap$ -- 10
+text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 176
-warning$ -- 23
-while$ -- 62
+type$ -- 143
+warning$ -- 13
+while$ -- 52
 width$ -- 0
-write$ -- 212
-(There were 9 error messages)
+write$ -- 184
+(There were 5 error messages)
