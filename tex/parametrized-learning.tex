@@ -66,8 +66,40 @@ In many areas of science, likelihood ratio tests  are established tools for stat
 Directly constructing the likelihood ratio for high-dimensional observations 
 is often not possible or is computationally impractical. Here we demonstrate how 
 discriminative classifiers can be used to construct equivalent likelihood ratio tests when 
-a generative model for the data is available for training and calibration.  We use the following notation
+a generative model for the data is available for training and calibration.  
 
+As a concrete example, consider searches for new particles at the Large Hadron Collider. 
+The ATLAS and CMS experiments have published several hundred papers where the 
+final statistical result was formulated as a hypothesis test or confidence interval 
+using a generalized likelihood ratio test~\citep{Cowan:2010js}. This includes
+the discovery of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa} and 
+subsequent measurement of its properties.  
+The bulk of the likelihood ratio tests at the LHC are based on the distribution of a single event-level feature
+that discriminates between a process of interest (labeled \textit{signal}) and various other processes 
+(labeled \textit{background}).
+
+To improve the statistical power of these tests, hundreds of these searches have utilized discriminative
+classifiers trained on labeled data. Typically using libraries such as TMVA that implement conventional techniques like the multi-layer perceptron and boosted decision trees~\citep{Hocker:2007ht}, though recently there has been progress in deep networks~\citep{Baldi:2014kfa} and a NIPS workshop synthesizing the lessons learned during HiggsML~\citep{HepML}, the largest Kaggle challenge in history. The use of classifiers is effective, but an intermediate step not obviously connected to the target likelihood ratio test.
+
+The labeled data used to train the classifiers are not obtained from the experimental apparatus. 
+Instead they are generated from a 
+detailed simulation, which includes a quantum mechanical description of the underlying particle 
+interactions, an exquisitely detailed simulation of the particle detectors with hundreds of millions of 
+sensors, and the data processing pipeline that reduces the data for a single event to tens or hundreds of high-level features used as input to the classifier. 
+It takes several minutes for this generative model to simulate a single collision or \textit{event} with Monte Carlo
+techniques. While particle physics offers an extreme example, it is common in science that generative 
+models are available while it not feasible to evaluate the probability density function that is implicitly being 
+sampled by the generative model.
+
+This paper describes how one can utilize generative statistical models for the data in conjunction with 
+discriminative classifiers to construct generalized likelihood ratio tests that are equivalent to 
+the one that would have been obtained if it were possible to evaluate the probability 
+density implicitly being sampled by the generative model.
+  
+
+\subsection{Notation and Assumptions}
+
+We use the following ntoootation:
 \begin{itemize}
  \item $x$: a vector of features
  \item $D$: a dataset of $D=\{x_1, \dots, x_n\}$, where $x_e$ are assumed to be i.i.d.
@@ -76,10 +108,11 @@ a generative model for the data is available for training and calibration.  We u
 %\item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
 \item $s(x;\theta_0, \theta_1)$: real-valued discriminative classification score, parametrized by $\theta_0$ and $\theta_1$
 %\item $p( s | \theta )$ The probability density function for $s$ implied by $p(x|\theta)$ and $s(x)$
-\item $p( s | \theta )$: The probability density  for $s(x; \theta_0, \theta_1)$ implied by $p(x|\theta)$ \end{itemize}
+\item $p( s_{\theta_0, \theta_1} | \theta )$: The probability density  for $s(x; \theta_0, \theta_1)$ implied by $p(x|\theta)$ \end{itemize}
 We will assume the $x_e$ are i.i.d., so that $p(D|\theta) = \prod_{e=1}^n p(x_e | \theta)$.
 
-\newpage
+%\newpage
+\subsection{Prelude}
 
 In the setting where one is interested in simple hypothesis testing between a null $\theta=\theta_0$ against an alternate $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio 
 \begin{equation}
@@ -88,9 +121,9 @@ T(D) = \prod_{e=1}^n \frac{ p(x_e|\theta_0)}{ p(x_e|\theta_1)}
 is the most powerful test statistic. In order to evaluate $T(D)$, one must be able to evaluate the probability density 
 $p(x| \theta)$ at any value $x$. However, it is increasingly common in science that one has a complex simulation that 
 can act as generative model  for $p(x|\theta)$, but one cannot evaluate the density directly. For instance, this is the case 
-high energy physics where the simulation of particle detectors can only be done in the `forward mode'. 
+high energy physics where the simulation of particle detectors can only be done in the `forward mode'. This same setting has been considered by \cite{ClaytonScott} and \cite{JMLR:v14:tong13a}.
 
-Our main result is that one can form an equivalent test based on 
+The main result of this paper is that one can form an equivalent test based on 
 %\begin{equation}
 %T'(D) = \prod_{e=1}^n \frac{ p(\,s(x_e; \theta_1, \theta_0) \mid \theta_1)}{ p(\,s(x_e; \theta_1, \theta_0)\mid\theta_0)}
 %\end{equation}
@@ -109,7 +142,7 @@ from $p(x|\theta_0)$ and $(x,y=1)$ generated from $p(x|\theta_1)$. In Section~\r
 
 While the original goal for frequentist hypothesis testing is to make a decision to accept or reject the null hypothesis based on the entire dataset $D$, we are able to reformulate it such that the machine learning problem is an event-by-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
 
-\section{Comments on classification and frequentist hypothesis tests}
+\subsection{Comments on classification and frequentist hypothesis tests}
 
 Significant literature exists around generative and discriminative classifiers~\citep{AndrewY.Ng}. Typically, generative classifiers learn a model for the joint probability $p(x,y)$, of the inputs $x$ and the classification label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative classifiers model the posterior $p(y|x)$ directly. For classification tasks, one then thresholds on $p(y|x)$. In both cases this description in terms of a posterior requires a prior distribution for $p(y)$, which is either modeled explicitly or learned from the training data. 
 This familiar formulation of classification may lead to some confusion in the setting of the current work. 
@@ -201,7 +234,7 @@ One can think of the ratio $p_1(s)/p_0(s)$ as a way of calibrating the the discr
 
 
 
-\section{Composite hypotheses and the generalized likelihood ratio}\label{?}l{S:GLR}
+\section{Composite hypotheses and the generalized likelihood ratio}\label{S:GLR}
 
 In the case of composite hypotheses $\theta \in \Theta_0$ against an alternative $\theta \in \Theta_0^C$, the generalized likelihood ratio\footnote{Also known as the profile likelihood ratio.} test is commonly used
 \begin{equation}
