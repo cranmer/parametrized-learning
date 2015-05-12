@@ -1,4 +1,4 @@
-\begin{thebibliography}{14}
+\begin{thebibliography}{15}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -95,6 +95,13 @@ David~Haussler {Tommi Jaakkola}.
 Wouter Verkerke and David~P. Kirkby.
 \newblock {The RooFit toolkit for data modeling}.
 \newblock \emph{eConf}, C0303241:\penalty0 MOLT007, 2003.
+
+\bibitem[Whiteson and Whiteson(2007)]{Whiteson:2006ws}
+S.~Whiteson and D.~Whiteson.
+\newblock {Stochastic optimization for collision selection in high energy
+  physics}.
+\newblock \emph{Association for the Advancement of Artificial Intelligence},
+  292, 2007.
 
 \bibitem[{Xin Tong}(2013)]{JMLR:v14:tong13a}
 {Xin Tong}.

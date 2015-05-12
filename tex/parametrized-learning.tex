@@ -24,6 +24,7 @@
 
 %\title{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}
 \title{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}
+\title{Approximating generalized likelihood ratio tests with calibrated discriminative classifiers}
 %\title{Calibrated, Parametrized Learning}
 \author{Kyle Cranmer}
 %\date{}							% Activate to display a given date or no date
@@ -62,7 +63,7 @@ for the data is available for training and calibration.
 %\subsection{}
 
 
-In many areas of science, likelihood ratio tests  are established tools for statistical inference. 
+In many areas of science, (generalized) likelihood ratio tests  are established tools for statistical inference. 
 Directly constructing the likelihood ratio for high-dimensional observations 
 is often not possible or is computationally impractical. Here we demonstrate how 
 discriminative classifiers can be used to construct equivalent likelihood ratio tests when 
@@ -75,33 +76,44 @@ using a generalized likelihood ratio test~\citep{Cowan:2010js}. This includes
 the discovery of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa} and 
 subsequent measurement of its properties.  
 The bulk of the likelihood ratio tests at the LHC are based on the distribution of a single event-level feature
-that discriminates between a process of interest (labeled \textit{signal}) and various other processes 
+that discriminates between a hypothesized process of interest (labeled \textit{signal}) and various other processes 
 (labeled \textit{background}).
 
-To improve the statistical power of these tests, hundreds of these searches have utilized discriminative
-classifiers trained on labeled data. Typically using libraries such as TMVA that implement conventional techniques like the multi-layer perceptron and boosted decision trees~\citep{Hocker:2007ht}, though recently there has been progress in deep networks~\citep{Baldi:2014kfa} and a NIPS workshop synthesizing the lessons learned during HiggsML~\citep{HepML}, the largest Kaggle challenge in history. The use of classifiers is effective, but an intermediate step not obviously connected to the target likelihood ratio test.
+To improve the statistical power of these tests, hundreds of these searches have utilized supervised learning to train discriminative classifiers. Within High Energy Physics (HEP) libraries such as TMVA that implement conventional techniques like the multi-layer perceptron and boosted decision trees~\citep{Hocker:2007ht} are commonly used. Recently there has been progress in using deep networks~\citep{Baldi:2014kfa} and a NIPS workshop synthesizing the lessons learned during HiggsML~\citep{HepML}, the largest Kaggle challenge in history. 
+%The use of classifiers is effective, but an intermediate step not obviously connected to the target likelihood ratio test.
 
-The labeled data used to train the classifiers are not obtained from the experimental apparatus. 
-Instead they are generated from a 
-detailed simulation, which includes a quantum mechanical description of the underlying particle 
-interactions, an exquisitely detailed simulation of the particle detectors with hundreds of millions of 
-sensors, and the data processing pipeline that reduces the data for a single event to tens or hundreds of high-level features used as input to the classifier. 
-It takes several minutes for this generative model to simulate a single collision or \textit{event} with Monte Carlo
-techniques. While particle physics offers an extreme example, it is common in science that generative 
-models are available while it not feasible to evaluate the probability density function that is implicitly being 
-sampled by the generative model.
+%Collisions are usually selected with supervised learning methods 
+As noted in ~\citep{Whiteson:2006ws}, ``such methods are suboptimal because they assume that the selector with the highest classification accuracy will yield a mass measurement with the smallest statistical uncertainty.''
+A key point is that evaluating the loss for classification is a per-event operation, while evaluating the loss for the mass measurement is a per-experiment operation involving on a dataset with many events. They went on to demonstrate a computationally intensive stochastic optimization technique based on the per-experiment loss out performed the two stage selection-estimation process. 
+%This paper shows that (to the extent a generalized likelihood ratio test in the full feature space is close to  optimal) one can achieve optimal results with a  specific per-event procedure by reformulating the target likelihood ratio in terms of a per-event classification followed by an specific calibration process.
 
-This paper describes how one can utilize generative statistical models for the data in conjunction with 
-discriminative classifiers to construct generalized likelihood ratio tests that are equivalent to 
-the one that would have been obtained if it were possible to evaluate the probability 
-density implicitly being sampled by the generative model.
+Generalized likelihood ratio tests enjoy a number of optimal properties in the asymptotic limit and are widely used even away from that limit. The form of the generalized likelihood ratio is explicitly a per-experiment object, thus naively it has the same computational challenges as other approaches that optimize a per-experiment loss. This paper shows how one can reformulate generalized likelihood ratio test in terms of a per-event classification stage and a calibration process. Moreover, one can utilize a generative statistical model for the data both to train a discriminative classifier with a supervised learning algorithm and for the calibration process.
+
+%This paper describes how one can utilize generative statistical models for the data in conjunction with discriminative classifiers to construct generalized likelihood ratio tests that are equivalent to 
+%the one that would have been obtained if it were possible to evaluate the probability 
+%density implicitly being sampled by the generative model.
+%
+%This paper describes how one can utilize generative statistical models for the data in conjunction with discriminative classifiers to construct generalized likelihood ratio tests that are equivalent to 
+%the one that would have been obtained if it were possible to evaluate the probability 
+%density implicitly being sampled by the generative model.
+
+%The labeled data used to train the classifiers are not obtained from the experimental apparatus. 
+%Instead they are generated from a 
+%detailed simulation, which includes a quantum mechanical description of the underlying particle 
+%interactions, an exquisitely detailed simulation of the particle detectors with hundreds of millions of 
+%sensors, and the data processing pipeline that reduces the data for a single event to tens or hundreds of high-level features used as input to the classifier. 
+%It takes several minutes for this generative model to simulate a single collision or \textit{event} with Monte Carlo
+%techniques. While particle physics offers an extreme example, it is common in science that generative 
+%models are available while it not feasible to evaluate the probability density function that is implicitly being 
+%sampled by the generative model.
+
   
 
 \subsection{Notation and Assumptions}
 
-We use the following ntoootation:
+We use the following notation:
 \begin{itemize}
- \item $x$: a vector of features
+ \item $x$: a vector of features for an event
  \item $D$: a dataset of $D=\{x_1, \dots, x_n\}$, where $x_e$ are assumed to be i.i.d.
  \item $\theta$: parameters of a statistical model
 \item $p(x| \theta)$:  probability density  (statistical model) for $x$ given $\theta$
@@ -136,24 +148,29 @@ s_e = s(x_e; \theta_0, \theta_1) = m\left(\, p(x_e|\theta_0) / p(x_e|\theta_1) \
 %s_e = s(x_e; \theta_0, \theta_1) = m\left(\frac{ p(x_e|\theta_0)}{ p(x_e|\theta_1)} \right) \; 
 \end{equation}
 where $m$ is any strictly increasing or decreasing function. This result will be proven below.
-This allows us to recast the original likelihood ratio test into an alternate form in which a discriminative classifier is 
-used to learn $s(x; \theta_0, \theta_1)$. The discriminative classifier can be trained with data $(x,y=0)$ generated 
-from $p(x|\theta_0)$ and $(x,y=1)$ generated from $p(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the discriminative classifier explicitly parametrized in terms of $(\theta_0, \theta_1)$.
+This allows us to recast the original likelihood ratio test into an alternate form in which supervised learning is used to train the discriminative classifier $s(x; \theta_0, \theta_1)$. The discriminative classifier can be trained with data $(x,y=0)$ generated 
+from $p(x|\theta_0)$ and $(x,y=1)$ generated from $p(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the classifier  parametrized in terms of $(\theta_0, \theta_1)$.
 
-While the original goal for frequentist hypothesis testing is to make a decision to accept or reject the null hypothesis based on the entire dataset $D$, we are able to reformulate it such that the machine learning problem is an event-by-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
+While the original goal for frequentist hypothesis testing is to make a decision to accept or reject the null hypothesis based on the entire dataset $D$, we are able to reformulate it such that the machine learning problem is a per-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
 
 \subsection{Comments on classification and frequentist hypothesis tests}
 
 Significant literature exists around generative and discriminative classifiers~\citep{AndrewY.Ng}. Typically, generative classifiers learn a model for the joint probability $p(x,y)$, of the inputs $x$ and the classification label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative classifiers model the posterior $p(y|x)$ directly. For classification tasks, one then thresholds on $p(y|x)$. In both cases this description in terms of a posterior requires a prior distribution for $p(y)$, which is either modeled explicitly or learned from the training data. 
 This familiar formulation of classification may lead to some confusion in the setting of the current work. 
 
-The first possible source of confusion we wish to avoid is that  $p(x|\theta)$  is a generative \textit{statistical model} for the features $x$, not a generative classifier. We think of the  $p(x|\theta)$ along the lines of a traditional scientific theory, able to make predictions about $x$ and being motivated by domain-specific considerations. For example, in the context of high energy particle physics $p(x|\theta)$ is based on quantum field theory and a detailed simulation of the particle detector and data processing algorithms that transform raw sensor data into the feature vector $x$.  
-Moreover, we are not attempting to learn the generative model $p(x|\theta)$, we are taking it as given and trying to learn the corresponding likelihood ratio test.
+The first possible source of confusion we wish to avoid is that here $p(x|\theta)$  is a generative \textit{statistical model} for the features $x$, not a generative classifier. We think of the  $p(x|\theta)$ along the lines of a traditional scientific theory, able to make predictions about $x$ and being motivated by domain-specific considerations. For example, in the context of HEP $p(x|\theta)$ is based on quantum field theory, a detailed simulation of the particle detector, and data processing algorithms that transform raw sensor data into the feature vector $x$.  
+Moreover, we are not attempting to learn the generative model $p(x|\theta)$, we are taking it as given and trying to learn the corresponding (generalized) likelihood ratio test.
 %The point here is to make the distinction of $p(x|\theta)$ in this context from a generic generative classifier like normal discriminate analysis or naive Bayes. 
 
-The second possible source of confusion is that the likelihood ratio $T(D)$ is aimed at tests based on the entire dataset; we are not interested in thresholded classification on individual events $x_e$.  
-Additionally, we know that both discriminative and generative classifier scores are often poorly calibrated. 
-For instance, often we wish to have well calibrated p-values defined by $P(T(D) > k |\theta)$, not well calibrated posterior probabilities $p(y|x)$.
+The second possible source of confusion is that 
+we are not directly interested in calibrating the classification score in terms of a per-event posterior probability $p(y|x)$. 
+Instead, we are interested in the approximation of the per-experiment likelihood ratio, which might be used to calculate p-values defined by $P(T(D) > k |\theta)$.
+%
+%%the likelihood ratio $T(D)$ is aimed at tests based on the entire dataset; 
+%we are not interested in thresholded classification on individual events $x_e$.  
+%Knowing that classifier scores are often poorly calibrated is an immediate concern.
+
+%We wish to have well calibrated p-values defined by $P(T(D) > k |\theta)$, not well calibrated posterior probabilities $p(y|x)$. 
 
 Lastly, in the setting of frequentist hypothesis tests, we do not have a prior $\pi(\theta)$. 
 While we can use the generative models to produce training data $(x,y=0)$ generated 
@@ -192,11 +209,11 @@ The distribution of $x$ totally determines the distribution of $s$.
 In the application at hand, the function $s$ maps a high-dimensional feature vector $x$ to $\mathbb{R}^+$.
 Let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the orthonormal vector to $\Omega_c$ at the point $x$.
 
-We need to show the density
+We need to show that for all $x$, the density
 \begin{equation}
 p(q_x|\theta) = \int dx \delta(q_x-q_x(x)) p(x|\theta)  / | \hat{n} \cdot \nabla q_x  | 
 \end{equation}
-is the same as
+is equal to the density
 \begin{equation}
 p(q_s|\theta) = \int dx \delta(q_s-q_s(s(x))) \, p(x|\theta) \, / | \hat{n} \cdot \nabla q_s  | \; .
 \end{equation}
@@ -263,15 +280,16 @@ It is important that we include the denominator $p(s(x_e; \theta, \theta_1) |\th
 Thus far we have shown that likelihood ratio tests based on $p(x|\theta_0)/p(x|\theta_1)$ with high dimensional features $x$ can be reproduced via hypothesis tests based on the univariate densities $p(s|\theta)$ for the very special dimensionality reduction map $s(x|\theta_0, \theta_1)$. The motivation for this is that often it is not possible to evaluate the density $p(x|\theta)$ at a given point $x$.  This approach is not useful if it is not possible to approximate $s(x|\theta_0, \theta_1)$ and $p(s|\theta)$ without evaluating the density $p(x|\theta)$. In order for this approach to be useful, we need to be able to approximate both based on samples $\{(x,\theta)\}$ drawn from the generative model $p(x|\theta)$.  
 
 Denote the approximate dimensionality reduction map $\hat{s}(x; \theta_0, \theta_1)$ and its distribution $\hat{g}(\hat{s}|\theta)$. In general we will be interested in the machine learning problem that approximates these distributions based on samples $\{x_i\}$ drawn from the generative model $p(x|\theta)$.  
-The first step in this direction is to confirm that a discriminative classifier obtained from common training procedures will yield a function that is one-to-one with $p(x|\theta_0)/p(x|\theta_1)$.
+The first step in this direction is to confirm that a discriminative classifier obtained from common supervised learning algorithms will yield a function that is one-to-one with $p(x|\theta_0)/p(x|\theta_1)$.
 %In particular, 
 %is there a loss function such that the function $\hat{s}(x)$ that minimizes the expected loss leads to a function
 %that is one-to-one with $p(x|\theta_0)/p(x|\theta_1)$?
 
 
-\subsection{The standard discriminative classification setting} For fixed $\theta_0$ and $\theta_1$ we can generate 
-large samples from each model and train a classifier. To be concrete, let's use $p(x|\theta_0)$ to generate training 
-data $(x_i,  y_i=0)$ and $p(x|\theta_1)$ to generate training data $(x_i , y_i=1)$. With balanced training data  -- $\mbox{p(y=1)=p(y=0)=\sfrac{1}{2}}$ -- a quadratic loss function will lead to classifiers that approximate the regression function  $\hat{s}(x) \approx p(y|x) = p(x|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$, which is  monotonic with the desired likelihood ratio $p(x|\theta_0)/p(x|\theta_1)$. Thus, standard classification approaches will lead to discriminative classifiers needed to produce an equivalent likelihood ratio test.  Once the classifier is trained, we can use the generative model and any univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{g}(\hat{s}|\theta)$.
+\subsection{The standard discriminative classification setting} 
+For fixed $\theta_0$ and $\theta_1$ we can generate 
+large samples from each model and train a classifier. To be concrete, let us use $p(x|\theta_0)$ to generate training 
+data $(x_i,  y_i=0)$ and $p(x|\theta_1)$ to generate training data $(x_i , y_i=1)$. With balanced training data   ($p(y=1)=p(y=0)=\sfrac{1}{2}$) a quadratic loss function will lead to classifiers that approximate the regression function  $\hat{s}(x) \approx p(y|x) = p(x|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$, which is  monotonic with the desired likelihood ratio $p(x|\theta_0)/p(x|\theta_1)$. Thus, standard classification approaches with various surrogate loss functions lead to discriminative classifiers that approximate the desired likelihood ratio tests.  Once the classifier is trained, we can use the generative model together with a univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{g}(\hat{s}|\theta)$.
 
 
 %
@@ -295,7 +313,7 @@ data $(x_i,  y_i=0)$ and $p(x|\theta_1)$ to generate training data $(x_i , y_i=1
 
 %Once the classifier is trained, we can use the generative model and any univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{g}(\hat{s}|\theta)$.
 
-Thus, in the  limit of large samples from the generative model,  we can approximate arbitrarily well the original likelihood ratio test. With finite training data for $\hat{s}(x)$ and samples to approximate $\hat{g}(\hat{s}|\theta)$ it will be necessary to be more specific about the what loss function we are interested in for approximating the likelihood ratio test. This will depend in general on the ultimate goal of the test. We know that in the case of composite hypothesis tests that there is in general no uniformly most powerful test, thus it is likely that a decision theoretic approach taking into account some weighting or utility over the space $\Theta$ is necessary. This is left as a subject for future work.
+In the  limit of large samples from the generative model,  we can approximate the original likelihood ratio test arbitrarily well. With finite training data for $\hat{s}(x)$ and samples to approximate $\hat{g}(\hat{s}|\theta)$ it will be necessary to be more specific about the what loss function we are interested in for approximating the likelihood ratio test. This will depend in general on the ultimate goal of the test. We know that in the case of composite hypothesis tests that there is in general no uniformly most powerful test, thus it is likely that a decision theoretic approach taking into account some weighting or utility over the space $\Theta$ is necessary. This is left as a subject for future work.
 
 
 \subsection{Training a parametrized, discriminative classifier}
