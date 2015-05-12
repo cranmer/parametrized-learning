@@ -155,7 +155,7 @@ While the original goal for frequentist hypothesis testing is to make a decision
 
 \subsection{Comments on classification and frequentist hypothesis tests}
 
-Significant literature exists around generative and discriminative classifiers~\citep{AndrewY.Ng}. Typically, generative classifiers learn a model for the joint probability $p(x,y)$, of the inputs $x$ and the classification label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative classifiers model the posterior $p(y|x)$ directly. For classification tasks, one then thresholds on $p(y|x)$. In both cases this description in terms of a posterior requires a prior distribution for $p(y)$, which is either modeled explicitly or learned from the training data. 
+Vast literature exists around generative and discriminative classifiers~\citep{AndrewY.Ng}. Typically, generative classifiers learn a model for the joint probability $p(x,y)$, of the inputs $x$ and the classification label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative classifiers model the posterior $p(y|x)$ directly. For classification tasks, one then thresholds on $p(y|x)$. In both cases this description in terms of a posterior requires a prior distribution for $p(y)$, which is either modeled explicitly or learned from the training data. 
 This familiar formulation of classification may lead to some confusion in the setting of the current work. 
 
 The first possible source of confusion we wish to avoid is that here $p(x|\theta)$  is a generative \textit{statistical model} for the features $x$, not a generative classifier. We think of the  $p(x|\theta)$ along the lines of a traditional scientific theory, able to make predictions about $x$ and being motivated by domain-specific considerations. For example, in the context of HEP $p(x|\theta)$ is based on quantum field theory, a detailed simulation of the particle detector, and data processing algorithms that transform raw sensor data into the feature vector $x$.  
@@ -196,7 +196,7 @@ Since the prior $p(y)$ is not needed for the target likelihood ratio test and be
 \begin{equation}
 \ln T =   \sum_{e=1}^n \underbrace{\log \left[ \frac {p(x_e | \theta_0) }{ p(x_e | \theta_1) } \right]}_{q(x_e)} \;.
 \end{equation}
-Here we see that the optimal $T$ for the experiment is composed of a sum over events of a  linear function of the per-event function $q(x)$. A monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
+Here we see that the test statistic $T$ for the experiment is composed of a sum over events of the per-event function $q(x)$. A sum over a monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
 
 The important part of the per-event function $q(x)$ is that it defines iso-contours in the feature space $x$. As we will show, our goal is to learn a monotonic function of $p(x|\theta_0)/p(x|\theta_1)$, which will share the same iso-contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function of $q(x)$. Our claim is that the generative model $p(x|\theta)$ can be used to calibrate the density $p(s|\theta)$ and that
 \begin{equation}
@@ -277,7 +277,11 @@ It is important that we include the denominator $p(s(x_e; \theta, \theta_1) |\th
 
 \section{Learning the correct mapping and its distribution}\label{S:classifier}
 
-Thus far we have shown that likelihood ratio tests based on $p(x|\theta_0)/p(x|\theta_1)$ with high dimensional features $x$ can be reproduced via hypothesis tests based on the univariate densities $p(s|\theta)$ for the very special dimensionality reduction map $s(x|\theta_0, \theta_1)$. The motivation for this is that often it is not possible to evaluate the density $p(x|\theta)$ at a given point $x$.  This approach is not useful if it is not possible to approximate $s(x|\theta_0, \theta_1)$ and $p(s|\theta)$ without evaluating the density $p(x|\theta)$. In order for this approach to be useful, we need to be able to approximate both based on samples $\{(x,\theta)\}$ drawn from the generative model $p(x|\theta)$.  
+Thus far we have shown that likelihood ratio tests based on $p(x|\theta_0)/p(x|\theta_1)$ with high dimensional features $x$ can be reproduced via hypothesis tests based on the univariate densities $p(s|\theta)$ for the particular dimensionality reduction map $s(x|\theta_0, \theta_1)$.
+% Often it is not possible to evaluate the density $p(x|\theta)$ at a given point $x$.  
+%This approach will not be useful if it is not possible to approximate $s(x|\theta_0, \theta_1)$ and $p(s|\theta)$ without evaluating the density $p(x|\theta)$. 
+%In order for this approach to be useful, we need to be able to approximate both based on samples $\{(x,\theta)\}$ drawn from the generative model $p(x|\theta)$.  
+In order for this approach to be useful in a setting where it is not possible to evaluate the density $p(x|\theta)$, we need to be able to approximate both $s(x|\theta_0, \theta_1)$ and $p(s|\theta)$ based on samples $\{x_i\}$ drawn from the generative model $p(x|\theta)$.  
 
 Denote the approximate dimensionality reduction map $\hat{s}(x; \theta_0, \theta_1)$ and its distribution $\hat{g}(\hat{s}|\theta)$. In general we will be interested in the machine learning problem that approximates these distributions based on samples $\{x_i\}$ drawn from the generative model $p(x|\theta)$.  
 The first step in this direction is to confirm that a discriminative classifier obtained from common supervised learning algorithms will yield a function that is one-to-one with $p(x|\theta_0)/p(x|\theta_1)$.
@@ -289,7 +293,7 @@ The first step in this direction is to confirm that a discriminative classifier 
 \subsection{The standard discriminative classification setting} 
 For fixed $\theta_0$ and $\theta_1$ we can generate 
 large samples from each model and train a classifier. To be concrete, let us use $p(x|\theta_0)$ to generate training 
-data $(x_i,  y_i=0)$ and $p(x|\theta_1)$ to generate training data $(x_i , y_i=1)$. With balanced training data   ($p(y=1)=p(y=0)=\sfrac{1}{2}$) a quadratic loss function will lead to classifiers that approximate the regression function  $\hat{s}(x) \approx p(y|x) = p(x|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$, which is  monotonic with the desired likelihood ratio $p(x|\theta_0)/p(x|\theta_1)$. Thus, standard classification approaches with various surrogate loss functions lead to discriminative classifiers that approximate the desired likelihood ratio tests.  Once the classifier is trained, we can use the generative model together with a univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{g}(\hat{s}|\theta)$.
+data $(x_i,  y_i=0)$ and $p(x|\theta_1)$ to generate training data $(x_i , y_i=1)$. With balanced training data   ($p(y=1)=p(y=0)=\sfrac{1}{2}$) a quadratic loss function will lead to classifiers that approximate the regression function  $\hat{s}(x) \approx p(y|x) = p(x|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$, which is  monotonic with the desired per-event likelihood ratio $q(x)$. Thus, standard supervised learning algorithms with various surrogate loss functions lead to discriminative classifiers that approximate a monotonic function of per-event likelihood ratio $q(x)$.  Once the classifier is trained, we can use the generative model together with a univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{g}(\hat{s}|\theta)$.
 
 
 %
@@ -321,7 +325,7 @@ In the  limit of large samples from the generative model,  we can approximate th
 We are left with the practical question of how to train a family of discriminative classifiers parametrized by $\theta_0$ and $\theta_1$, the 
 parameters associated to the null and alternate hypotheses, respectively. While this could be done independently
 for all $\theta_0$ and $\theta_1$, it is desirable and convenient to have a smooth evolution of the classification score as a function of the parameters. Thus, we anticipate a single learning stage based on training data with input $(x, \theta_0, \theta_1)_i$ and target $y_i$. Somewhat unusually, the unknown values of the parameters are taken
-as input to the classifier, as latent variables whose values will be specified via the enveloping (generalized) likelihood ratio test. We denote the learned family of classifiers $\hat{s}(x; \theta_0, \theta_0)$, and anticipate the training based roughly on the following algorithmic flow.
+as input to the classifier, and are latent variables whose values will be specified via the enveloping (generalized) likelihood ratio test. We denote the learned family of classifiers $\hat{s}(x; \theta_0, \theta_0)$, and anticipate the training based roughly on the following algorithmic flow.
 \begin{algorithm}[ht]
 \caption{Training of the parametrized classifier.}\label{alg:training}
 \begin{algorithmic}
