@@ -75,16 +75,15 @@ final statistical result was formulated as a hypothesis test or confidence inter
 using a generalized likelihood ratio test~\citep{Cowan:2010js}. This includes
 the discovery of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa} and 
 subsequent measurement of its properties.  
+
 The bulk of the likelihood ratio tests at the LHC are based on the distribution of a single event-level feature
 that discriminates between a hypothesized process of interest (labeled \textit{signal}) and various other processes 
-(labeled \textit{background}).
-
-To improve the statistical power of these tests, hundreds of these searches have utilized supervised learning to train discriminative classifiers. Within High Energy Physics (HEP) libraries such as TMVA that implement conventional techniques like the multi-layer perceptron and boosted decision trees~\citep{Hocker:2007ht} are commonly used. Recently there has been progress in using deep networks~\citep{Baldi:2014kfa} and a NIPS workshop synthesizing the lessons learned during HiggsML~\citep{HepML}, the largest Kaggle challenge in history. 
+(labeled \textit{background}). To improve the statistical power of these tests, hundreds of these searches have utilized supervised learning to train discriminative classifiers. Within High Energy Physics (HEP) libraries such as TMVA that implement conventional techniques like the multi-layer perceptron and boosted decision trees~\citep{Hocker:2007ht} are commonly used. Recently, there has been progress in using deep networks~\citep{Baldi:2014kfa} and a NIPS workshop synthesizing the lessons learned during HiggsML~\citep{HepML}, the largest Kaggle challenge in history. 
 %The use of classifiers is effective, but an intermediate step not obviously connected to the target likelihood ratio test.
 
 %Collisions are usually selected with supervised learning methods 
-As noted in ~\citep{Whiteson:2006ws}, ``such methods are suboptimal because they assume that the selector with the highest classification accuracy will yield a mass measurement with the smallest statistical uncertainty.''
-A key point is that evaluating the loss for classification is a per-event operation, while evaluating the loss for the mass measurement is a per-experiment operation involving on a dataset with many events. They went on to demonstrate a computationally intensive stochastic optimization technique based on the per-experiment loss out performed the two stage selection-estimation process. 
+While classification accuracy can lead to optimal approaches for simple hypothesis tests~\citep{Dempster1965}, that is no longer true in the context of parameter estimation or compound hypothesis tests with nuisance parameters. As noted in ~\citep{Whiteson:2006ws}, ``such methods are suboptimal because they assume that the selector with the highest classification accuracy will yield a mass measurement with the smallest statistical uncertainty.''
+A fundamental distinction is that evaluating the loss for classification is a per-event operation, while evaluating the loss for a mass measurement (and other estimation problems) is a per-experiment operation involving a dataset with many events. They went on to demonstrate a computationally intensive stochastic optimization technique based on the per-experiment loss out performed the two stage selection-estimation process. 
 %This paper shows that (to the extent a generalized likelihood ratio test in the full feature space is close to  optimal) one can achieve optimal results with a  specific per-event procedure by reformulating the target likelihood ratio in terms of a per-event classification followed by an specific calibration process.
 
 Generalized likelihood ratio tests enjoy a number of optimal properties in the asymptotic limit and are widely used even away from that limit. The form of the generalized likelihood ratio is explicitly a per-experiment object, thus naively it has the same computational challenges as other approaches that optimize a per-experiment loss. This paper shows how one can reformulate generalized likelihood ratio test in terms of a per-event classification stage and a calibration process. Moreover, one can utilize a generative statistical model for the data both to train a discriminative classifier with a supervised learning algorithm and for the calibration process.
@@ -164,7 +163,7 @@ Moreover, we are not attempting to learn the generative model $p(x|\theta)$, we 
 
 The second possible source of confusion is that 
 we are not directly interested in calibrating the classification score in terms of a per-event posterior probability $p(y|x)$. 
-Instead, we are interested in the approximation of the per-experiment likelihood ratio, which might be used to calculate p-values defined by $P(T(D) > k |\theta)$.
+Instead, we are interested in the approximation of the per-experiment likelihood ratio, which can be used to calculate p-values defined by $P(T(D) > k |\theta)$.
 %
 %%the likelihood ratio $T(D)$ is aimed at tests based on the entire dataset; 
 %we are not interested in thresholded classification on individual events $x_e$.  
@@ -180,7 +179,7 @@ is arbitrary.  When $p(y=0)=p(y=1)=\sfrac{1}{2}$, then
 p(y=1 | x) = \frac{p(x|y=1)}{p(x|y=0)+p(x|y=1)} = \frac{p(x|\theta_1)}{p(x|\theta_0)+p(x|\theta_1))} \;,
 \end{equation}
 which is monotonic with the desired likelihood ratio $p(x|\theta_1)/p(x|\theta_0)$.
-Since the prior $p(y)$ is not needed for the target likelihood ratio test and because the classifier score $p(y|x)$ may not be well calibrated, we choose to denote the classifier score $s(x)$ and simply think of it as a deterministic dimensionality reduction map $s: X \to \mathbb{R}$.  Similar points are made in~\citep{ClaytonScott}.
+Since the prior $p(y)$ is not needed for the target likelihood ratio test and because the classifier score $p(y|x)$ may not be well calibrated, we choose to denote the classifier score $s(x)$ and simply think of it as a deterministic dimensionality reduction map $s: X \to \mathbb{R}$.  Similar points have been made by~\citep{ClaytonScott}.
 
 % and we need not
 %interpret the balance of the training data in terms of a prior probability for the two hypotheses.
@@ -192,13 +191,13 @@ Since the prior $p(y)$ is not needed for the target likelihood ratio test and be
 \section{Dimensionality reduction and calibration}
 
 
- The target hypothesis test is based on 
+We are interested in reformulating the target likelihood ratio  
 \begin{equation}
 \ln T =   \sum_{e=1}^n \underbrace{\log \left[ \frac {p(x_e | \theta_0) }{ p(x_e | \theta_1) } \right]}_{q(x_e)} \;.
 \end{equation}
 Here we see that the test statistic $T$ for the experiment is composed of a sum over events of the per-event function $q(x)$. A sum over a monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
 
-The important part of the per-event function $q(x)$ is that it defines iso-contours in the feature space $x$. As we will show, our goal is to learn a monotonic function of $p(x|\theta_0)/p(x|\theta_1)$, which will share the same iso-contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function of $q(x)$. Our claim is that the generative model $p(x|\theta)$ can be used to calibrate the density $p(s|\theta)$ and that
+The important part of the per-event function $q(x)$ is that it defines iso-contours in the feature space $x$. As we will show, our goal is to learn a monotonic function of $p(x|\theta_0)/p(x|\theta_1)$, which will share the same iso-contours. Then the remaining challenge is to find the appropriate monotonic function that gives back a linear function of $q(x)$. Our claim is that the generative model $p(x|\theta)$ can be used to calibrate the density $p(s|\theta)$ and that
 \begin{equation}
 \ln T' = \sum_{e=1}^n \underbrace{\log \left[ \frac {p(s_e | \theta_0) }{ p(s_e | \theta_1) } \right]}_{q(s_e)} \;,
 \end{equation}
@@ -320,7 +319,7 @@ data $(x_i,  y_i=0)$ and $p(x|\theta_1)$ to generate training data $(x_i , y_i=1
 In the  limit of large samples from the generative model,  we can approximate the original likelihood ratio test arbitrarily well. With finite training data for $\hat{s}(x)$ and samples to approximate $\hat{g}(\hat{s}|\theta)$ it will be necessary to be more specific about the what loss function we are interested in for approximating the likelihood ratio test. This will depend in general on the ultimate goal of the test. We know that in the case of composite hypothesis tests that there is in general no uniformly most powerful test, thus it is likely that a decision theoretic approach taking into account some weighting or utility over the space $\Theta$ is necessary. This is left as a subject for future work.
 
 
-\subsection{Training a parametrized, discriminative classifier}
+\subsection{Training a parametrized classifier}
 
 We are left with the practical question of how to train a family of discriminative classifiers parametrized by $\theta_0$ and $\theta_1$, the 
 parameters associated to the null and alternate hypotheses, respectively. While this could be done independently
@@ -490,8 +489,7 @@ The state of the art for the operator coefficients of the Higgs decay uses the s
 \section{Conclusions}
 
 We have outlined a technique to reformulate generalized likelihood ratio test over a high-dimensional dataset with multiple events in terms of a univariate density of a classifier score. 
-We have shown that a parametrized family of discriminative classifiers $s(x; \theta_0, \theta_1)$ trained and calibrated with a generative model $p(x|\theta)$ can be used to approximate the  likelihood ratio  $\prod_i p(x_i|\theta_0)/p(x_i|\theta_1)$ when it is not possible to evaluate the densities $p(x|\theta)$ for an arbitrary $x$
-This allows one to turn the optimization of the procedure for the per-experiment test into optimization of a per-event classification problem and a calibration procedure. This approach leverages the power of machine learning in a classical statistical setting.
+We have shown that a parametrized family of discriminative classifiers $s(x; \theta_0, \theta_1)$ trained and calibrated with a generative model $p(x|\theta)$ can be used to approximate the  likelihood ratio  $\prod_i p(x_i|\theta_0)/p(x_i|\theta_1)$ even when it is not possible to evaluate the densities $p(x|\theta)$ for an arbitrary $x$.  Furthermore, this allows one to turn the optimization of the procedure for the per-experiment test into optimization of a per-event classification problem and a calibration procedure. This approach leverages the power of machine learning in a classical statistical setting. In particular, it extends the common usage of machine learning for simple hypothesis testing to include the parameter estimation, confidence intervals, and composite hypothesis testing.
 
 %We have shown that a parametrized family of discriminative classifiers $s(x; \theta_0, \theta_1)$ trained and calibrated with a generative model $p(x|\theta)$ can be used to approximate statistical inference likelihood based on the  ratio $p(x|\theta_0)/p(x|\theta_1)$ when it is not possible to evaluate the densities $p(x|\theta)$ for an arbitrary $x$. 
 

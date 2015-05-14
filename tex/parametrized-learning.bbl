@@ -1,4 +1,4 @@
-\begin{thebibliography}{20}
+\begin{thebibliography}{22}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -71,6 +71,15 @@ Glen Cowan, Kyle Cranmer, Eilam Gross, and Ofer Vitells.
 \newblock \doi{10.1140/epjc/s10052-011-1554-0}.
 \newblock URL \url{http://arxiv.org/abs/1007.1727}.
 
+\bibitem[Dempster and Schatzoff(1965)]{Dempster1965}
+A.~P. Dempster and M.~Schatzoff.
+\newblock Expected significance level as a sensitivity index for test
+  statistics.
+\newblock \emph{Journal of the American Statistical Association}, 60\penalty0
+  (310):\penalty0 pp. 420--436, 1965.
+\newblock ISSN 01621459.
+\newblock URL \url{http://www.jstor.org/stable/2282680}.
+
 \bibitem[Hocker et~al.(2007)Hocker, Stelzer, Tegenfeldt, Voss, Voss,
   et~al.]{Hocker:2007ht}
 Andreas Hocker, J.~Stelzer, F.~Tegenfeldt, H.~Voss, K.~Voss, et~al.
@@ -86,6 +95,11 @@ A.T. Ihler, J.W. Fisher, and A.S. Willsky.
 \newblock \doi{10.1109/TSP.2004.830994}.
 \newblock URL
   \url{http://ieeexplore.ieee.org/lpdocs/epic03/wrapper.htm?arnumber=1315943}.
+
+\bibitem[K\'egl et~al.()K\'egl, Rousseau, Cowan, Germain, and Guyon]{HepML}
+Bal\'azs K\'egl, David Rousseau, Glen Cowan, C\'ecile Germain, and Isabelle
+  Guyon.
+\newblock Hepml workshop \url{https://sites.google.com/site/hepml14/home}.
 
 \bibitem[Pedregosa et~al.(2011)Pedregosa, Varoquaux, Gramfort, Michel, Thirion,
   Grisel, Blondel, Prettenhofer, Weiss, Dubourg, Vanderplas, Passos,
