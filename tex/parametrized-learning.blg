@@ -2,7 +2,7 @@ This is BibTeX, Version 0.99d (TeX Live 2013)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: parametrized-learning.aux
 The style file: plainnat.bst
-Illegal, another \bibstyle command---line 48 of file parametrized-learning.aux
+Illegal, another \bibstyle command---line 59 of file parametrized-learning.aux
  : \bibstyle
  :          {natbib}
 I'm skipping whatever remains of this command
@@ -29,45 +29,46 @@ Warning--empty journal in McCallum
 Warning--empty journal in TommiJaakkola
 Warning--empty year in TommiJaakkola
 Warning--empty year in TommiJaakkola
-You've used 15 entries,
+Warning--empty journal in Volobouev:2011vb
+You've used 20 entries,
             2773 wiz_defined-function locations,
-            702 strings with 7972 characters,
-and the built_in function-call counts, 6971 in all, are:
-= -- 611
-> -- 435
-< -- 10
-+ -- 150
-- -- 135
-* -- 583
-:= -- 1122
-add.period$ -- 55
-call.type$ -- 15
-change.case$ -- 89
-chr.to.int$ -- 15
-cite$ -- 43
-duplicate$ -- 299
-empty$ -- 529
-format.name$ -- 156
-if$ -- 1410
+            739 strings with 9067 characters,
+and the built_in function-call counts, 9454 in all, are:
+= -- 822
+> -- 616
+< -- 12
++ -- 212
+- -- 192
+* -- 796
+:= -- 1530
+add.period$ -- 74
+call.type$ -- 20
+change.case$ -- 120
+chr.to.int$ -- 20
+cite$ -- 54
+duplicate$ -- 401
+empty$ -- 708
+format.name$ -- 219
+if$ -- 1916
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 15
-newline$ -- 93
-num.names$ -- 60
-pop$ -- 177
+missing$ -- 20
+newline$ -- 122
+num.names$ -- 80
+pop$ -- 231
 preamble$ -- 1
-purify$ -- 74
+purify$ -- 100
 quote$ -- 0
-skip$ -- 219
+skip$ -- 299
 stack$ -- 0
-substring$ -- 212
-swap$ -- 12
+substring$ -- 276
+swap$ -- 16
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 165
-warning$ -- 13
-while$ -- 59
+type$ -- 220
+warning$ -- 14
+while$ -- 78
 width$ -- 0
-write$ -- 212
+write$ -- 283
 (There were 5 error messages)
