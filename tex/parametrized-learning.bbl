@@ -1,9 +1,24 @@
-\begin{thebibliography}{13}
+\begin{thebibliography}{22}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Aaltonen et~al.(2010)]{Aaltonen:2010yz}
+T.~Aaltonen et~al.
+\newblock {Top Quark Mass Measurement in the Lepton + Jets Channel Using a
+  Matrix Element Method and \textit{in situ} Jet Energy Calibration}.
+\newblock \emph{Phys.Rev.Lett.}, 105:\penalty0 252001, 2010.
+\newblock \doi{10.1103/PhysRevLett.105.252001}.
+
+\bibitem[Allanach et~al.(2000)Allanach, Lester, Parker, and
+  Webber]{Allanach:2000kt}
+B.C. Allanach, C.G. Lester, Michael~Andrew Parker, and B.R. Webber.
+\newblock {Measuring sparticle masses in nonuniversal string inspired models at
+  the LHC}.
+\newblock \emph{JHEP}, 0009:\penalty0 004, 2000.
+\newblock \doi{10.1088/1126-6708/2000/09/004}.
 
 \bibitem[{Andrew Y. Ng}()]{AndrewY.Ng}
 Michael I.~Jordan {Andrew Y. Ng}.
@@ -12,12 +27,36 @@ Michael I.~Jordan {Andrew Y. Ng}.
 \newblock URL
   \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.19.9829\&rank=1}.
 
+\bibitem[Baldi et~al.(2014)Baldi, Sadowski, and Whiteson]{Baldi:2014kfa}
+Pierre Baldi, Peter Sadowski, and Daniel Whiteson.
+\newblock {Searching for Exotic Particles in High-Energy Physics with Deep
+  Learning}.
+\newblock \emph{Nature Commun.}, 5:\penalty0 4308, 2014.
+\newblock \doi{10.1038/ncomms5308}.
+
 \bibitem[{Bianca Zadrozny}()]{BiancaZadrozny}
 Charles~Elkan {Bianca Zadrozny}.
 \newblock {Obtaining calibrated probability estimates from decision trees and
   naive Bayesian classifiers}.
 \newblock URL
   \url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.29.3039}.
+
+\bibitem[Bolognesi et~al.(2012)Bolognesi, Gao, Gritsan, Melnikov, Schulze,
+  et~al.]{Bolognesi:2012mm}
+Sara Bolognesi, Yanyan Gao, Andrei~V. Gritsan, Kirill Melnikov, Markus Schulze,
+  et~al.
+\newblock {On the spin and parity of a single-produced resonance at the LHC}.
+\newblock \emph{Phys.Rev.}, D86:\penalty0 095031, 2012.
+\newblock \doi{10.1103/PhysRevD.86.095031}.
+
+\bibitem[Chen et~al.(2015)Chen, Di~Marco, Lykken, Spiropulu, Vega-Morales,
+  et~al.]{Chen:2014pia}
+Yi~Chen, Emanuele Di~Marco, Joe Lykken, Maria Spiropulu, Roberto Vega-Morales,
+  et~al.
+\newblock {8D likelihood effective Higgs couplings extraction framework in $h
+  \to 4\ell$}.
+\newblock \emph{JHEP}, 1501:\penalty0 125, 2015.
+\newblock \doi{10.1007/JHEP01(2015)125}.
 
 \bibitem[{Clayton Scott}()]{ClaytonScott}
 Robert~Nowak {Clayton Scott}.
@@ -31,6 +70,15 @@ Glen Cowan, Kyle Cranmer, Eilam Gross, and Ofer Vitells.
 \newblock \emph{Eur.Phys.J.}, C71:\penalty0 1554, July 2010.
 \newblock \doi{10.1140/epjc/s10052-011-1554-0}.
 \newblock URL \url{http://arxiv.org/abs/1007.1727}.
+
+\bibitem[Dempster and Schatzoff(1965)]{Dempster1965}
+A.~P. Dempster and M.~Schatzoff.
+\newblock Expected significance level as a sensitivity index for test
+  statistics.
+\newblock \emph{Journal of the American Statistical Association}, 60\penalty0
+  (310):\penalty0 pp. 420--436, 1965.
+\newblock ISSN 01621459.
+\newblock URL \url{http://www.jstor.org/stable/2282680}.
 
 \bibitem[Hocker et~al.(2007)Hocker, Stelzer, Tegenfeldt, Voss, Voss,
   et~al.]{Hocker:2007ht}
@@ -47,6 +95,11 @@ A.T. Ihler, J.W. Fisher, and A.S. Willsky.
 \newblock \doi{10.1109/TSP.2004.830994}.
 \newblock URL
   \url{http://ieeexplore.ieee.org/lpdocs/epic03/wrapper.htm?arnumber=1315943}.
+
+\bibitem[K\'egl et~al.()K\'egl, Rousseau, Cowan, Germain, and Guyon]{HepML}
+Bal\'azs K\'egl, David Rousseau, Glen Cowan, C\'ecile Germain, and Isabelle
+  Guyon.
+\newblock Hepml workshop \url{https://sites.google.com/site/hepml14/home}.
 
 \bibitem[Pedregosa et~al.(2011)Pedregosa, Varoquaux, Gramfort, Michel, Thirion,
   Grisel, Blondel, Prettenhofer, Weiss, Dubourg, Vanderplas, Passos,
@@ -88,6 +141,19 @@ David~Haussler {Tommi Jaakkola}.
 Wouter Verkerke and David~P. Kirkby.
 \newblock {The RooFit toolkit for data modeling}.
 \newblock \emph{eConf}, C0303241:\penalty0 MOLT007, 2003.
+
+\bibitem[Volobouev(2011)]{Volobouev:2011vb}
+Igor Volobouev.
+\newblock {Matrix Element Method in HEP: Transfer Functions, Efficiencies, and
+  Likelihood Normalization}.
+\newblock 2011.
+
+\bibitem[Whiteson and Whiteson(2007)]{Whiteson:2006ws}
+S.~Whiteson and D.~Whiteson.
+\newblock {Stochastic optimization for collision selection in high energy
+  physics}.
+\newblock \emph{Association for the Advancement of Artificial Intelligence},
+  292, 2007.
 
 \bibitem[{Xin Tong}(2013)]{JMLR:v14:tong13a}
 {Xin Tong}.

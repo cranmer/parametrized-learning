@@ -2,7 +2,7 @@ This is BibTeX, Version 0.99d (TeX Live 2013)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: parametrized-learning.aux
 The style file: plainnat.bst
-Illegal, another \bibstyle command---line 37 of file parametrized-learning.aux
+Illegal, another \bibstyle command---line 60 of file parametrized-learning.aux
  : \bibstyle
  :          {natbib}
 I'm skipping whatever remains of this command
@@ -20,6 +20,7 @@ Warning--empty year in BiancaZadrozny
 Warning--empty journal in ClaytonScott
 Warning--empty year in ClaytonScott
 Warning--empty year in ClaytonScott
+Warning--empty year in HepML
 Name 1 in "Rajat Raina, Yirong Shen, Andrew Y. Ng, and Andrew McCallum" has a comma at the end for entry McCallum
 while executing---line 1429 of file plainnat.bst
 Name 1 in "Rajat Raina, Yirong Shen, Andrew Y. Ng, and Andrew McCallum" has a comma at the end for entry McCallum
@@ -28,45 +29,46 @@ Warning--empty journal in McCallum
 Warning--empty journal in TommiJaakkola
 Warning--empty year in TommiJaakkola
 Warning--empty year in TommiJaakkola
-You've used 13 entries,
+Warning--empty journal in Volobouev:2011vb
+You've used 22 entries,
             2773 wiz_defined-function locations,
-            685 strings with 7575 characters,
-and the built_in function-call counts, 6129 in all, are:
-= -- 536
-> -- 384
-< -- 9
-+ -- 133
-- -- 120
-* -- 516
-:= -- 987
-add.period$ -- 48
-call.type$ -- 13
-change.case$ -- 78
-chr.to.int$ -- 13
-cite$ -- 39
-duplicate$ -- 259
-empty$ -- 462
-format.name$ -- 137
-if$ -- 1235
+            753 strings with 9533 characters,
+and the built_in function-call counts, 10460 in all, are:
+= -- 909
+> -- 685
+< -- 13
++ -- 235
+- -- 213
+* -- 883
+:= -- 1684
+add.period$ -- 81
+call.type$ -- 22
+change.case$ -- 133
+chr.to.int$ -- 22
+cite$ -- 59
+duplicate$ -- 437
+empty$ -- 785
+format.name$ -- 244
+if$ -- 2126
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 13
-newline$ -- 82
-num.names$ -- 52
-pop$ -- 160
+missing$ -- 21
+newline$ -- 133
+num.names$ -- 88
+pop$ -- 259
 preamble$ -- 1
-purify$ -- 65
+purify$ -- 111
 quote$ -- 0
-skip$ -- 187
+skip$ -- 332
 stack$ -- 0
-substring$ -- 196
-swap$ -- 10
+substring$ -- 313
+swap$ -- 18
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 143
-warning$ -- 13
-while$ -- 52
+type$ -- 242
+warning$ -- 15
+while$ -- 85
 width$ -- 0
-write$ -- 184
+write$ -- 309
 (There were 5 error messages)
