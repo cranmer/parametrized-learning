@@ -1,0 +1,102 @@
+\begin{thebibliography}{10}
+
+\bibitem{Wilks1938}
+S.~S. Wilks.
+\newblock {The Large-Sample Distribution of the Likelihood Ratio for Testing
+  Composite Hypotheses}.
+\newblock {\em The Annals of Mathematical Statistics}, 9(1):60--62, March 1938.
+
+\bibitem{Cowan:2010js}
+Glen Cowan, Kyle Cranmer, Eilam Gross, and Ofer Vitells.
+\newblock {Asymptotic formulae for likelihood-based tests of new physics}.
+\newblock {\em Eur.Phys.J.}, C71:1554, July 2010.
+
+\bibitem{Aad:2012tfa}
+{The ATLAS Collaboration}.
+\newblock {Observation of a new particle in the search for the Standard Model
+  Higgs boson with the ATLAS detector at the LHC}.
+\newblock {\em Phys.Lett.}, B716:1--29, 2012.
+
+\bibitem{Chatrchyan:2012ufa}
+{The CMS Collaboration}.
+\newblock {Observation of a new boson at a mass of 125 GeV with the CMS
+  experiment at the LHC}.
+\newblock {\em Phys.Lett.}, B716:30--61, 2012.
+
+\bibitem{Hocker:2007ht}
+Andreas Hocker, J.~Stelzer, F.~Tegenfeldt, H.~Voss, K.~Voss, et~al.
+\newblock {TMVA - Toolkit for Multivariate Data Analysis}.
+\newblock {\em PoS}, ACAT:040, 2007.
+
+\bibitem{Baldi:2014kfa}
+Pierre Baldi, Peter Sadowski, and Daniel Whiteson.
+\newblock {Searching for Exotic Particles in High-Energy Physics with Deep
+  Learning}.
+\newblock {\em Nature Commun.}, 5:4308, 2014.
+
+\bibitem{HepML}
+Bal\'azs K\'egl, David Rousseau, Glen Cowan, C\'ecile Germain, and Isabelle
+  Guyon.
+\newblock Hepml workshop \url{https://sites.google.com/site/hepml14/home}.
+
+\bibitem{Dempster1965}
+A.~P. Dempster and M.~Schatzoff.
+\newblock Expected significance level as a sensitivity index for test
+  statistics.
+\newblock {\em Journal of the American Statistical Association}, 60(310):pp.
+  420--436, 1965.
+
+\bibitem{Whiteson:2006ws}
+S.~Whiteson and D.~Whiteson.
+\newblock {Stochastic optimization for collision selection in high energy
+  physics}.
+\newblock {\em Association for the Advancement of Artificial Intelligence},
+  292, 2007.
+
+\bibitem{ClaytonScott}
+Robert~Nowak {Clayton Scott}.
+\newblock {A Neyman-Pearson approach to statistical learning}.
+
+\bibitem{JMLR:v14:tong13a}
+{Xin Tong}.
+\newblock {A Plug-in Approach to Neyman-Pearson Classification}.
+\newblock {\em Journal of Machine Learning Research}, 14:3011--3040, 2013.
+
+\bibitem{AndrewY.Ng}
+Michael I.~Jordan {Andrew Y. Ng}.
+\newblock {On Discriminative vs. Generative classifiers: A comparison of
+  logistic regression and naive Bayes}.
+
+\bibitem{Verkerke:2003ir}
+Wouter Verkerke and David~P. Kirkby.
+\newblock {The RooFit toolkit for data modeling}.
+\newblock {\em eConf}, C0303241:MOLT007, 2003.
+
+\bibitem{scikit-learn}
+F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel,
+  M.~Blondel, P.~Prettenhofer, R.~Weiss, V.~Dubourg, J.~Vanderplas, A.~Passos,
+  D.~Cournapeau, M.~Brucher, M.~Perrot, and E.~Duchesnay.
+\newblock Scikit-learn: Machine learning in {P}ython.
+\newblock {\em Journal of Machine Learning Research}, 12:2825--2830, 2011.
+
+\bibitem{TommiJaakkola}
+David~Haussler {Tommi Jaakkola}.
+\newblock {Exploiting Generative Models in Discriminative Classifiers}.
+
+\bibitem{McCallum}
+Andrew Y.~Ng Rajat~Raina, Yirong~Shen and Andrew McCallum.
+\newblock Classification with hybrid generative/discriminative models.
+\newblock 2003.
+
+\bibitem{BiancaZadrozny}
+Charles~Elkan {Bianca Zadrozny}.
+\newblock {Obtaining calibrated probability estimates from decision trees and
+  naive Bayesian classifiers}.
+
+\bibitem{Ihler2004}
+A.T. Ihler, J.W. Fisher, and A.S. Willsky.
+\newblock {Nonparametric Hypothesis Tests for Statistical Dependency}.
+\newblock {\em IEEE Transactions on Signal Processing}, 52(8):2234--2249,
+  August 2004.
+
+\end{thebibliography}

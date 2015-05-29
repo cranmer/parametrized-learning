@@ -1,70 +1,84 @@
-\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
-
-\usepackage{jmlr2e}
-\usepackage{lineno}
-\linenumbers
-%\jmlrheading{1}{2014}{X-XX}{4/00}{10/00}{Kyle Cranmer}
-
-%\ShortHeadings{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}{Kyle Cranmer}
+\documentclass{article} % For LaTeX2e
+\usepackage{nips15submit_e,times}
+\usepackage{hyperref}
+\usepackage{url}
+%\documentstyle[nips14submit_09,times,art10]{article} % For LaTeX 2.09
 
 
-\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
-\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
-%\geometry{landscape}                		% Activate for for rotated page geometry
-%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
-\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
-								% TeX will automatically convert eps --> pdf in pdflatex		
 \usepackage{amssymb, amsmath}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{xfrac}
-
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
-%\title{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}
-\title{Likelihood ratio tests constructed with discriminative classifiers and calibrated with generative models}
+\renewcommand\refname{}
+
 \title{Approximating generalized likelihood ratio tests with calibrated discriminative classifiers}
-%\title{Calibrated, Parametrized Learning}
-\author{Kyle Cranmer}
-%\date{}							% Activate to display a given date or no date
+
+
+\author{
+Kyle S.~Cranmer\thanks{ Use footnote for providing further information
+about author (webpage, alternative address)---\emph{not} for acknowledging
+funding agencies.} \\
+Center for Cosmology and Particle Physics\\
+       Center for Data Science\\
+       New York University \\
+       New York, NY 10003, USA
+\texttt{kyle.cranmer@nyu.edu} \\
+%\And
+%Coauthor \\
+%Affiliation \\
+%Address \\
+%\texttt{email} \\
+%\AND
+%Coauthor \\
+%Affiliation \\
+%Address \\
+%\texttt{email} \\
+%\And
+%Coauthor \\
+%Affiliation \\
+%Address \\
+%\texttt{email} \\
+%\And
+%Coauthor \\
+%Affiliation \\
+%Address \\
+%\texttt{email} \\
+%(if needed)\\
+}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+%\nipsfinalcopy % Uncomment for camera-ready version
 
 \begin{document}
 
 
-\author{\name Kyle Cranmer \email kyle.cranmer@nyu.edu \\
-       \addr Center for Cosmology and Particle Physics\\
-       Center for Data Science\\
-       New York University \\
-       New York, NY 10003, USA
-}
-
-%\editor{Leslie Pack Kaelbling}
-\editor{}
-
 \maketitle
 
-\begin{abstract}%   <- trailing '%' for backward compatibility of .sty file
-
+\begin{abstract}
 We demonstrate how discriminative classifiers can be used to approximate 
 generalized likelihood ratio tests over high-dimensional data when a generative model 
 for the data is available for training and calibration.  
 \end{abstract}
-%
-%\begin{keywords}
-%  Bayesian Networks, Mixture Models, Chow-Liu Trees
-%\end{keywords}
 
-
-
-
-\maketitle
 
 \section{Introduction}
 %\subsection{}
 
 
-In many areas of science, (generalized) likelihood ratio tests  are established tools for statistical inference~\citep{Wilks1938}. 
+In many areas of science, (generalized) likelihood ratio tests  are established tools for statistical inference~\cite{Wilks1938}. 
 It is increasingly common that a generative model is used to describe complex processes that tie 
 parameters $\theta$ of an underlying theory and measurement apparatus to high-dimensional observations $x$. 
 Directly evaluating the likelihood ratio in these cases is often not possible or is computationally impractical. Here we demonstrate how discriminative classifiers can be used to construct equivalent likelihood ratio tests when 
@@ -73,17 +87,17 @@ a generative model for the data is available for training and calibration.
 As a concrete example, consider searches for new particles at the Large Hadron Collider. 
 The ATLAS and CMS experiments have published several hundred papers where the 
 final statistical result was formulated as a hypothesis test or confidence interval 
-using a generalized likelihood ratio test~\citep{Cowan:2010js}. This includes
-the discovery of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa} and 
+using a generalized likelihood ratio test~\cite{Cowan:2010js}. This includes
+the discovery of the Higgs boson~\cite{Aad:2012tfa,Chatrchyan:2012ufa} and 
 subsequent measurement of its properties.  
 
 The bulk of the likelihood ratio tests at the LHC are based on the distribution of a single event-level feature
 that discriminates between a hypothesized process of interest (labeled \textit{signal}) and various other processes 
-(labeled \textit{background}). To improve the statistical power of these tests, hundreds of these searches have utilized supervised learning to train discriminative classifiers. Within High Energy Physics (HEP) libraries such as TMVA that implement conventional techniques like the multi-layer perceptron and boosted decision trees~\citep{Hocker:2007ht} are commonly used. Recently, there has been progress in using deep networks~\citep{Baldi:2014kfa} and a NIPS workshop synthesizing the lessons learned during HiggsML~\citep{HepML}, the largest Kaggle challenge in history. 
+(labeled \textit{background}). To improve the statistical power of these tests, hundreds of these searches have utilized supervised learning to train discriminative classifiers. Within High Energy Physics (HEP) libraries such as TMVA that implement conventional techniques like the multi-layer perceptron and boosted decision trees~\cite{Hocker:2007ht} are commonly used. Recently, there has been progress in using deep networks~\cite{Baldi:2014kfa} and a NIPS workshop synthesizing the lessons learned during HiggsML~\cite{HepML}, the largest Kaggle challenge in history. 
 %The use of classifiers is effective, but an intermediate step not obviously connected to the target likelihood ratio test.
 
 %Collisions are usually selected with supervised learning methods 
-While classification accuracy can lead to optimal approaches for simple hypothesis tests~\citep{Dempster1965}, that is no longer true in the context of parameter estimation or composite hypothesis tests with nuisance parameters. As noted in ~\citep{Whiteson:2006ws}, ``such methods are suboptimal because they assume that the selector with the highest classification accuracy will yield a mass measurement with the smallest statistical uncertainty.''
+While classification accuracy can lead to optimal approaches for simple hypothesis tests~\cite{Dempster1965}, that is no longer true in the context of parameter estimation or composite hypothesis tests with nuisance parameters. As noted in ~\cite{Whiteson:2006ws}, ``such methods are suboptimal because they assume that the selector with the highest classification accuracy will yield a mass measurement with the smallest statistical uncertainty.''
 A fundamental distinction is that evaluating the loss for classification is a per-event operation, while evaluating the loss for a mass measurement (and other estimation problems) is a per-experiment operation involving a dataset with many events. They went on to demonstrate a computationally intensive stochastic optimization technique based on the per-experiment loss out performed the two stage selection-estimation process. 
 %This paper shows that (to the extent a generalized likelihood ratio test in the full feature space is close to  optimal) one can achieve optimal results with a  specific per-event procedure by reformulating the target likelihood ratio in terms of a per-event classification followed by an specific calibration process.
 
@@ -155,7 +169,7 @@ While the original goal for frequentist hypothesis testing is to make a decision
 
 \subsection{Comments on classification and frequentist hypothesis tests}
 
-Vast literature exists around generative and discriminative classifiers~\citep{AndrewY.Ng}. Typically, generative classifiers learn a model for the joint probability $p(x,y)$, of the inputs $x$ and the classification label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative classifiers model the posterior $p(y|x)$ directly. For classification tasks, one then thresholds on $p(y|x)$. In both cases this description in terms of a posterior requires a prior distribution for $p(y)$, which is either modeled explicitly or learned from the training data. 
+Vast literature exists around generative and discriminative classifiers~\cite{AndrewY.Ng}. Typically, generative classifiers learn a model for the joint probability $p(x,y)$, of the inputs $x$ and the classification label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative classifiers model the posterior $p(y|x)$ directly. For classification tasks, one then thresholds on $p(y|x)$. In both cases this description in terms of a posterior requires a prior distribution for $p(y)$, which is either modeled explicitly or learned from the training data. 
 This familiar formulation of classification may lead to some confusion in the setting of the current work. 
 
 The first possible source of confusion we wish to avoid is that here $p(x|\theta)$  is a generative \textit{statistical model} for the features $x$, not a generative classifier. We think of the  $p(x|\theta)$ along the lines of a traditional scientific theory, able to make predictions about $x$ and being motivated by domain-specific considerations. For example, in the context of HEP $p(x|\theta)$ is based on quantum field theory, a detailed simulation of the particle detector, and data processing algorithms that transform raw sensor data into the feature vector $x$.  
@@ -180,7 +194,7 @@ is arbitrary.  When $p(y=0)=p(y=1)=\sfrac{1}{2}$, then
 p(y=1 | x) = \frac{p(x|y=1)}{p(x|y=0)+p(x|y=1)} = \frac{p(x|\theta_1)}{p(x|\theta_0)+p(x|\theta_1))} \;,
 \end{equation}
 which is monotonic with the desired likelihood ratio $p(x|\theta_1)/p(x|\theta_0)$.
-Since the prior $p(y)$ is not needed for the target likelihood ratio test and because the classifier score $p(y|x)$ may not be well calibrated, we choose to denote the classifier score $s(x)$ and simply think of it as a deterministic dimensionality reduction map $s: X \to \mathbb{R}$.  Similar points have been made by~\citep{ClaytonScott}.
+Since the prior $p(y)$ is not needed for the target likelihood ratio test and because the classifier score $p(y|x)$ may not be well calibrated, we choose to denote the classifier score $s(x)$ and simply think of it as a deterministic dimensionality reduction map $s: X \to \mathbb{R}$.  Similar points have been made by~\cite{ClaytonScott}.
 
 % and we need not
 %interpret the balance of the training data in terms of a prior probability for the two hypotheses.
@@ -347,7 +361,7 @@ training data produced according to Algorithm~\ref{alg:training}, it is not clea
 
 \subsection{Embedding the classifier into the likelihood}
 
-In most settings that make use of likelihood ratio tests, the likelihood is based directly on some approximation of density for the observed data via $\hat{f}(x|\theta)$.  In general, approximating the density $\hat{f}(x|\theta)$ is difficult for high-dimensional data, which motivates the use of the dimensionality reduction map $\hat{s}(x)$ and likelihood ratio tests based on the univariate density $\hat{g}(\hat{s}|\theta)$.  In the case of a fixed classifier $\hat s(x)$ it is possible to pre-compute $\hat s_e=\hat s(x_e)$ and never refer back to the original features $x_e$. In the parametrized setting it is not possible to pre-compute $\hat s(x_e; \theta_0, \theta_1)$ for all values of $\theta_0$ and $\theta_1$; however, we can  embed the classifier into the likelihood function to carry out the composition $\hat{g}\circ \hat{s}$. A concrete realization of this has been performed for probability models implemented with the \texttt{RooFit} probabilistic programing language and  classifiers implemented with \texttt{scikit-learn} and \texttt{TMVA}~\citep{Verkerke:2003ir,scikit-learn,Hocker:2007ht}.
+In most settings that make use of likelihood ratio tests, the likelihood is based directly on some approximation of density for the observed data via $\hat{f}(x|\theta)$.  In general, approximating the density $\hat{f}(x|\theta)$ is difficult for high-dimensional data, which motivates the use of the dimensionality reduction map $\hat{s}(x)$ and likelihood ratio tests based on the univariate density $\hat{g}(\hat{s}|\theta)$.  In the case of a fixed classifier $\hat s(x)$ it is possible to pre-compute $\hat s_e=\hat s(x_e)$ and never refer back to the original features $x_e$. In the parametrized setting it is not possible to pre-compute $\hat s(x_e; \theta_0, \theta_1)$ for all values of $\theta_0$ and $\theta_1$; however, we can  embed the classifier into the likelihood function to carry out the composition $\hat{g}\circ \hat{s}$. A concrete realization of this has been performed for probability models implemented with the \texttt{RooFit} probabilistic programing language and  classifiers implemented with \texttt{scikit-learn} and \texttt{TMVA}~\cite{Verkerke:2003ir,scikit-learn,Hocker:2007ht}.
 
 In both cases, constructing the density $\hat p(\hat s|\theta)$ requires running the generative model at $\theta$. In the context of a likelihood fit this would mean that the optimization algorithm that is trying to maximize the likelihood with respect to $\theta$ needs access to the generative model $p(x|\theta)$. This can be  impractical when the generative model is computationally expensive or has high-latency (for instance some human intervention is required to reconfigure the generative model).  In our HEP examples we have chosen to interpolate the distribution between discrete values of $\theta$ in order to produce a continuous parametrization for $\hat p(\hat s | \theta)$. 
 %In such cases, the properties of the interpolation algorithm should be part of the considerations of the over-arching optimization problem.
@@ -366,9 +380,9 @@ to the signal component.
 p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu p_s( x_e \, |\,  \nu)  + (1-\mu)\, p_b( x_e \,|\, \nu) \,\right] \; ,
 \end{equation}
 New particle searches at the LHC are typically framed as hypothesis test where the null corresponds to $\mu=0$, and the
-generalized likelihood ratio (profiling over $\nu$ as in Eq.~\ref{eq:cmle}) is used as a test statistic~\citep{Cowan:2010js}. This approach was used for the discovery of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa}.
+generalized likelihood ratio (profiling over $\nu$ as in Eq.~\ref{eq:cmle}) is used as a test statistic~\cite{Cowan:2010js}. This approach was used for the discovery of the Higgs boson~\cite{Aad:2012tfa,Chatrchyan:2012ufa}.
 
-%Generalized likelihood ratio tests are used widely in HEP ~\citep{Cowan:2010js}, most notably in the discovery of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa}.
+%Generalized likelihood ratio tests are used widely in HEP ~\cite{Cowan:2010js}, most notably in the discovery of the Higgs boson~\cite{Aad:2012tfa,Chatrchyan:2012ufa}.
 
 \subsection{Typical usage pattern}
 
@@ -381,15 +395,15 @@ In this setting, large samples of synthetic data $\{x_i, y_i\}$ generated with s
 An example of the distributions of the distribution of $\hat s$ for the signal and background events with $\nu=\nu_0$ is shown in Figure~\ref{fig:tmva}.
 
 
-\begin{figure}[htbp]
-\begin{center}
- \includegraphics[height=2in]{example-TMVA-BDT.pdf}
- \includegraphics[height=2in]{example-TMVA-ROC.pdf}
-\caption{Left: an example of the distributions $p_b(\hat s|\nu)$ and $p_s(\hat s|\nu)$ when the classifier $s$ is a boosted-decision tree (BDT). Right: the corresponding ROC curve (right) for this and other classifiers. (Figures taken from TMVA manual.)}
-\label{fig:tmva}
-\end{center}
-\end{figure}
-%\bigskip
+%\begin{figure}[htbp]
+%\begin{center}
+% \includegraphics[height=2in]{example-TMVA-BDT.pdf}
+% \includegraphics[height=2in]{example-TMVA-ROC.pdf}
+%\caption{Left: an example of the distributions $p_b(\hat s|\nu)$ and $p_s(\hat s|\nu)$ when the classifier $s$ is a boosted-decision tree (BDT). Right: the corresponding ROC curve (right) for this and other classifiers. (Figures taken from TMVA manual.)}
+%\label{fig:tmva}
+%\end{center}
+%\end{figure}
+%%\bigskip
 
 These steps feed into a subsequent statistical test based on the observed data \\
 ${D=(x_1, \dots, x_n)}$. For each event, the classifier is evaluated and one performs inference on a parameter $\mu$ related to the presence of the signal contribution. In particular, one forms the statistical model\footnote{Sometimes there is an additional Poisson term when expected number of signal and background events is known, which is referred to as an extended likelihood.} 
@@ -424,58 +438,58 @@ In contrast, in the case of the generalized likelihood ratio test
 the background components don't cancel and there is an additional term $p_b(x| \hat{\hat{ \nu}})/p_b(x| {\hat{ \nu}})$.
 In practice, with classifiers of finite capacity, there will be some tradeoff between taking into account this additional term and the more challenging learning problem when $\mu$ is very small. 
 
-\subsection{Decomposing tests between mixture models into their components}
-
-In this section we generalize the capacity focusing technique of training classifiers to discriminate between components of a mixture model. First, we generalize Eq.~\ref{eq:hepGen} to a mixture model of several components
-\begin{equation}
-p(x|\theta)=\sum_c w_c(\theta) p_c(x| \theta) \;.
-\end{equation}
-%In the case of particle physics, the distributions $p(x|\theta)$ is not a Gaussian Mixture Model, but mixture of  complicated distributions associated to relatively few types of particle interactions. Moreover, when searching for a new particle, the null hypothesis would correspond to some of the coefficients $w_c=0$ while the alternate ``signal-plus-background'' hypothesis would have $0<w_{c\in \rm signal} \ll w_{c\in \rm background}$. In some cases $w_{c\in \rm signal} / w_{c\in \rm background} <10^{-6}$, which means the alternate hypothesis is a small perturbation to the null hypothesis. This can be a challenge for typical classifiers because they should devote their capacity to the region where $p_{c\in \rm signal}(x) / p_{c\in \rm background}(x)$ is relatively large. Lastly, even when the distributions $p_c(x|\theta)$ are well known, it is often the case that the coefficients are uncertain or treated as completely unknown. These all present challenges to machine learning algorithms that aim to learn $s(x; \theta_0, \theta_1)$.
+%\subsection{Decomposing tests between mixture models into their components}
 %
+%In this section we generalize the capacity focusing technique of training classifiers to discriminate between components of a mixture model. First, we generalize Eq.~\ref{eq:hepGen} to a mixture model of several components
 %\begin{equation}
-%\frac{p(x|\theta_0)}{p(x|\theta_1)}= \frac{\sum_c w_c(\theta_0) p_c(x| \theta_0)}{\sum_c w_c(\theta_1) p_c(x| \theta_1)} 
+%p(x|\theta)=\sum_c w_c(\theta) p_c(x| \theta) \;.
 %\end{equation}
+%%In the case of particle physics, the distributions $p(x|\theta)$ is not a Gaussian Mixture Model, but mixture of  complicated distributions associated to relatively few types of particle interactions. Moreover, when searching for a new particle, the null hypothesis would correspond to some of the coefficients $w_c=0$ while the alternate ``signal-plus-background'' hypothesis would have $0<w_{c\in \rm signal} \ll w_{c\in \rm background}$. In some cases $w_{c\in \rm signal} / w_{c\in \rm background} <10^{-6}$, which means the alternate hypothesis is a small perturbation to the null hypothesis. This can be a challenge for typical classifiers because they should devote their capacity to the region where $p_{c\in \rm signal}(x) / p_{c\in \rm background}(x)$ is relatively large. Lastly, even when the distributions $p_c(x|\theta)$ are well known, it is often the case that the coefficients are uncertain or treated as completely unknown. These all present challenges to machine learning algorithms that aim to learn $s(x; \theta_0, \theta_1)$.
+%%
+%%\begin{equation}
+%%\frac{p(x|\theta_0)}{p(x|\theta_1)}= \frac{\sum_c w_c(\theta_0) p_c(x| \theta_0)}{\sum_c w_c(\theta_1) p_c(x| \theta_1)} 
+%%\end{equation}
+%%
+%%\begin{equation}
+%%\frac{p(x|\theta_0)}{p(x|\theta_1)}= \sum_c \frac{ w_c(\theta_0) p_c(x| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(x| \theta_1)} 
+%%\end{equation}
+%%
+%It is possible to re-write the target likelihood ratio between two mixture models in terms of pairwise classification problems. 
+%\begin{eqnarray}\label{eq:decompose}
+%\frac{p(x|\theta_0)}{p(x|\theta_1)} & =& \frac{\sum_c w_c(\theta_0) p_c(x| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(x| \theta_1)} 
+%\\
+%%&=& \sum_c \frac{ w_c(\theta_0) p_c(x| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(x| \theta_1)} \\
+%%&=& \sum_c \left[ \frac{\sum_{c'} w_{c'}(\theta_1) p_{c'}(x| \theta_1)}{ w_c(\theta_0) p_c(x| \theta_0)}  \right]^{-1} \\
+%&=& \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(x| \theta_1)}{  p_c(x| \theta_0)}  \right]^{-1} \\
+%&=& \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(s_{c,c',\theta_0, \theta_1}| \theta_1)}{ p_c(s_{c,c',\theta_0, \theta_1}| \theta_0)}  \right]^{-1} 
+%\end{eqnarray}
+%The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem 1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the mixture model are the coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before performing the generalized likelihood ratio test). Equation~\ref{eq:decompose} allows one to take advantage of both the parametrized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern. 
 %
-%\begin{equation}
-%\frac{p(x|\theta_0)}{p(x|\theta_1)}= \sum_c \frac{ w_c(\theta_0) p_c(x| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(x| \theta_1)} 
-%\end{equation}
 %
-It is possible to re-write the target likelihood ratio between two mixture models in terms of pairwise classification problems. 
-\begin{eqnarray}\label{eq:decompose}
-\frac{p(x|\theta_0)}{p(x|\theta_1)} & =& \frac{\sum_c w_c(\theta_0) p_c(x| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(x| \theta_1)} 
-\\
-%&=& \sum_c \frac{ w_c(\theta_0) p_c(x| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(x| \theta_1)} \\
-%&=& \sum_c \left[ \frac{\sum_{c'} w_{c'}(\theta_1) p_{c'}(x| \theta_1)}{ w_c(\theta_0) p_c(x| \theta_0)}  \right]^{-1} \\
-&=& \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(x| \theta_1)}{  p_c(x| \theta_0)}  \right]^{-1} \\
-&=& \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(s_{c,c',\theta_0, \theta_1}| \theta_1)}{ p_c(s_{c,c',\theta_0, \theta_1}| \theta_0)}  \right]^{-1} 
-\end{eqnarray}
-The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem 1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the mixture model are the coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before performing the generalized likelihood ratio test). Equation~\ref{eq:decompose} allows one to take advantage of both the parametrized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern. 
-
-
+%%
+%%The idea here is to combine the calibration of the distributions of the classifier output and a more optimal family of classifiers $\hat s(x; \nu_0, \nu_1)$. Creating the family of classifiers is straight forward, one simply augments the training data with $x$ examples drawn from several values of $\nu$ and then includes the corresponding value of $\nu$ as an input to the classifier. Thus $\{x_e,c_e\} \to \{x_e,\nu_{0,e},\nu_{1,e}, c_e\}$ leading to a parametrized learner $\hat s(x)\to \hat s(x;\nu_0, \nu_1)$. This leads to a complication: one does not know the value of $\nu$ to use when evaluating the parametrized classifier $\hat s(x;\nu_0, \nu_1)$, so one cannot simply pre-compute $\hat s_e$ before performing the likelihood fit.  However, when performing a likelihood ratio test, one can calculate the maximum likelihood estimate and conditional maximum likelihood estimate according to Eq.~\ref{eq:mle} and then form the equivalent likelihood ratio test according to Eq.~\ref{eq:equivLRtest}. 
 %
-%The idea here is to combine the calibration of the distributions of the classifier output and a more optimal family of classifiers $\hat s(x; \nu_0, \nu_1)$. Creating the family of classifiers is straight forward, one simply augments the training data with $x$ examples drawn from several values of $\nu$ and then includes the corresponding value of $\nu$ as an input to the classifier. Thus $\{x_e,c_e\} \to \{x_e,\nu_{0,e},\nu_{1,e}, c_e\}$ leading to a parametrized learner $\hat s(x)\to \hat s(x;\nu_0, \nu_1)$. This leads to a complication: one does not know the value of $\nu$ to use when evaluating the parametrized classifier $\hat s(x;\nu_0, \nu_1)$, so one cannot simply pre-compute $\hat s_e$ before performing the likelihood fit.  However, when performing a likelihood ratio test, one can calculate the maximum likelihood estimate and conditional maximum likelihood estimate according to Eq.~\ref{eq:mle} and then form the equivalent likelihood ratio test according to Eq.~\ref{eq:equivLRtest}. 
-
-
-%Equivalently, once one has determined $\hat{\theta}$ and $\hat{\hat{\theta}}$, then one can specify the parameters of the mapping $s(x;\hat{\hat{\theta}}, \hat{\theta})$ and then following Eq.~\ref{eq:NP} form the likelihood
-%\begin{equation}\label{eq:parametrizedML}
-%p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu p_s( s(x_e;\nu_0, \nu_1) \, |\,  \nu)  + (1-\mu)\, p_b( s(x_e;\nu_0, \nu_1) \,|\, \nu) \,\right] \; ,
-%\end{equation}
-%which is a natural generalization of Eq.~\ref{eq:typicalML}.
-
-%The construction in Eq.~\ref{eq:parametrizedML} presents a computational challenge as for each value of $\nu$ one has a new mapping $s: x\to\mathbb{R}$. The most naive realization of this would be to generate synthetic data $\{x_e\}$ according to $p_c(x|\nu)$, evaluate $s(x_e ; \nu_0, \nu_1)$, and then use a histogram, kernel density, or other non-parametric density estimation procedure to estimate $p_c( s | \nu)$. This approach is not realistic in situations where $p_c(x|\nu)$ is realized with expensive computer simulations; thus, some interpolation strategy or emulator over a fixed set of parameter points $\{\nu_i\}$ would typically be used.
+%
+%%Equivalently, once one has determined $\hat{\theta}$ and $\hat{\hat{\theta}}$, then one can specify the parameters of the mapping $s(x;\hat{\hat{\theta}}, \hat{\theta})$ and then following Eq.~\ref{eq:NP} form the likelihood
+%%\begin{equation}\label{eq:parametrizedML}
+%%p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu p_s( s(x_e;\nu_0, \nu_1) \, |\,  \nu)  + (1-\mu)\, p_b( s(x_e;\nu_0, \nu_1) \,|\, \nu) \,\right] \; ,
+%%\end{equation}
+%%which is a natural generalization of Eq.~\ref{eq:typicalML}.
+%
+%%The construction in Eq.~\ref{eq:parametrizedML} presents a computational challenge as for each value of $\nu$ one has a new mapping $s: x\to\mathbb{R}$. The most naive realization of this would be to generate synthetic data $\{x_e\}$ according to $p_c(x|\nu)$, evaluate $s(x_e ; \nu_0, \nu_1)$, and then use a histogram, kernel density, or other non-parametric density estimation procedure to estimate $p_c( s | \nu)$. This approach is not realistic in situations where $p_c(x|\nu)$ is realized with expensive computer simulations; thus, some interpolation strategy or emulator over a fixed set of parameter points $\{\nu_i\}$ would typically be used.
 
 \subsection{Measuring particle properties}
 
 While the original motivation for this work was to improve the treatment of systematic uncertainties in new particle searches by parametrizing the classifier in terms of the nuisance parameters $\nu$, the same approach can be used to for parameters of interest. In the case of new particle searches the parameter of interest is the mixture coefficient for the signal component $p_s(x|\nu)$. When measuring particle properties the distribution of the features also depend on parameters of interest, such as a particle's mass and quantum numbers. This is easily accommodated by extending $p_s(x|\nu) \to p_s(x|\theta)$, where $\theta$ includes both parameters of interest and nuisance parameters. 
 
-This formalism represents is a significant step forward in the usage of machine learning in HEP, where classifiers have always been used between two static classes of events and not parametrized explicitly in terms of the physical quantities we wish to measure. The work of  ~\citep{Whiteson:2006ws} is the closest example as the stochastic optimization was directly trying to minimize the measurement uncertainty of a particle's mass; however, the resulting classifier was fixed. This approach also offers the advantage that it explicitly reformulates the per-experiment optimization to the per-event optimization, which is less computationally intensive.
+This formalism represents is a significant step forward in the usage of machine learning in HEP, where classifiers have always been used between two static classes of events and not parametrized explicitly in terms of the physical quantities we wish to measure. The work of  ~\cite{Whiteson:2006ws} is the closest example as the stochastic optimization was directly trying to minimize the measurement uncertainty of a particle's mass; however, the resulting classifier was fixed. This approach also offers the advantage that it explicitly reformulates the per-experiment optimization to the per-event optimization, which is less computationally intensive.
 
-Another approach that is similar in spirit is the so-called matrix element method, in which one  directly computes an approximate likelihood ratio by performing a computationally intensive integral associated to the detector response~\citep{Volobouev:2011vb}. In the approach considered in this paper, the detector response is naturally handled by the Monte Carlo sampling used in the simulation of the detector; however, that integral is intractable for the matrix element method. Even with drastic simplifications of the detector response, the matrix element method can take several minutes of CPU time per event to calculate the likelihood ratio $q(x)$. The work here can be seen as aiming at the same conceptual target, but utilizing machine learning to overcome the complexity of the detector simulation. It also offers enormous speed increase for evaluating the likelihood at the cost of an initial training stage. In practice, the matrix element method has only been used for searches and measurement of a single physical parameter (sometimes with a single nuisance parameter as in~\citep{Aaltonen:2010yz}).
+Another approach that is similar in spirit is the so-called matrix element method, in which one  directly computes an approximate likelihood ratio by performing a computationally intensive integral associated to the detector response~\cite{Volobouev:2011vb}. In the approach considered in this paper, the detector response is naturally handled by the Monte Carlo sampling used in the simulation of the detector; however, that integral is intractable for the matrix element method. Even with drastic simplifications of the detector response, the matrix element method can take several minutes of CPU time per event to calculate the likelihood ratio $q(x)$. The work here can be seen as aiming at the same conceptual target, but utilizing machine learning to overcome the complexity of the detector simulation. It also offers enormous speed increase for evaluating the likelihood at the cost of an initial training stage. In practice, the matrix element method has only been used for searches and measurement of a single physical parameter (sometimes with a single nuisance parameter as in~\cite{Aaltonen:2010yz}).
 
-Contemporary examples where the technique presented here could have major impact on HEP include the measurement of coefficients to quantum mechanical operators describing the decay of the Higgs boson~\citep{Chen:2014pia} and, if we are so lucky, measurement of the mass of supersymmetric particles in cascade decays~\citep{Allanach:2000kt}.  Both of these examples involve datasets with many events, each with a feature vector $x$ that has on the order of 10 components, and a parameter vector $\theta$ with 5-10 parameters of interest and possibly many more nuisance parameters. 
+Contemporary examples where the technique presented here could have major impact on HEP include the measurement of coefficients to quantum mechanical operators describing the decay of the Higgs boson~\cite{Chen:2014pia} and, if we are so lucky, measurement of the mass of supersymmetric particles in cascade decays~\cite{Allanach:2000kt}.  Both of these examples involve datasets with many events, each with a feature vector $x$ that has on the order of 10 components, and a parameter vector $\theta$ with 5-10 parameters of interest and possibly many more nuisance parameters. 
 %The state of the art approaches for supersymmetric particle masses typically involve high-level features engineered based on physics intuition
 %Many approaches have been tried for measuring supersymmetric particle masses, often based on event level features engineered based on physics intuition and varying 
-The state of the art for the operator coefficients of the Higgs decay uses the so-called matrix element likelihood analysis (MELA) in which the equivalent of $s(x; \theta_0, \theta_1)$ is approximated by neglecting detector effects~\citep{Bolognesi:2012mm}. 
+The state of the art for the operator coefficients of the Higgs decay uses the so-called matrix element likelihood analysis (MELA) in which the equivalent of $s(x; \theta_0, \theta_1)$ is approximated by neglecting detector effects~\cite{Bolognesi:2012mm}. 
 
 \subsection{Related work}
 
@@ -492,258 +506,30 @@ The state of the art for the operator coefficients of the Higgs decay uses the s
 We have outlined a technique to reformulate generalized likelihood ratio test over a high-dimensional dataset with multiple events in terms of a univariate density of a classifier score. 
 We have shown that a parametrized family of discriminative classifiers $s(x; \theta_0, \theta_1)$ trained and calibrated with a generative model $p(x|\theta)$ can be used to approximate the  likelihood ratio  $\prod_i p(x_i|\theta_0)/p(x_i|\theta_1)$ even when it is not possible to evaluate the densities $p(x|\theta)$ for an arbitrary $x$.  Furthermore, this allows one to turn the optimization of the procedure for the per-experiment test into optimization of a per-event classification problem and a calibration procedure. This approach leverages the power of machine learning in a classical statistical setting. In particular, it extends the common usage of machine learning for simple hypothesis testing to include the parameter estimation, confidence intervals, and composite hypothesis testing.
 
-%We have shown that a parametrized family of discriminative classifiers $s(x; \theta_0, \theta_1)$ trained and calibrated with a generative model $p(x|\theta)$ can be used to approximate statistical inference likelihood based on the  ratio $p(x|\theta_0)/p(x|\theta_1)$ when it is not possible to evaluate the densities $p(x|\theta)$ for an arbitrary $x$. 
 
+%\section*{Acknowldgements}
+%KC would like to thank  
+%Daniel Whiteson for discussions and encouragement throughout the project, 
+%Alex Ihler for challenging discussions that 
+%led to a reformulation of the initial idea, and Shimon Whiteson for patient feedback in that process. 
+%KC would also like to thank Yann LeCun, Philip Stark, and Pierre Baldi for their feedback on the
+%project early in its conception, Bal\'azs K\'egl for discussions about the Kaggle challenge and feedback to the draft, 
+%and Yuri Shirman for reassuring cross checks of the Theorem.
+%KC is supported by the US National Science Foundation grants PHY-0854724 and PHY-0955626. 
+%KC is grateful to UC-Irvine for their hospitality while this research was carried out and the 
+%Moore and Sloan foundations for their generous support of the data science environment at NYU.
 
-%\section{Possible Extensions}
-%The approach describe thus far has been agnostic as to the type of classifier used to produce $s(x)$ and $s(x; \nu)$. In practice, we have used standard packages for the training of these learners. In particular, the loss function for these learning algorithms is based on classification performance of individual $(x_e, c_e)$ feature $\to$ target examples. However, in overarching statistical procedure that uses the statistical model in Eq.~\ref{eq:typicalML} or \ref{eq:parametrizedML} the quantity we wish to optimize is a property of an entire dataset $\{x_e\}$ or ensembles of datasets that can be generated from the statistical models $p_c(x|\theta)$. 
-%
-%For example, in typical hypothesis testing problems posed in the Neyman-Pearson context one would be interested in minimizing type II error under a fixed rate of typeI error rate. In the presence of systematic uncertainty and nuisance parameters, the loss function may become more complicated. The recent Higgs boson machine learning challenge hosted by Kaggle, the evaluation was the approximate median significance (AMS) that characterized the power of a hypothesis test between $\mu=0$ (the background only hypothesis) and $\mu=\mu_0$ (the signal+background hypothesis, where $\mu_0$ is a small number reflecting the small Higgs signal that would be found in addition to the much larger background process) in the presence of uncertainty on the background normalization. 
-%Interestingly, the top entries to the challenge did not improve by focusing on this alternative loss function 
-%in training their classifier, but instead used it for the optimization of a threshold on the score (a working point on the ROC curve) that was related to the way the challenge was designed. This suggests that the standard 
-%classification loss functions lead to similar optimizations and that refinements for the custom loss functions
-%are not easy to come by.
-%
-%More generally, there is an avenue of research associated to custom loss functions specifically designed 
-%for these real world statistical problems. One direction might be to choose loss functions that make 
-%some balance between the standard classification loss, take into account robustness with respect to nuisance parameters, and population-level quantities like type I and II error.
-%
-%\subsection{A different starting point}
-%
-%Instead of evolving from the traditional usage of ML in HEP, let's start from scratch with $p_c(x|\theta)$ and a well defined objective.  
-%
-%\subsubsection{Simple Hypothesis Testing}
-%
-%Consider the situation of simple hypothesis testing between the background-only $\mu=0$ and signal+background hypothesis $\mu=\mu_0=\nu_s/(\nu_s+\nu_b)$ for $\theta=\theta_0$.  Let us assume that not only can we use the $p_c(x|\theta_0)$ as a generative model, but that we can evaluate the probability density at any point $x$.  The statistical model is given by
-%\begin{equation}\label{eq:NP}
-%p( D \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu p_1( x_e \, |\,  \theta)  + (1-\mu)\, p_b( x_e \,|\, \theta) \,\right] \; .
-%\end{equation}
-%The objective is to find a  test statistic $T(D)$ (a map from the space of the data to $\mathbb{R}$)  
-%and a threshold $k_\alpha$ that minimizes the rate of type-II error (i.e. $P(T(D) < k_\alpha | \mu=\mu_0, \theta_0) = \beta$ under the constraint of a fixed rate of type-I error ( i.e.  $P(T(D) > k_\alpha | \mu=0, \theta_0) = \alpha$ ).
-%The Neyman-Pearson lemma states that the optimal test statistic is the likelihood ratio, or equivalently, the log-likelihood ratio 
-%\begin{equation}
-%T =  \log \frac{p(D | \mu=\mu_0, \theta_0)}{p(D | \mu=0, \theta_0)}
-%\end{equation}
-%When the $x_e$ are i.i.d., then the log-likelihood ratio expands into a sum
-%\begin{equation}
-%T =   \sum_{e=1}^n \underbrace{\log \left[ 1+c_1\frac {p_1(x_e | \theta_0) }{ p_b(x_e | \theta_0) } \right]}_{q(x_e)} + c_2\;,
-%\end{equation}
-%where $c_1=\mu/(1-\mu)$ and $c_2=\lop(1-\mu)$ are constants for the simple hypothesis test.
-%
-%Here we see that the optimal $T$ for the experiment is composed of a sum over events of a linear linear function of the per-event function $q(x)$. A monotonic, but non-linear function of $q(x)$ would not lead to an equivalent hypothesis test. 
-%
-%The important part of the per-event function $q(x)$ is that it defines contours in the feature space $x$. These contours are also equivalent to the function $p_1(x|\theta_0)/p_b(x|\theta_0)$, the signal-to-background ratio. If we can find a machine learner $s(x)$ that is a monotonic function of $p_1(x|\theta_0)/p_b(x|\theta_0)$ it will share the same contours. Then the remaining challenge is to find the appropriate rescaling that gives back  linear function $q(x)$. 
-%
-%\textbf{Postulate:}
-%\begin{equation}
-%T' = \sum_{e=1}^n \underbrace{\log \left[ 1+c_1\frac {p_1(s(x_e) | \theta_0) }{ p_b(s(x_e) | \theta_0) } \right]}_{q(s_e)} \;,
-%\end{equation}
-%leads to an equivalent test, where $s_e \equiv s(x_e)$
-%\begin{equation}
-%p_c(s) = \int dx \, \delta(s-s(x)) \, p_c(x)  \,  |\partial s / \partial x|^{-1}
-%\end{equation}
-%
-%
-%
-%Note, in order to form the hypothesis test, one still needs to build the build the $p_0(T|\theta)$ to calibrate the threshold  $T>k_\alpha$ that gives rise to a test of size $\alpha$. 
-%
-%
-%
-%\textbf{Proof (in progress):}
-%
-%We want to show density is the same 
-%
-%\begin{equation}
-%p_c(q_x) = \int dx \delta(q_x-q_x(x)) p_c(x) / |\partial q_x / \partial x|
-%\end{equation}
-%
-%\begin{equation}
-%p_c(q_s) = \int dx \delta(q_s-q_s(s(x))) \, p_c(x) \, / |\partial q_s / \partial x|
-%\end{equation}
-%sufficient to show $q(x_e) = q(s(x_e))$.  Here we use that $p_1(x)/p_0(x)=\textrm{const}$ for all points on the level-set $\Omega_c$ given by $ \delta(c-s(x))$. 
-%\begin{equation}
-%\frac {p_1(c | \theta_0) }{ p_0(c | \theta_0) } = 
-%\frac { \int dx \delta(c-s(x)) \, p_1(x_e | \theta_0) }{ \int dx \delta(c-s(x)) \, p_0(x | \theta_0)  } = 
-%\frac {c \int dx \delta(c-s(x)) \, p_0(x | \theta_0)  }{ \int dx \delta(s-s(x)) \, p_0(x | \theta_0)  } = c =\frac {p_1(x | \theta_0) }{ p_0(x | \theta_0) } 
-%\end{equation}
-%
-%
-%
-%%\begin{equation}
-%%p_c(q_s) = \int ds \delta(q_s-q_s(s)) \,p_c(s) \, / |\partial q_s / \partial s|
-%%\end{equation}
-%
-%
-%This is the test statistic that one would naturally get from constructing the likelihood function for the 1-d distributions of the output of the machine learner
-%\begin{equation}\label{eq:NP}
-%p( \{s_e\} \,|\, \mu, \theta) = \prod_{e=1}^n \, \left[\, \mu p_1( s_e \, |\,  \theta)  + (1-\mu)\, p_0( s_e \,|\, \theta) \,\right] \; .
-%\end{equation}
-%Thus this motivates Eq.~\ref{eq:typicalML} in the more general case. 
-%
-%
-%Question:
-%Where does this fit in:
-%\begin{equation}
-%T'' = \sum_{e=1}^n \underbrace{ \log \left[ 1+c_1 s(x_e) \right] }_{q'(s_e)} \;,
-%\end{equation}
-%
-%
-%
-%Usefulness:
-%If we can readily compute $p_c(x|\theta_0)$, then there would be no need for machine learning algorithms. However,  these densities are often difficult to compute though one can readily use them as a generative model to produce samples. In that case, one might wish to use a machine learning algorithm to find $s(x) \approx p_1(x|\theta_0) / p_0(x|\theta_0)$. 
-%
-%Conclusion, while it is possible to start directly with the Neyman-Pearson loss function of type-II error under the constraint of fixed size and try to find a per-experiment learner $T(D)$, it is more convenient to cast the problem in terms of learning a per-event function $s(x)$, and then calibrate it to be a linear function of $q(x)$.
-%
-%\newpage
-%
-%Given $x\in \mathbb{R}^n$ and two smooth, real-valued functions $p_1(x)$ and $p_0(x)$ define 
-%\begin{equation} 
-%s(x)=\frac{p_1(x)}{p_2(x)}
-%\end{equation}.
-%Define $p_1(c) = \int dx \delta(c - s(x) ) \, p_1(x)$ and $p_0(c) = \int dx \delta(c - s(x) ) \, p_0(x)$.
-%I wish to show
-%\begin{equation}
-%\frac{p_1(c)}{p_0(c)} = \frac{p_1(x)}{p_0(x)}
-%\end{equation}
-%$\forall x \ni s(x)=c$.
-%
-%Sketch of Proof: 
-%let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the perpendicular direction to the surface at the point $x$. The  coordinate perpendicular to $\Omega$ can be written $y = x+\epsilon \hat{n}$. In these coordinates, the integral $\int dx \to \int d\Omega d\epsilon$, thus
-%\begin{equation}
-%p_1(c) = \int dx \delta(c-s(x)) p_1(x) = \int d\Omega p_1(x) / |\partial s(x)/\partial \epsilon|
-%\end{equation}
-%Similarly for $p_0(c)$. We can factor out of the integral $s(x)=p_1(x)/p_0(x)$ since it is constant over $\Omega$.
-%Thus
-%\begin{equation}
-%p_1(c) = \int dx \delta(c-s(x)) p_1(x) = \int d\Omega p_1(x) / |\partial s(x)/\partial \epsilon| = s(x) \int d\Omega p_0(x) / |\partial s(x)/\partial \epsilon|
-%\end{equation}
-%and we arrive at the result
-%\begin{equation}
-%\frac{p_1(c)}{p_0(c)} = \frac{s(x) \int d\Omega p_0(x) / |\partial s(x)/\partial \epsilon|}{ \int d\Omega p_0(x) / |\partial s(x)/\partial \epsilon|} = \frac{p_1(x)}{p_0(x)} \;.
-%\end{equation}
-%
-%
-%
-%
-%\subsection{misc notes}
-%
-%
-%
-%
-%The distribution of $s$ is fully determined by the mapping $s(x_e; \theta_0, \theta_1)$ and the distribution $p(x)$, which we can write
-%\begin{equation}
-%p(s_e) = \int dx \, \delta(s_e-s(x)) \, p(x)  \; .
-%\end{equation}
-%\textbf{NEED Jacobian for x $\to$ s independent of delta function part, or double counting?}
-%
-%
-%\textbf{Theorem 1:}
-%Let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the orthonormal vector to the surface at the point $x$. The component perpendicular to $\Omega_c$ can be written $x+\epsilon \hat{n}$. In these coordinates, we rewrite integral $\int dx \to \int d\Omega_c d\epsilon$, thus
-%\begin{equation}
-%p_1(c) = \int dx \delta(c-s(x)) p_1(x) = \int d\Omega_c p_1(x)  / | \hat{n} \cdot \nabla q_s  |
-%\end{equation}
-%Similarly for $p_0(c)$. We can factor out of the integral $s(x)=p_1(x)/p_0(x)$ since it is constant over $\Omega_c$.
-%Thus
-%\begin{equation}
-%p_1(c) = \int dx \delta(c-s(x)) p_1(x) = \int d\Omega p_1(x) / |\partial s(x)/\partial \epsilon| = s(x) \int d\Omega p_0(x)  / | \hat{n} \cdot \nabla q_s  |
-%\end{equation}
-%and we arrive at the result
-%\begin{equation}
-%\frac{p_1(c)}{p_0(c)} = \frac{s(x) \int d\Omega p_0(x) / |\partial s(x)/\partial \epsilon|}{ \int d\Omega p_0(x) / |\partial s(x)/\partial \epsilon|} = \frac{p_1(x)}{p_0(x)} \;\hspace{3em} \forall x\in\Omega_c.
-%\end{equation}
-%
-%
-%
-%
-%
-%Define $p_1(c) = \int dx \delta(c - s(x) ) \, p_1(x)$ and $p_0(c) = \int dx \delta(c - s(x) ) \, p_0(x)$.
-%I wish to show
-%\begin{equation}
-%\frac{p_1(c)}{p_0(c)} = \frac{p_1(x)}{p_0(x)}
-%\end{equation}
-%$\forall x \ni s(x)=c$.
-%
-%
-%Given $x\in \mathbb{R}^n$ and two smooth, real-valued functions $p_1(x)$ and $p_0(x)$ define 
-%\begin{equation} 
-%s(x)=\frac{p_1(x)}{p_0(x)}
-%\end{equation}.
-%Define $p_1(c) = \int dx \delta(c - s(x) ) \, p_1(x)$ and $p_0(c) = \int dx \delta(c - s(x) ) \, p_0(x)$.
-%I wish to show
-%\begin{equation}
-%\frac{p_1(c)}{p_0(c)} = \frac{p_1(x)}{p_0(x)}
-%\end{equation}
-%$\forall x \ni s(x)=c$.
-%
-%Sketch of Proof: 
-%let $\Omega_{c}$ be the level set $\{x \mid s(x) = c \}$ and $\hat{n}=\nabla s(x) / |\nabla s(x)|$ be the perpendicular direction to the surface at the point $x$. The  coordinate perpendicular to $\Omega$ can be written $y = x+\epsilon \hat{n}$. In these coordinates, the integral $\int dx \to \int d\Omega d\epsilon$, thus
-%\begin{equation}
-%p_1(c) = \int dx \delta(c-s(x)) p_1(x) = \int d\Omega p_1(x) / |\partial s(x)/\partial \epsilon|
-%\end{equation}
-%Similarly for $p_0(c)$. We can factor out of the integral $s(x)=p_1(x)/p_0(x)$ since it is constant over $\Omega$.
-%Thus
-%\begin{equation}
-%p_1(c) = \int dx \delta(c-s(x)) p_1(x) = \int d\Omega p_1(x) / |\partial s(x)/\partial \epsilon| = s(x) \int d\Omega p_0(x) / |\partial s(x)/\partial \epsilon|
-%\end{equation}
-%and we arrive at the result
-%\begin{equation}
-%\frac{p_1(c)}{p_0(c)} = \frac{s(x) \int d\Omega p_0(x) / |\partial s(x)/\partial \epsilon|}{ \int d\Omega p_0(x) / |\partial s(x)/\partial \epsilon|} = \frac{p_1(x)}{p_0(x)} \;.
-%\end{equation}
-%
-%
-%
-%
-%
-%
-%
-%Note, in order to form the hypothesis test, one still needs to build the build the $p_0(T|\theta)$ to calibrate the threshold  $T>k_\alpha$ that gives rise to a test of size $\alpha$. 
-%
-%
-%
-%\textbf{Proof (in progress):}
-%
-%We want to show density is the same 
-%
-%\begin{equation}
-%p(q_x|\theta) = \int dx \delta(q_x-q_x(x)) p(x|\theta)  / | \hat{n} \cdot \nabla q_s  |
-%\end{equation}
-%
-%\begin{equation}
-%p(q_s|\theta) = \int dx \delta(q_s-q_s(s(x))) \, p(x|\theta) \, / | \hat{n} \cdot \nabla q_s  |
-%\end{equation}
-%sufficient to show $q(x_e) = q(s(x_e))$.  Here we use that $p_1(x)/p_0(x)=\textrm{const}$ for all points on the level-set $\Omega_c$ given by $ \delta(c-s(x))$. 
-%\begin{equation}
-%\frac {p_1(c | \theta_0) }{ p_0(c | \theta_0) } = 
-%\frac { \int dx \delta(c-s(x)) \, p_1(x_e | \theta_0) }{ \int dx \delta(c-s(x)) \, p_0(x | \theta_0)  } = 
-%\frac {c \int dx \delta(c-s(x)) \, p_0(x | \theta_0)  }{ \int dx \delta(s-s(x)) \, p_0(x | \theta_0)  } = c =\frac {p_1(x | \theta_0) }{ p_0(x | \theta_0) } 
-%\end{equation}
-%
-%
-%
-%%\begin{equation}
-%%p_c(q_s) = \int ds \delta(q_s-q_s(s)) \,p_c(s) \, / |\partial q_s / \partial s|
-%%\end{equation}
-%
-%
+\newpage
 
+\subsubsection*{References}
 
+\vspace*{-2em}
 
-\section*{Acknowldgements}
-KC would like to thank  
-Daniel Whiteson for discussions and encouragement throughout the project, 
-Alex Ihler for challenging discussions that 
-led to a reformulation of the initial idea, and Shimon Whiteson for patient feedback in that process. 
-KC would also like to thank Yann LeCun, Philip Stark, and Pierre Baldi for their feedback on the
-project early in its conception, Bal\'azs K\'egl for discussions about the Kaggle challenge and feedback to the draft, 
-and Yuri Shirman for reassuring cross checks of the Theorem.
-KC is supported by the US National Science Foundation grants PHY-0854724 and PHY-0955626. 
-KC is grateful to UC-Irvine for their hospitality while this research was carried out and the 
-Moore and Sloan foundations for their generous support of the data science environment at NYU.
-
-\bibliographystyle{natbib}
+\small{
+\bibliographystyle{unsrt}
 \bibliography{learning.bib}
-%\begin{thebibliography}
-%\parametrized-learning}
-%\end{thebibliography
 
-\end{document} 
+
+}
+
+\end{document}

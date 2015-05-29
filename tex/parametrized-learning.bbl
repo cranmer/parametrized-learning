@@ -1,4 +1,4 @@
-\begin{thebibliography}{22}
+\begin{thebibliography}{23}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -154,6 +154,15 @@ S.~Whiteson and D.~Whiteson.
   physics}.
 \newblock \emph{Association for the Advancement of Artificial Intelligence},
   292, 2007.
+
+\bibitem[Wilks(1938)]{Wilks1938}
+S.~S. Wilks.
+\newblock {The Large-Sample Distribution of the Likelihood Ratio for Testing
+  Composite Hypotheses}.
+\newblock \emph{The Annals of Mathematical Statistics}, 9\penalty0
+  (1):\penalty0 60--62, March 1938.
+\newblock ISSN 2168-8990.
+\newblock URL \url{http://projecteuclid.org/euclid.aoms/1177732360}.
 
 \bibitem[{Xin Tong}(2013)]{JMLR:v14:tong13a}
 {Xin Tong}.
