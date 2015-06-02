@@ -93,3 +93,13 @@ tex/nips2015.pdf
 *.blg
 
 tex/parametrized-learning.blg
+
+tex/ims-sample.pdf
+
+tex/ims-sample.bbl
+
+tex/ims-sample.tex
+
+tex/ims-template.tex
+
+tex/parametrized-learning.aux

@@ -1,0 +1,302 @@
+\begin{thebibliography}{23}
+% BibTex style file: imsart-nameyear.bst, 2013-01-28
+% Default style options (sort=1,type=nameyear).
+% Used options (sort=1,type=nameyear).
+
+\bibitem[\protect\citeauthoryear{Aaltonen et~al.}{2010}]{Aaltonen:2010yz}
+\begin{barticle}[author]
+\bauthor{\bsnm{Aaltonen},~\bfnm{T.}\binits{T.}} \betal{et~al.}
+(\byear{2010}).
+\btitle{{Top Quark Mass Measurement in the Lepton + Jets Channel Using a Matrix
+  Element Method and \textit{in situ} Jet Energy Calibration}}.
+\bjournal{Phys.Rev.Lett.}
+\bvolume{105}
+\bpages{252001}.
+\bdoi{10.1103/PhysRevLett.105.252001}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Allanach et~al.}{2000}]{Allanach:2000kt}
+\begin{barticle}[author]
+\bauthor{\bsnm{Allanach},~\bfnm{B.~C.}\binits{B.~C.}},
+  \bauthor{\bsnm{Lester},~\bfnm{C.~G.}\binits{C.~G.}},
+  \bauthor{\bsnm{Parker},~\bfnm{Michael~Andrew}\binits{M.~A.}} \AND
+  \bauthor{\bsnm{Webber},~\bfnm{B.~R.}\binits{B.~R.}}
+(\byear{2000}).
+\btitle{{Measuring sparticle masses in nonuniversal string inspired models at
+  the LHC}}.
+\bjournal{JHEP}
+\bvolume{0009}
+\bpages{004}.
+\bdoi{10.1088/1126-6708/2000/09/004}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{{Andrew Y. Ng}}{}]{AndrewY.Ng}
+\begin{barticle}[author]
+\bauthor{\bsnm{{Andrew Y. Ng}},~\bfnm{Michael I.~Jordan}\binits{M.~I.~J.}}
+\btitle{{On Discriminative vs. Generative classifiers: A comparison of logistic
+  regression and naive Bayes}}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Baldi, Sadowski and
+  Whiteson}{2014}]{Baldi:2014kfa}
+\begin{barticle}[author]
+\bauthor{\bsnm{Baldi},~\bfnm{Pierre}\binits{P.}},
+  \bauthor{\bsnm{Sadowski},~\bfnm{Peter}\binits{P.}} \AND
+  \bauthor{\bsnm{Whiteson},~\bfnm{Daniel}\binits{D.}}
+(\byear{2014}).
+\btitle{{Searching for Exotic Particles in High-Energy Physics with Deep
+  Learning}}.
+\bjournal{Nature Commun.}
+\bvolume{5}
+\bpages{4308}.
+\bdoi{10.1038/ncomms5308}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{{Bianca Zadrozny}}{}]{BiancaZadrozny}
+\begin{barticle}[author]
+\bauthor{\bsnm{{Bianca Zadrozny}},~\bfnm{Charles~Elkan}\binits{C.~E.}}
+\btitle{{Obtaining calibrated probability estimates from decision trees and
+  naive Bayesian classifiers}}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Bolognesi et~al.}{2012}]{Bolognesi:2012mm}
+\begin{barticle}[author]
+\bauthor{\bsnm{Bolognesi},~\bfnm{Sara}\binits{S.}},
+  \bauthor{\bsnm{Gao},~\bfnm{Yanyan}\binits{Y.}},
+  \bauthor{\bsnm{Gritsan},~\bfnm{Andrei~V.}\binits{A.~V.}},
+  \bauthor{\bsnm{Melnikov},~\bfnm{Kirill}\binits{K.}},
+  \bauthor{\bsnm{Schulze},~\bfnm{Markus}\binits{M.}} \betal{et~al.}
+(\byear{2012}).
+\btitle{{On the spin and parity of a single-produced resonance at the LHC}}.
+\bjournal{Phys.Rev.}
+\bvolume{D86}
+\bpages{095031}.
+\bdoi{10.1103/PhysRevD.86.095031}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Chen et~al.}{2015}]{Chen:2014pia}
+\begin{barticle}[author]
+\bauthor{\bsnm{Chen},~\bfnm{Yi}\binits{Y.}},
+  \bauthor{\bsnm{Di~Marco},~\bfnm{Emanuele}\binits{E.}},
+  \bauthor{\bsnm{Lykken},~\bfnm{Joe}\binits{J.}},
+  \bauthor{\bsnm{Spiropulu},~\bfnm{Maria}\binits{M.}},
+  \bauthor{\bsnm{Vega-Morales},~\bfnm{Roberto}\binits{R.}} \betal{et~al.}
+(\byear{2015}).
+\btitle{{8D likelihood effective Higgs couplings extraction framework in $h \to
+  4\ell$}}.
+\bjournal{JHEP}
+\bvolume{1501}
+\bpages{125}.
+\bdoi{10.1007/JHEP01(2015)125}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{{Clayton Scott}}{}]{ClaytonScott}
+\begin{barticle}[author]
+\bauthor{\bsnm{{Clayton Scott}},~\bfnm{Robert~Nowak}\binits{R.~N.}}
+\btitle{{A Neyman-Pearson approach to statistical learning}}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{{The ATLAS
+  Collaboration}}{2012a}]{Aad:2012tfa}
+\begin{barticle}[author]
+\bauthor{\bsnm{{The ATLAS Collaboration}}}
+(\byear{2012}a).
+\btitle{{Observation of a new particle in the search for the Standard Model
+  Higgs boson with the ATLAS detector at the LHC}}.
+\bjournal{Phys.Lett.}
+\bvolume{B716}
+\bpages{1--29}.
+\bdoi{10.1016/j.physletb.2012.08.020}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{{The CMS
+  Collaboration}}{2012b}]{Chatrchyan:2012ufa}
+\begin{barticle}[author]
+\bauthor{\bsnm{{The CMS Collaboration}}}
+(\byear{2012}b).
+\btitle{{Observation of a new boson at a mass of 125 GeV with the CMS
+  experiment at the LHC}}.
+\bjournal{Phys.Lett.}
+\bvolume{B716}
+\bpages{30--61}.
+\bdoi{10.1016/j.physletb.2012.08.021}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Cowan et~al.}{2010}]{Cowan:2010js}
+\begin{barticle}[author]
+\bauthor{\bsnm{Cowan},~\bfnm{Glen}\binits{G.}},
+  \bauthor{\bsnm{Cranmer},~\bfnm{Kyle}\binits{K.}},
+  \bauthor{\bsnm{Gross},~\bfnm{Eilam}\binits{E.}} \AND
+  \bauthor{\bsnm{Vitells},~\bfnm{Ofer}\binits{O.}}
+(\byear{2010}).
+\btitle{{Asymptotic formulae for likelihood-based tests of new physics}}.
+\bjournal{Eur.Phys.J.}
+\bvolume{C71}
+\bpages{1554}.
+\bdoi{10.1140/epjc/s10052-011-1554-0}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Dempster and Schatzoff}{1965}]{Dempster1965}
+\begin{barticle}[author]
+\bauthor{\bsnm{Dempster},~\bfnm{A.~P.}\binits{A.~P.}} \AND
+  \bauthor{\bsnm{Schatzoff},~\bfnm{M.}\binits{M.}}
+(\byear{1965}).
+\btitle{Expected Significance Level as a Sensitivity Index for Test
+  Statistics}.
+\bjournal{Journal of the American Statistical Association}
+\bvolume{60}
+\bpages{pp. 420-436}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Hocker et~al.}{2007}]{Hocker:2007ht}
+\begin{barticle}[author]
+\bauthor{\bsnm{Hocker},~\bfnm{Andreas}\binits{A.}},
+  \bauthor{\bsnm{Stelzer},~\bfnm{J.}\binits{J.}},
+  \bauthor{\bsnm{Tegenfeldt},~\bfnm{F.}\binits{F.}},
+  \bauthor{\bsnm{Voss},~\bfnm{H.}\binits{H.}},
+  \bauthor{\bsnm{Voss},~\bfnm{K.}\binits{K.}} \betal{et~al.}
+(\byear{2007}).
+\btitle{{TMVA - Toolkit for Multivariate Data Analysis}}.
+\bjournal{PoS}
+\bvolume{ACAT}
+\bpages{040}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Ihler, Fisher and Willsky}{2004}]{Ihler2004}
+\begin{barticle}[author]
+\bauthor{\bsnm{Ihler},~\bfnm{A.~T.}\binits{A.~T.}},
+  \bauthor{\bsnm{Fisher},~\bfnm{J.~W.}\binits{J.~W.}} \AND
+  \bauthor{\bsnm{Willsky},~\bfnm{A.~S.}\binits{A.~S.}}
+(\byear{2004}).
+\btitle{{Nonparametric Hypothesis Tests for Statistical Dependency}}.
+\bjournal{IEEE Transactions on Signal Processing}
+\bvolume{52}
+\bpages{2234--2249}.
+\bdoi{10.1109/TSP.2004.830994}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{K\'egl et~al.}{}]{HepML}
+\begin{bmisc}[author]
+\bauthor{\bsnm{K\'egl},~\bfnm{Bal\'azs}\binits{B.}},
+  \bauthor{\bsnm{Rousseau},~\bfnm{David}\binits{D.}},
+  \bauthor{\bsnm{Cowan},~\bfnm{Glen}\binits{G.}},
+  \bauthor{\bsnm{Germain},~\bfnm{C\'ecile}\binits{C.}} \AND
+  \bauthor{\bsnm{Guyon},~\bfnm{Isabelle}\binits{I.}}
+\btitle{HepML Workshop \url{https://sites.google.com/site/hepml14/home}}.
+\end{bmisc}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Pedregosa et~al.}{2011}]{scikit-learn}
+\begin{barticle}[author]
+\bauthor{\bsnm{Pedregosa},~\bfnm{F.}\binits{F.}},
+  \bauthor{\bsnm{Varoquaux},~\bfnm{G.}\binits{G.}},
+  \bauthor{\bsnm{Gramfort},~\bfnm{A.}\binits{A.}},
+  \bauthor{\bsnm{Michel},~\bfnm{V.}\binits{V.}},
+  \bauthor{\bsnm{Thirion},~\bfnm{B.}\binits{B.}},
+  \bauthor{\bsnm{Grisel},~\bfnm{O.}\binits{O.}},
+  \bauthor{\bsnm{Blondel},~\bfnm{M.}\binits{M.}},
+  \bauthor{\bsnm{Prettenhofer},~\bfnm{P.}\binits{P.}},
+  \bauthor{\bsnm{Weiss},~\bfnm{R.}\binits{R.}},
+  \bauthor{\bsnm{Dubourg},~\bfnm{V.}\binits{V.}},
+  \bauthor{\bsnm{Vanderplas},~\bfnm{J.}\binits{J.}},
+  \bauthor{\bsnm{Passos},~\bfnm{A.}\binits{A.}},
+  \bauthor{\bsnm{Cournapeau},~\bfnm{D.}\binits{D.}},
+  \bauthor{\bsnm{Brucher},~\bfnm{M.}\binits{M.}},
+  \bauthor{\bsnm{Perrot},~\bfnm{M.}\binits{M.}} \AND
+  \bauthor{\bsnm{Duchesnay},~\bfnm{E.}\binits{E.}}
+(\byear{2011}).
+\btitle{Scikit-learn: Machine Learning in {P}ython}.
+\bjournal{Journal of Machine Learning Research}
+\bvolume{12}
+\bpages{2825--2830}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Rajat~Raina and McCallum}{2003}]{McCallum}
+\begin{barticle}[author]
+\bauthor{\bsnm{Rajat~Raina},~\bfnm{Andrew Y.~Ng}\binits{A.~Y.~N.}
+  \bsuffix{Yirong~Shen}} \AND
+  \bauthor{\bsnm{McCallum},~\bfnm{Andrew}\binits{A.}}
+(\byear{2003}).
+\btitle{Classification with Hybrid Generative/Discriminative Models}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{{Tommi Jaakkola}}{}]{TommiJaakkola}
+\begin{barticle}[author]
+\bauthor{\bsnm{{Tommi Jaakkola}},~\bfnm{David~Haussler}\binits{D.~H.}}
+\btitle{{Exploiting Generative Models in Discriminative Classifiers}}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{{Xin Tong}}{2013}]{JMLR:v14:tong13a}
+\begin{barticle}[author]
+\bauthor{\bsnm{{Xin Tong}}}
+(\byear{2013}).
+\btitle{{A Plug-in Approach to Neyman-Pearson Classification}}.
+\bjournal{Journal of Machine Learning Research}
+\bvolume{14}
+\bpages{3011--3040}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Verkerke and Kirkby}{2003}]{Verkerke:2003ir}
+\begin{barticle}[author]
+\bauthor{\bsnm{Verkerke},~\bfnm{Wouter}\binits{W.}} \AND
+  \bauthor{\bsnm{Kirkby},~\bfnm{David~P.}\binits{D.~P.}}
+(\byear{2003}).
+\btitle{{The RooFit toolkit for data modeling}}.
+\bjournal{eConf}
+\bvolume{C0303241}
+\bpages{MOLT007}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Volobouev}{2011}]{Volobouev:2011vb}
+\begin{barticle}[author]
+\bauthor{\bsnm{Volobouev},~\bfnm{Igor}\binits{I.}}
+(\byear{2011}).
+\btitle{{Matrix Element Method in HEP: Transfer Functions, Efficiencies, and
+  Likelihood Normalization}}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Whiteson and Whiteson}{2007}]{Whiteson:2006ws}
+\begin{barticle}[author]
+\bauthor{\bsnm{Whiteson},~\bfnm{S.}\binits{S.}} \AND
+  \bauthor{\bsnm{Whiteson},~\bfnm{D.}\binits{D.}}
+(\byear{2007}).
+\btitle{{Stochastic optimization for collision selection in high energy
+  physics}}.
+\bjournal{Association for the Advancement of Artificial Intelligence}
+\bvolume{292}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Wilks}{1938}]{Wilks1938}
+\begin{barticle}[author]
+\bauthor{\bsnm{Wilks},~\bfnm{S.~S.}\binits{S.~S.}}
+(\byear{1938}).
+\btitle{{The Large-Sample Distribution of the Likelihood Ratio for Testing
+  Composite Hypotheses}}.
+\bjournal{The Annals of Mathematical Statistics}
+\bvolume{9}
+\bpages{60--62}.
+\end{barticle}
+\endbibitem
+
+\end{thebibliography}
