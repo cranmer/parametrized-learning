@@ -44,14 +44,6 @@
 \end{barticle}
 \endbibitem
 
-\bibitem[\protect\citeauthoryear{{Andrew Y. Ng}}{}]{AndrewY.Ng}
-\begin{barticle}[author]
-\bauthor{\bsnm{{Andrew Y. Ng}},~\bfnm{Michael I.~Jordan}\binits{M.~I.~J.}}
-\btitle{{On Discriminative vs. Generative classifiers: A comparison of logistic
-  regression and naive Bayes}}.
-\end{barticle}
-\endbibitem
-
 \bibitem[\protect\citeauthoryear{Baldi, Sadowski and
   Whiteson}{2014}]{Baldi:2014kfa}
 \begin{barticle}[author]
@@ -65,14 +57,6 @@
 \bvolume{5}
 \bpages{4308}.
 \bdoi{10.1038/ncomms5308}
-\end{barticle}
-\endbibitem
-
-\bibitem[\protect\citeauthoryear{{Bianca Zadrozny}}{}]{BiancaZadrozny}
-\begin{barticle}[author]
-\bauthor{\bsnm{{Bianca Zadrozny}},~\bfnm{Charles~Elkan}\binits{C.~E.}}
-\btitle{{Obtaining calibrated probability estimates from decision trees and
-  naive Bayesian classifiers}}.
 \end{barticle}
 \endbibitem
 
@@ -106,13 +90,6 @@
 \bvolume{1501}
 \bpages{125}.
 \bdoi{10.1007/JHEP01(2015)125}
-\end{barticle}
-\endbibitem
-
-\bibitem[\protect\citeauthoryear{{Clayton Scott}}{}]{ClaytonScott}
-\begin{barticle}[author]
-\bauthor{\bsnm{{Clayton Scott}},~\bfnm{Robert~Nowak}\binits{R.~N.}}
-\btitle{{A Neyman-Pearson approach to statistical learning}}.
 \end{barticle}
 \endbibitem
 
@@ -197,6 +174,7 @@
 \bjournal{IEEE Transactions on Signal Processing}
 \bvolume{52}
 \bpages{2234--2249}.
+\bnote{\url{http://ieeexplore.ieee.org/lpdocs/epic03/wrapper.htm?arnumber=1315943}}.
 \bdoi{10.1109/TSP.2004.830994}
 \end{barticle}
 \endbibitem
@@ -213,13 +191,31 @@
 \endbibitem
 
 \bibitem[\protect\citeauthoryear{Neal}{2007}]{Neal:2007zz}
-\begin{barticle}[author]
+\begin{binproceedings}[author]
 \bauthor{\bsnm{Neal},~\bfnm{Radford~M.}\binits{R.~M.}}
 (\byear{2007}).
 \btitle{{Computing likelihood functions for high-energy physics experiments
   when distributions are defined by simulators with nuisance parameters}}.
+In \bbooktitle{Proceedings of PhyStat2007, CERN-2008-001}
 \bpages{111-118}.
-\end{barticle}
+\bnote{\url{http://inspirehep.net/record/776337}}.
+\end{binproceedings}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Ng and Jordan}{2002}]{AndrewY.Ng}
+\begin{binproceedings}[author]
+\bauthor{\bsnm{Ng},~\bfnm{Andrew~Y.}\binits{A.~Y.}} \AND
+  \bauthor{\bsnm{Jordan},~\bfnm{Michael~I.}\binits{M.~I.}}
+(\byear{2002}).
+\btitle{On Discriminative vs. Generative Classifiers: A comparison of logistic
+  regression and naive Bayes}.
+In \bbooktitle{Advances in Neural Information Processing Systems 14}
+(\beditor{\bfnm{T.~G.}\binits{T.~G.}~\bsnm{Dietterich}},
+  \beditor{\bfnm{S.}\binits{S.}~\bsnm{Becker}} \AND
+  \beditor{\bfnm{Z.}\binits{Z.}~\bsnm{Ghahramani}}, eds.)
+\bpages{841--848}.
+\bpublisher{MIT Press}.
+\end{binproceedings}
 \endbibitem
 
 \bibitem[\protect\citeauthoryear{Pedregosa et~al.}{2011}]{scikit-learn}
@@ -249,12 +245,26 @@
 \endbibitem
 
 \bibitem[\protect\citeauthoryear{Rajat~Raina and McCallum}{2003}]{McCallum}
-\begin{barticle}[author]
+\begin{bmisc}[author]
 \bauthor{\bsnm{Rajat~Raina},~\bfnm{Andrew Y.~Ng}\binits{A.~Y.~N.}
   \bsuffix{Yirong~Shen}} \AND
   \bauthor{\bsnm{McCallum},~\bfnm{Andrew}\binits{A.}}
 (\byear{2003}).
 \btitle{Classification with Hybrid Generative/Discriminative Models}.
+\bnote{\url{http://works.bepress.com/andrew\_mccallum/38}}.
+\end{bmisc}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Scott and Nowak}{2005}]{ClaytonScott}
+\begin{barticle}[author]
+\bauthor{\bsnm{Scott},~\bfnm{Clayton}\binits{C.}} \AND
+  \bauthor{\bsnm{Nowak},~\bfnm{Robert}\binits{R.}}
+(\byear{2005}).
+\btitle{A Neyman-Pearson approach to statistical learning}.
+\bjournal{IEEE Trans. Inform. Theory}
+\bvolume{51}
+\bpages{3806--3819}.
+\bnote{\url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.103.6850\&rank=5}}.
 \end{barticle}
 \endbibitem
 
@@ -309,6 +319,7 @@
 (\byear{2011}).
 \btitle{{Matrix Element Method in HEP: Transfer Functions, Efficiencies, and
   Likelihood Normalization}}.
+\bnote{\url{http://arxiv.org/abs/1101.2259}}.
 \end{barticle}
 \endbibitem
 
@@ -322,6 +333,21 @@
 \bjournal{Association for the Advancement of Artificial Intelligence}
 \bvolume{292}.
 \end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Zadrozny and Elkan}{2001}]{BiancaZadrozny}
+\begin{binproceedings}[author]
+\bauthor{\bsnm{Zadrozny},~\bfnm{Bianca}\binits{B.}} \AND
+  \bauthor{\bsnm{Elkan},~\bfnm{Charles}\binits{C.}}
+(\byear{2001}).
+\btitle{Obtaining calibrated probability estimates from decision trees and
+  naive Bayesian classifiers}.
+In \bbooktitle{In Proceedings of the Eighteenth International Conference on
+  Machine Learning}
+\bpages{609--616}.
+\bpublisher{Morgan Kaufmann}
+\bnote{\url{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.29.3039}}.
+\end{binproceedings}
 \endbibitem
 
 \end{thebibliography}
