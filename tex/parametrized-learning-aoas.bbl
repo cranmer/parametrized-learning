@@ -94,10 +94,10 @@
 \endbibitem
 
 \bibitem[\protect\citeauthoryear{{The ATLAS
-  Collaboration}}{2012}]{Aad:2012tfa}
+  Collaboration}}{2012a}]{Aad:2012tfa}
 \begin{barticle}[author]
 \bauthor{\bsnm{{The ATLAS Collaboration}}}
-(\byear{2012}).
+(\byear{2012}a).
 \btitle{{Observation of a new particle in the search for the Standard Model
   Higgs boson with the ATLAS detector at the LHC}}.
 \bjournal{Phys.Lett.}
@@ -108,10 +108,10 @@
 \endbibitem
 
 \bibitem[\protect\citeauthoryear{{The CMS
-  Collaboration}}{2012}]{Chatrchyan:2012ufa}
+  Collaboration}}{2012b}]{Chatrchyan:2012ufa}
 \begin{barticle}[author]
 \bauthor{\bsnm{{The CMS Collaboration}}}
-(\byear{2012}).
+(\byear{2012}b).
 \btitle{{Observation of a new boson at a mass of 125 GeV with the CMS
   experiment at the LHC}}.
 \bjournal{Phys.Lett.}
