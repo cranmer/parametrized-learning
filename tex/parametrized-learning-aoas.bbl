@@ -1,4 +1,4 @@
-\begin{thebibliography}{23}
+\begin{thebibliography}{25}
 % BibTex style file: imsart-nameyear.bst, 2013-01-28
 % Default style options (sort=1,type=nameyear).
 % Used options (sort=1,type=nameyear).
@@ -13,6 +13,18 @@
 \bvolume{105}
 \bpages{252001}.
 \bdoi{10.1103/PhysRevLett.105.252001}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Agostinelli et~al.}{2003}]{Agostinelli:2002hh}
+\begin{barticle}[author]
+\bauthor{\bsnm{Agostinelli},~\bfnm{S.}\binits{S.}} \betal{et~al.}
+(\byear{2003}).
+\btitle{{GEANT4: A Simulation toolkit}}.
+\bjournal{Nucl.Instrum.Meth.}
+\bvolume{A506}
+\bpages{250-303}.
+\bdoi{10.1016/S0168-9002(03)01368-8}
 \end{barticle}
 \endbibitem
 
@@ -200,6 +212,16 @@
 \end{bmisc}
 \endbibitem
 
+\bibitem[\protect\citeauthoryear{Neal}{2007}]{Neal:2007zz}
+\begin{barticle}[author]
+\bauthor{\bsnm{Neal},~\bfnm{Radford~M.}\binits{R.~M.}}
+(\byear{2007}).
+\btitle{{Computing likelihood functions for high-energy physics experiments
+  when distributions are defined by simulators with nuisance parameters}}.
+\bpages{111-118}.
+\end{barticle}
+\endbibitem
+
 \bibitem[\protect\citeauthoryear{Pedregosa et~al.}{2011}]{scikit-learn}
 \begin{barticle}[author]
 \bauthor{\bsnm{Pedregosa},~\bfnm{F.}\binits{F.}},
@@ -233,6 +255,21 @@
   \bauthor{\bsnm{McCallum},~\bfnm{Andrew}\binits{A.}}
 (\byear{2003}).
 \btitle{Classification with Hybrid Generative/Discriminative Models}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Sjostrand, Mrenna and
+  Skands}{2006}]{Sjostrand:2006za}
+\begin{barticle}[author]
+\bauthor{\bsnm{Sjostrand},~\bfnm{Torbjorn}\binits{T.}},
+  \bauthor{\bsnm{Mrenna},~\bfnm{Stephen}\binits{S.}} \AND
+  \bauthor{\bsnm{Skands},~\bfnm{Peter~Z.}\binits{P.~Z.}}
+(\byear{2006}).
+\btitle{{PYTHIA 6.4 Physics and Manual}}.
+\bjournal{JHEP}
+\bvolume{0605}
+\bpages{026}.
+\bdoi{10.1088/1126-6708/2006/05/026}
 \end{barticle}
 \endbibitem
 
@@ -284,18 +321,6 @@
   physics}}.
 \bjournal{Association for the Advancement of Artificial Intelligence}
 \bvolume{292}.
-\end{barticle}
-\endbibitem
-
-\bibitem[\protect\citeauthoryear{Wilks}{1938}]{Wilks1938}
-\begin{barticle}[author]
-\bauthor{\bsnm{Wilks},~\bfnm{S.~S.}\binits{S.~S.}}
-(\byear{1938}).
-\btitle{{The Large-Sample Distribution of the Likelihood Ratio for Testing
-  Composite Hypotheses}}.
-\bjournal{The Annals of Mathematical Statistics}
-\bvolume{9}
-\bpages{60--62}.
 \end{barticle}
 \endbibitem
 
