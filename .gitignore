@@ -103,3 +103,23 @@ tex/ims-sample.tex
 tex/ims-template.tex
 
 tex/parametrized-learning.aux
+
+tex/arxiv/example-TMVA-BDT.pdf
+
+tex/arxiv/example-TMVA-ROC.pdf
+
+tex/arxiv/imsart-nameyear.bst
+
+tex/arxiv/imsart-number.bst
+
+tex/arxiv/imsart.cls
+
+tex/arxiv/imsart.sty
+
+tex/arxiv/learning.bib
+
+tex/arxiv/parametrized-learning-aoas.tex
+
+tex/arxiv/parametrized-learning-aoas.bbl
+
+tex/arxiv/parametrized-learning-aoas.pdf
