@@ -1,4 +1,4 @@
-\begin{thebibliography}{25}
+\begin{thebibliography}{29}
 % BibTex style file: imsart-nameyear.bst, 2013-01-28
 % Default style options (sort=1,type=nameyear).
 % Used options (sort=1,type=nameyear).
@@ -136,6 +136,19 @@
 \end{barticle}
 \endbibitem
 
+\bibitem[\protect\citeauthoryear{Cranmer et~al.}{2012}]{Cranmer:2012sba}
+\begin{barticle}[author]
+\bauthor{\bsnm{Cranmer},~\bfnm{Kyle}\binits{K.}},
+  \bauthor{\bsnm{Lewis},~\bfnm{George}\binits{G.}},
+  \bauthor{\bsnm{Moneta},~\bfnm{Lorenzo}\binits{L.}},
+  \bauthor{\bsnm{Shibata},~\bfnm{Akira}\binits{A.}} \AND
+  \bauthor{\bsnm{Verkerke},~\bfnm{Wouter}\binits{W.}}
+(\byear{2012}).
+\btitle{{HistFactory: A tool for creating statistical models for use with
+  RooFit and RooStats}}.
+\end{barticle}
+\endbibitem
+
 \bibitem[\protect\citeauthoryear{Dempster and Schatzoff}{1965}]{Dempster1965}
 \begin{barticle}[author]
 \bauthor{\bsnm{Dempster},~\bfnm{A.~P.}\binits{A.~P.}} \AND
@@ -188,6 +201,21 @@
   \bauthor{\bsnm{Guyon},~\bfnm{Isabelle}\binits{I.}}
 \btitle{HepML Workshop \url{https://sites.google.com/site/hepml14/home}}.
 \end{bmisc}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Marin et~al.}{2011}]{Marin2011}
+\begin{barticle}[author]
+\bauthor{\bsnm{Marin},~\bfnm{Jean-Michel}\binits{J.-M.}},
+  \bauthor{\bsnm{Pudlo},~\bfnm{Pierre}\binits{P.}},
+  \bauthor{\bsnm{Robert},~\bfnm{Christian~P.}\binits{C.~P.}} \AND
+  \bauthor{\bsnm{Ryder},~\bfnm{Robin~J.}\binits{R.~J.}}
+(\byear{2011}).
+\btitle{{Approximate Bayesian computational methods}}.
+\bjournal{Statistics and Computing}
+\bvolume{22}
+\bpages{1167--1180}.
+\bdoi{10.1007/s11222-011-9288-2}
+\end{barticle}
 \endbibitem
 
 \bibitem[\protect\citeauthoryear{Neal}{2007}]{Neal:2007zz}
@@ -255,6 +283,18 @@ In \bbooktitle{Advances in Neural Information Processing Systems 14}
 \end{bmisc}
 \endbibitem
 
+\bibitem[\protect\citeauthoryear{Rubin}{1984}]{Rubin1984}
+\begin{barticle}[author]
+\bauthor{\bsnm{Rubin},~\bfnm{Donald~B.}\binits{D.~B.}}
+(\byear{1984}).
+\btitle{{Bayesianly Justifiable and Relevant Frequency Calculations for the
+  Applied Statistician}}.
+\bjournal{The Annals of Statistics}
+\bvolume{12}
+\bpages{1151--1172}.
+\end{barticle}
+\endbibitem
+
 \bibitem[\protect\citeauthoryear{Scott and Nowak}{2005}]{ClaytonScott}
 \begin{barticle}[author]
 \bauthor{\bsnm{Scott},~\bfnm{Clayton}\binits{C.}} \AND
@@ -280,6 +320,20 @@ In \bbooktitle{Advances in Neural Information Processing Systems 14}
 \bvolume{0605}
 \bpages{026}.
 \bdoi{10.1088/1126-6708/2006/05/026}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Tavar\'{e} et~al.}{1997}]{Tavare1997}
+\begin{barticle}[author]
+\bauthor{\bsnm{Tavar\'{e}},~\bfnm{S}\binits{S.}},
+  \bauthor{\bsnm{Balding},~\bfnm{D~J}\binits{D.~J.}},
+  \bauthor{\bsnm{Griffiths},~\bfnm{R~C}\binits{R.~C.}} \AND
+  \bauthor{\bsnm{Donnelly},~\bfnm{P}\binits{P.}}
+(\byear{1997}).
+\btitle{{Inferring coalescence times from DNA sequence data.}}
+\bjournal{Genetics}
+\bvolume{145}
+\bpages{505--18}.
 \end{barticle}
 \endbibitem
 
