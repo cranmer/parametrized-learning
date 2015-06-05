@@ -1,4 +1,4 @@
-\begin{thebibliography}{29}
+\begin{thebibliography}{28}
 % BibTex style file: imsart-nameyear.bst, 2013-01-28
 % Default style options (sort=1,type=nameyear).
 % Used options (sort=1,type=nameyear).
@@ -146,6 +146,7 @@
 (\byear{2012}).
 \btitle{{HistFactory: A tool for creating statistical models for use with
   RooFit and RooStats}}.
+\bnote{CERN-OPEN-2012-016, \url{http://inspirehep.net/record/1236448}}.
 \end{barticle}
 \endbibitem
 
@@ -280,17 +281,6 @@ In \bbooktitle{Advances in Neural Information Processing Systems 14}
 \bvolume{12}
 \bpages{2825--2830}.
 \end{barticle}
-\endbibitem
-
-\bibitem[\protect\citeauthoryear{Rajat~Raina and McCallum}{2003}]{McCallum}
-\begin{bmisc}[author]
-\bauthor{\bsnm{Rajat~Raina},~\bfnm{Andrew Y.~Ng}\binits{A.~Y.~N.}
-  \bsuffix{Yirong~Shen}} \AND
-  \bauthor{\bsnm{McCallum},~\bfnm{Andrew}\binits{A.}}
-(\byear{2003}).
-\btitle{Classification with Hybrid Generative/Discriminative Models}.
-\bnote{\url{http://works.bepress.com/andrew\_mccallum/38}}.
-\end{bmisc}
 \endbibitem
 
 \bibitem[\protect\citeauthoryear{Rubin}{1984}]{Rubin1984}
