@@ -1,4 +1,4 @@
-\begin{thebibliography}{28}
+\begin{thebibliography}{29}
 % BibTex style file: imsart-nameyear.bst, 2013-01-28
 % Default style options (sort=1,type=nameyear).
 % Used options (sort=1,type=nameyear).
@@ -160,6 +160,23 @@
 \bjournal{Journal of the American Statistical Association}
 \bvolume{60}
 \bpages{pp. 420-436}.
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Gao et~al.}{2010}]{Gao:2010qx}
+\begin{barticle}[author]
+\bauthor{\bsnm{Gao},~\bfnm{Yanyan}\binits{Y.}},
+  \bauthor{\bsnm{Gritsan},~\bfnm{Andrei~V.}\binits{A.~V.}},
+  \bauthor{\bsnm{Guo},~\bfnm{Zijin}\binits{Z.}},
+  \bauthor{\bsnm{Melnikov},~\bfnm{Kirill}\binits{K.}},
+  \bauthor{\bsnm{Schulze},~\bfnm{Markus}\binits{M.}} \betal{et~al.}
+(\byear{2010}).
+\btitle{{Spin determination of single-produced resonances at hadron
+  colliders}}.
+\bjournal{Phys.Rev.}
+\bvolume{D81}
+\bpages{075022}.
+\bdoi{10.1103/PhysRevD.81.075022}
 \end{barticle}
 \endbibitem
 
