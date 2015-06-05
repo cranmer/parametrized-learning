@@ -192,6 +192,16 @@
 \end{barticle}
 \endbibitem
 
+\bibitem[\protect\citeauthoryear{Jaakkola and Haussler}{1998}]{TommiJaakkola}
+\begin{barticle}[author]
+\bauthor{\bsnm{Jaakkola},~\bfnm{Tommi}\binits{T.}} \AND
+  \bauthor{\bsnm{Haussler},~\bfnm{David}\binits{D.}}
+(\byear{1998}).
+\btitle{{Exploiting Generative Models in Discriminative Classifiers}}.
+\bnote{\url{http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.44.7709}}.
+\end{barticle}
+\endbibitem
+
 \bibitem[\protect\citeauthoryear{K\'egl et~al.}{}]{HepML}
 \begin{bmisc}[author]
 \bauthor{\bsnm{K\'egl},~\bfnm{Bal\'azs}\binits{B.}},
@@ -334,13 +344,6 @@ In \bbooktitle{Advances in Neural Information Processing Systems 14}
 \bjournal{Genetics}
 \bvolume{145}
 \bpages{505--18}.
-\end{barticle}
-\endbibitem
-
-\bibitem[\protect\citeauthoryear{{Tommi Jaakkola}}{}]{TommiJaakkola}
-\begin{barticle}[author]
-\bauthor{\bsnm{{Tommi Jaakkola}},~\bfnm{David~Haussler}\binits{D.~H.}}
-\btitle{{Exploiting Generative Models in Discriminative Classifiers}}.
 \end{barticle}
 \endbibitem
 
