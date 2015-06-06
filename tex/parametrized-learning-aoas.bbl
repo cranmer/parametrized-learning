@@ -1,4 +1,4 @@
-\begin{thebibliography}{29}
+\begin{thebibliography}{30}
 % BibTex style file: imsart-nameyear.bst, 2013-01-28
 % Default style options (sort=1,type=nameyear).
 % Used options (sort=1,type=nameyear).
@@ -177,6 +177,18 @@
 \bvolume{D81}
 \bpages{075022}.
 \bdoi{10.1103/PhysRevD.81.075022}
+\end{barticle}
+\endbibitem
+
+\bibitem[\protect\citeauthoryear{Gutmann et~al.}{2014}]{Gutmann2014}
+\begin{barticle}[author]
+\bauthor{\bsnm{Gutmann},~\bfnm{Michael~U.}\binits{M.~U.}},
+  \bauthor{\bsnm{Dutta},~\bfnm{Ritabrata}\binits{R.}},
+  \bauthor{\bsnm{Kaski},~\bfnm{Samuel}\binits{S.}} \AND
+  \bauthor{\bsnm{Corander},~\bfnm{Jukka}\binits{J.}}
+(\byear{2014}).
+\btitle{{Likelihood-free inference via classification}}.
+\bnote{\url{http://arxiv.org/abs/1407.4981}}.
 \end{barticle}
 \endbibitem
 
