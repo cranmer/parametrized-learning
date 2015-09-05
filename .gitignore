@@ -123,3 +123,7 @@ tex/arxiv/parametrized-learning-aoas.tex
 tex/arxiv/parametrized-learning-aoas.bbl
 
 tex/arxiv/parametrized-learning-aoas.pdf
+
+taylor/csv/*
+
+taylor/.ipynb*
