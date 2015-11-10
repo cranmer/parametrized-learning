@@ -11,6 +11,8 @@ ROOTSYS = ../..
 include $(ROOTSYS)/etc/Makefile.arch
 endif
 
+ROOTCINT := rootcint
+
 DICT      := SciKitLearnWrapperDict.$(SrcSuf)
 DICTH     := $(DICT:.$(SrcSuf)=.h)
 DICTO     := $(DICT:.$(SrcSuf)=.$(ObjSuf))
@@ -37,7 +39,7 @@ all:    $(TARGETLIB)
 
 $(DICT): $(HDRS)
 	@echo "Generating dictionary $@..."
-	$(ROOTCINT)  -f $@ -c  $^
+	$(ROOTCINT)  -f $@ `python-config --include` -c  $^
 	#$(ROOTCINT)  -f $@ -c SciKitLearnWrapper.h LinkDef.h
 
 

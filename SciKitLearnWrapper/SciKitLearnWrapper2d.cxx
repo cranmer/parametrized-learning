@@ -16,6 +16,8 @@
 #include "Python.h"
 #endif
 
+using namespace std;
+
 ClassImp(SciKitLearnWrapper2d) 
 
   SciKitLearnWrapper2d::SciKitLearnWrapper2d(const char *name, const char *title, 

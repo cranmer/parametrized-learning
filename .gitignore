@@ -127,3 +127,5 @@ tex/arxiv/parametrized-learning-aoas.pdf
 taylor/csv/*
 
 taylor/.ipynb*
+
+*.pcm
