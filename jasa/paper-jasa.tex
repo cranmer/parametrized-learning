@@ -20,10 +20,10 @@
 \usepackage{theorem}
 \usepackage{xfrac}
 \usepackage{hyperref}
+\usepackage{color}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
-\newcommand{\citek}[1]{[\cite{#1}]}
 \newcommand{\sstar}{s^*}
 \newcommand{\sfunc}{s}
 
@@ -31,7 +31,7 @@
 \theoremstyle{plain}
 \newtheorem{thm}{Theorem}[section]
 
-\newcommand{\glnote}[1]{\textcolor{red}{GL: #1}}
+\newcommand{\glnote}[1]{\textcolor{red}{[GL: #1]}}
 
 \begin{document}
 
@@ -84,6 +84,7 @@ available. In particular, the proposed method offers a machine learning-based
 approach to statistical inference that is complementary to likelihood-free
 Bayesian inference algorithms (e.g., ABC), as it does not require the definition
 of a prior over model parameters.
+\glnote{Also mention conclusions on experimental results, as required by JASA guidelines.}
 
 \end{abstract}
 
@@ -95,78 +96,125 @@ of a prior over model parameters.
 \spacingset{1.45} % DON'T change the spacing!
 
 \section{Introduction}
+\label{sec:introduction}
+
+% The likelihood function is the central object that summarizes the information
+% from an experiment needed for inference of model parameters. The likelihood
+% function is key to Bayesian inference, and many areas of science that report the
+% results of classical hypothesis tests or confidence intervals use the
+% (generalized or profile) likelihood ratio as a test statistic. It is
+% increasingly common that a simulator (or generative model) is used to describe
+% complex processes that tie parameters $\theta$ of an underlying theory and
+% measurement apparatus to high-dimensional observations $x$. Directly evaluating
+% the likelihood ratio in these cases is often impossible or is computationally
+% impractical. Approximate Bayesian Computation (ABC) is one approach to parameter
+% inference in this simulation-based or likelihood-free
+% setting~\citep{Rubin1984,Tavare1997,Marin2011}. Here we consider an alternative
+% approach that can also be used in a classical setting where a prior over the
+% parameters is not available. In particular, we demonstrate how discriminative
+% classifiers can be used to construct equivalent likelihood ratio tests when a
+% generative model for the data is available for training and calibration.
 
 The likelihood function is the central object that summarizes the information
 from an experiment needed for inference of model parameters. The likelihood
-function is key to Bayesian inference, and many areas of science that report the
-results of classical hypothesis tests or confidence intervals use the
-(generalized or profile) likelihood ratio as a test statistic. It is
-increasingly common that a simulator (or generative model) is used to describe
-complex processes that tie parameters $\theta$ of an underlying theory and
-measurement apparatus to high-dimensional observations $x$. Directly evaluating
-the likelihood ratio in these cases is often impossible or is computationally
-impractical. Approximate Bayesian Computation (ABC) is one approach to parameter
-inference in this simulation-based or likelihood-free
-setting~\citek{Rubin1984,Tavare1997,Marin2011}. Here we consider an alternative
-approach that can also be used in a classical setting where a prior over the
-parameters is not available. In particular, we demonstrate how discriminative
-classifiers can be used to construct equivalent likelihood ratio tests when a
-generative model for the data is available for training and calibration.
+function is key to many areas of science that report the results of classical
+hypothesis tests or confidence intervals using the (generalized or profile)
+likelihood ratio as a test statistic. With the advance of computing technology,
+it has become increasingly common that a simulator (or generative model) is used
+to describe complex processes that tie parameters $\theta$ of an underlying
+theory and measurement apparatus to high-dimensional observations $x$. However,
+directly evaluating the likelihood function in these cases is often impossible
+or is computationally impractical. In this likelihood-free setting, various
+methods for statistical inference have been proposed, including most notably the
+Approximate Bayesian Computation (ABC) class of algorithms aiming at sampling
+from the posterior distribution of model parameters \glnote{Add references}.
 
-As a concrete example, consider searches for new particles at the Large Hadron
-Collider. The simulator that is sampling from $p(x|\theta)$ is based on quantum
-field theory, a detailed simulation of the particle detector, and data
-processing algorithms that transform raw sensor data into the feature vector
-$x$~\citek{Sjostrand:2006za,Agostinelli:2002hh}.
+The main result of this paper is to show that the likelihood ratio is invariant
+under dimensionality reduction, under the assumption that the transformation is
+monotonic with the likelihood ratio. As a direct consequence, we propose an
+alternative machine learning-based approach for likelihood-free inference that
+can also be used in a classical (frequentist) setting where a prior over the
+model parameters is not available. More specifically, we demonstrate why and how
+discriminative classifiers can be used to construct equivalent likelihood ratio
+tests when only a generative model for the data is available for training and
+calibration.
 
-The ATLAS and CMS experiments have published  hundreds papers where the final
-result was formulated as a hypothesis test or confidence interval using a
-generalized  likelihood ratio test~\citek{Cowan:2010js}. This includes the
-discovery of the Higgs boson~\citek{Aad:2012tfa,Chatrchyan:2012ufa} and
-subsequent measurement of its properties.
+% As a concrete example, consider searches for new particles at the Large Hadron
+% Collider. The simulator that is sampling from $p(x|\theta)$ is based on quantum
+% field theory, a detailed simulation of the particle detector, and data
+% processing algorithms that transform raw sensor data into the feature vector
+% $x$~\citep{Sjostrand:2006za,Agostinelli:2002hh}.
+%
+% The ATLAS and CMS experiments have published  hundreds papers where the final
+% result was formulated as a hypothesis test or confidence interval using a
+% generalized  likelihood ratio test~\citep{Cowan:2010js}. This includes the
+% discovery of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa} and
+% subsequent measurement of its properties.
+%
+% The bulk of the likelihood ratio tests at the LHC are based on the distribution
+% of a single event-level feature that discriminates between a hypothesized
+% process of interest (labeled \textit{signal}) and various other processes
+% (labeled \textit{background}). Typically,  pseudo-data from the simulator are
+% used to approximate the density at various parameter points, and an
+% interpolation algorithm is used to approximate the parametrized
+% model~\citep{Cranmer:2012sba}.
+%
+% To improve the statistical power of these tests, hundreds of these searches have
+% utilized supervised learning to train discriminative classifiers that take
+% commonly used. Recently, there has been progress in using deep
+% networks~\citep{Baldi:2014kfa} and a NIPS workshop synthesizing the lessons
+% learned during HiggsML~\citep{HepML}, the largest Kaggle challenge in history.
 
-The bulk of the likelihood ratio tests at the LHC are based on the distribution
-of a single event-level feature that discriminates between a hypothesized
-process of interest (labeled \textit{signal}) and various other processes
-(labeled \textit{background}). Typically,  pseudo-data from the simulator are
-used to approximate the density at various parameter points, and an
-interpolation algorithm is used to approximate the parametrized
-model~\citek{Cranmer:2012sba}.
+As a concrete example, let us consider searches for new particles at the Large
+Hadron Collider (LHC). The simulator that is sampling from $p(x|\theta)$ is
+based on quantum field theory, a detailed simulation of the particle detector,
+and data processing algorithms that transform raw sensor data into the feature
+vector $x$~\citep{Sjostrand:2006za,Agostinelli:2002hh}. The ATLAS and CMS
+experiments have published  hundreds papers where the final result was
+formulated as a hypothesis test or confidence interval using a generalized
+likelihood ratio test~\citep{Cowan:2010js}, including most notably the discovery
+of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa} and subsequent
+measurement of its properties. The bulk of the likelihood ratio tests at the LHC
+are based on the distribution of a single event-level feature that discriminates
+between a hypothesized process of interest (labeled \textit{signal}) and various
+other processes (labeled \textit{background}). Typically, pseudo-data from the
+simulator are used to approximate the density at various parameter points, and
+an interpolation algorithm is used to approximate the parametrized
+model~\citep{Cranmer:2012sba}. In particular, to improve the statistical power
+of these tests, hundreds of these searches have already been using supervised
+learning to train discriminative classifiers that take advantage of a high
+dimensional feature vector $x$.
 
-To improve the statistical power of these tests, hundreds of these searches have
-utilized supervised learning to train discriminative classifiers that take
-advantage of a high dimensional feature vector $x$. Within High Energy Physics
-(HEP) libraries such as TMVA that implement conventional techniques like the
-multi-layer perceptron and boosted decision trees~\citek{Hocker:2007ht} are
-commonly used. Recently, there has been progress in using deep
-networks~\citek{Baldi:2014kfa} and a NIPS workshop synthesizing the lessons
-learned during HiggsML~\citek{HepML}, the largest Kaggle challenge in history.
+% While classification accuracy can lead to optimal approaches for simple
+% hypothesis tests~\citep{Dempster1965}, that is no longer true in the context of
+% parameter estimation or composite hypothesis tests with nuisance parameters. As
+% noted in ~\citep{Whiteson:2006ws}, ``such methods are suboptimal because they
+% assume that the selector with the highest classification accuracy will yield a
+% mass measurement with the smallest statistical uncertainty.'' The key
+% distinction is that evaluating the loss for classification is composed of many
+% per-event operations, while evaluating the loss for a mass measurement (e.g. the
+% variance of an estimator for the mass parameter) is a per-experiment operation
+% involving a data set with many events. They went on to demonstrate a
+% computationally intensive stochastic optimization technique based on the
+% per-experiment loss out performed the two stage selection-estimation process.
+%
+% The initial motivation for this work was to extend the typical usage of
+% discriminative classifiers in HEP to be robust to nuisance parameters in the
+% simulators. The scope of the result expanded once it became clear that this
+% offers a way to approximate the likelihood function $p(x|\theta)$ in what is
+% typically considered the likelihood-free setting. This approach is complementary
+% to ABC as it does not require a prior over the parameters and can also be used
+% in the classical (frequentist) setting. A strength of this approach is that it
+% separates the quality of the approximation of the target likelihood from the
+% quality of the calibration.  In Section~\ref{S:Related} we discuss the scheme
+% sketched by \cite{Neal:2007zz} that also suggests using a classifier  as a
+% dimensionality reduction map to aid in the estimation of the likelihood
+% function.
 
-While classification accuracy can lead to optimal approaches for simple
-hypothesis tests~\citek{Dempster1965}, that is no longer true in the context of
-parameter estimation or composite hypothesis tests with nuisance parameters. As
-noted in ~\citek{Whiteson:2006ws}, ``such methods are suboptimal because they
-assume that the selector with the highest classification accuracy will yield a
-mass measurement with the smallest statistical uncertainty.'' The key
-distinction is that evaluating the loss for classification is composed of many
-per-event operations, while evaluating the loss for a mass measurement (e.g. the
-variance of an estimator for the mass parameter) is a per-experiment operation
-involving a data set with many events. They went on to demonstrate a
-computationally intensive stochastic optimization technique based on the
-per-experiment loss out performed the two stage selection-estimation process.
+The rest of this paper is organized as follows. In Section...
 
-The initial motivation for this work was to extend the typical usage of
-discriminative classifiers in HEP to be robust to nuisance parameters in the
-simulators. The scope of the result expanded once it became clear that this
-offers a way to approximate the likelihood function $p(x|\theta)$ in what is
-typically considered the likelihood-free setting. This approach is complementary
-to ABC as it does not require a prior over the parameters and can also be used
-in the classical (frequentist) setting. A strength of this approach is that it
-separates the quality of the approximation of the target likelihood from the
-quality of the calibration.  In Section~\ref{S:Related} we discuss the scheme
-sketched by \cite{Neal:2007zz} that also suggests using a classifier  as a
-dimensionality reduction map to aid in the estimation of the likelihood
-function.
+\section{Likelihood ratio tests}
+\label{sec:likelihood-ratio-tests}
 
 \subsection{Notation and Assumptions}
 
@@ -184,7 +232,6 @@ We use the following notation:
 \end{itemize}
 We will assume the $x_e$ are i.i.d., so that $p(D|\theta) = \prod_{e=1}^n p(x_e | \theta)$.
 
-%\newpage
 \subsection{Prelude}
 
 In the setting where one is interested in simple hypothesis testing between a null $\theta=\theta_0$ against an alternate $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio
@@ -216,7 +263,7 @@ Here we see that the original goal for simple hypothesis testing (i.e. to make a
 
 \subsection{Comments on classification and frequentist hypothesis tests}
 
-Vast literature exists around generative and discriminative classifiers~\citek{AndrewY.Ng}. Typically, generative classifiers learn a model for the joint probability $p(x,y)$, of the inputs $x$ and the classification label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative classifiers model the posterior $p(y|x)$ directly. For classification tasks, one then thresholds on $p(y|x)$. In both cases this description in terms of a posterior requires a prior distribution for $p(y)$, which is either modeled explicitly or learned from the training data.
+Vast literature exists around generative and discriminative classifiers~\citep{AndrewY.Ng}. Typically, generative classifiers learn a model for the joint probability $p(x,y)$, of the inputs $x$ and the classification label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative classifiers model the posterior $p(y|x)$ directly. For classification tasks, one then thresholds on $p(y|x)$. In both cases this description in terms of a posterior requires a prior distribution for $p(y)$, which is either modeled explicitly or learned from the training data.
 This familiar formulation of classification may lead to some confusion in the setting of the current work.
 
 The first possible source of confusion we wish to avoid is that here $p(x|\theta)$  is a  \textit{generative statistical model} for the features $x$, not a generative classifier. We think of the  $p(x|\theta)$ along the lines of a traditional scientific theory or simulator, able to make predictions about $x$ and being motivated by domain-specific considerations.
@@ -381,9 +428,9 @@ training data produced according to Algorithm~\ref{alg:training}, it is not clea
 Once the classifier is trained, we can use the generative model together with a univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{p}(\hat{s}|\theta)$ for specific parameter points.
 For an single parameter point, this is a tractable univariate density estimation problem. The challenge comes from the need to estimate this density for all values of $\theta$.
 A straight forward approach would be to run the generative model on demand for any particular value of $\theta$.
-In the context of a likelihood fit this would mean that the optimization algorithm that is trying to maximize the likelihood with respect to $\theta$ needs access to the generative model $p(x|\theta)$. This can be  impractical when the generative model is computationally expensive or has high-latency (for instance some human intervention is required to reconfigure the generative model).  In  HEP with a fixed classifier, it has become common  to interpolate the distribution between discrete values of $\theta$ in order to produce a continuous parametrization for $\hat p(\hat s | \theta)$~\citek{Cranmer:2012sba}.
+In the context of a likelihood fit this would mean that the optimization algorithm that is trying to maximize the likelihood with respect to $\theta$ needs access to the generative model $p(x|\theta)$. This can be  impractical when the generative model is computationally expensive or has high-latency (for instance some human intervention is required to reconfigure the generative model).  In  HEP with a fixed classifier, it has become common  to interpolate the distribution between discrete values of $\theta$ in order to produce a continuous parametrization for $\hat p(\hat s | \theta)$~\citep{Cranmer:2012sba}.
 
-There is a mild technical challenge in embedding the classifier into the likelihood. In the case of a fixed classifier $\hat s(x)$ it is possible to pre-compute $\hat s_e=\hat s(x_e)$ and never refer back to the original features $x_e$. In the parametrized setting it is not possible to pre-compute $\hat s(x_e; \theta_0, \theta_1)$ since one does not know the true values of  $\theta_0$ and $\theta_1$. Thus one must implement the embedding of the classifier as in Eq.~\ref{eq:embedding}.  A concrete realization of this has been performed for probability models implemented with the \texttt{RooFit} probabilistic programing language and  classifiers implemented with \texttt{scikit-learn} and \texttt{TMVA}~\citek{Verkerke:2003ir,scikit-learn,Hocker:2007ht}.
+There is a mild technical challenge in embedding the classifier into the likelihood. In the case of a fixed classifier $\hat s(x)$ it is possible to pre-compute $\hat s_e=\hat s(x_e)$ and never refer back to the original features $x_e$. In the parametrized setting it is not possible to pre-compute $\hat s(x_e; \theta_0, \theta_1)$ since one does not know the true values of  $\theta_0$ and $\theta_1$. Thus one must implement the embedding of the classifier as in Eq.~\ref{eq:embedding}.  A concrete realization of this has been performed for probability models implemented with the \texttt{RooFit} probabilistic programing language and  classifiers implemented with \texttt{scikit-learn} and \texttt{TMVA}~\citep{Verkerke:2003ir,scikit-learn,Hocker:2007ht}.
 
 
 One can easily imagine a number of approaches to embedding the classifier and estimating the density $\hat p(\hat s|\theta)$ and the relative merits of those approaches will depend critically on the dimensionality of $\theta$ and the computational cost of the generative model. We leave a more general strategy for this overarching optimization problem as an area of future work.
@@ -401,7 +448,7 @@ to the signal component.
 p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu p_s( x_e \, |\,  \nu)  + (1-\mu)\, p_b( x_e \,|\, \nu) \,\right] \; ,
 \end{equation}
 New particle searches at the LHC are typically framed as hypothesis test where the null corresponds to $\mu=0$, and the
-generalized likelihood ratio (profiling over $\nu$ as in Eq.~\ref{eq:cmle}) is used as a test statistic~\citek{Cowan:2010js}. This approach was used for the discovery of the Higgs boson~\citek{Aad:2012tfa,Chatrchyan:2012ufa}.
+generalized likelihood ratio (profiling over $\nu$ as in Eq.~\ref{eq:cmle}) is used as a test statistic~\citep{Cowan:2010js}. This approach was used for the discovery of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa}.
 
 
 \subsection{Typical usage pattern}
@@ -471,12 +518,12 @@ The second line is a trivial, but useful decomposition into pair-wise classifica
 
 While the original motivation for this work was to improve the treatment of systematic uncertainties in new particle searches by parametrizing the classifier in terms of the nuisance parameters $\nu$, the same approach can be used for parameter inference. In the case of new particle searches the parameter of interest is the mixture coefficient for the signal component $p_s(x|\nu)$. When measuring particle properties the distribution of the features also depend on parameters such as a particle's mass and quantum numbers. This is easily accommodated by extending $p_s(x|\nu) \to p_s(x|\theta)$, where $\theta$ includes both parameters of interest and nuisance parameters.
 
-This formalism represents a significant step forward in the usage of machine learning in HEP, where classifiers have always been used between two static classes of events and not parametrized explicitly in terms of the physical quantities we wish to measure. The work of  ~\citek{Whiteson:2006ws} is similar as the stochastic optimization was directly trying to minimize the measurement uncertainty of a particle's mass; however, the resulting classifier was fixed. This approach also offers the advantage that it explicitly reformulates the per-experiment optimization to the per-event optimization, which is less computationally intensive.
+This formalism represents a significant step forward in the usage of machine learning in HEP, where classifiers have always been used between two static classes of events and not parametrized explicitly in terms of the physical quantities we wish to measure. The work of  ~\citep{Whiteson:2006ws} is similar as the stochastic optimization was directly trying to minimize the measurement uncertainty of a particle's mass; however, the resulting classifier was fixed. This approach also offers the advantage that it explicitly reformulates the per-experiment optimization to the per-event optimization, which is less computationally intensive.
 
-Another approach that is similar in spirit is the so-called matrix element method, in which one  directly computes an approximate likelihood ratio by performing a computationally intensive integral associated to the detector response~\citek{Volobouev:2011vb}. In the approach considered in this paper, the detector response is naturally handled by the Monte Carlo sampling used in the simulation of the detector; however, that integral is intractable for the matrix element method. Even with drastic simplifications of the detector response, the matrix element method can take several minutes of CPU time to calculate the likelihood ratio $q(x)$ for a single event. The work here can be seen as aiming at the same conceptual target, but utilizing machine learning to overcome the complexity of the detector simulation. It also offers enormous speed increase for evaluating the likelihood at the cost of an initial training stage. In practice, the matrix element method has only been used for searches and measurement of a single physical parameter (sometimes with a single nuisance parameter as in~\citek{Aaltonen:2010yz}).
+Another approach that is similar in spirit is the so-called matrix element method, in which one  directly computes an approximate likelihood ratio by performing a computationally intensive integral associated to the detector response~\citep{Volobouev:2011vb}. In the approach considered in this paper, the detector response is naturally handled by the Monte Carlo sampling used in the simulation of the detector; however, that integral is intractable for the matrix element method. Even with drastic simplifications of the detector response, the matrix element method can take several minutes of CPU time to calculate the likelihood ratio $q(x)$ for a single event. The work here can be seen as aiming at the same conceptual target, but utilizing machine learning to overcome the complexity of the detector simulation. It also offers enormous speed increase for evaluating the likelihood at the cost of an initial training stage. In practice, the matrix element method has only been used for searches and measurement of a single physical parameter (sometimes with a single nuisance parameter as in~\citep{Aaltonen:2010yz}).
 
-Contemporary examples where the technique presented here could have major impact on HEP include the measurement of coefficients to quantum mechanical operators describing the decay of the Higgs boson~\citek{Chen:2014pia} and, if we are so lucky, measurement of the mass of supersymmetric particles in cascade decays~\citek{Allanach:2000kt}.  Both of these examples involve data sets with many events, each with a feature vector $x$ that has on the order of 10 components, and a parameter vector $\theta$ with 5-10 parameters of interest and possibly many more nuisance parameters.
-The state of the art for the operator coefficients of the Higgs decay uses the so-called matrix element likelihood analysis (MELA) in which the equivalent of $s(x; \theta_0, \theta_1)$ is approximated by neglecting detector effects~\citek{Gao:2010qx,Bolognesi:2012mm}.
+Contemporary examples where the technique presented here could have major impact on HEP include the measurement of coefficients to quantum mechanical operators describing the decay of the Higgs boson~\citep{Chen:2014pia} and, if we are so lucky, measurement of the mass of supersymmetric particles in cascade decays~\citep{Allanach:2000kt}.  Both of these examples involve data sets with many events, each with a feature vector $x$ that has on the order of 10 components, and a parameter vector $\theta$ with 5-10 parameters of interest and possibly many more nuisance parameters.
+The state of the art for the operator coefficients of the Higgs decay uses the so-called matrix element likelihood analysis (MELA) in which the equivalent of $s(x; \theta_0, \theta_1)$ is approximated by neglecting detector effects~\citep{Gao:2010qx,Bolognesi:2012mm}.
 
 \bigskip
 
