@@ -96,6 +96,16 @@ mention conclusions on experimental results, as required by JASA guidelines.}
 \newpage
 \spacingset{1.45} % DON'T change the spacing!
 
+% Introduction =================================================================
+
+% - Introduction section, mostly the same as before:
+%    * likelihood free setup
+%    * searches for particles at LHC as an example
+%    * brief and clear description of the contribution of this paper
+%      (i.e., density ratio estimation with calibrated classifiers,
+%             as an alternative to other methods for parameter inference)
+% - outline
+
 \section{Introduction}
 \label{sec:introduction}
 
@@ -215,6 +225,12 @@ proposed method could help these searches.}
 
 The rest of this paper is organized as follows. In Section...
 
+
+% Likelihood ratio tests =======================================================
+
+% - Introduce the mathematical problem with notations (was 1.1 and 1.2 before)
+% - I would keep some of the comments of 1.3, but I feel some are not necessary
+
 \section{Likelihood ratio tests}
 \label{sec:likelihood-ratio-tests}
 
@@ -328,6 +344,14 @@ the simulation of particle detectors can only be done in the forward mode.
 % \cite{Neal:2007zz}.
 
 
+% Approximating likelihood ratios with classifiers =============================
+
+% - Core of the paper (was section 2 + my note on slack)
+% - Derive theorem for the ratio of transformed densitites
+% - Show that consistent regressors minimizing the squared error loss fulfill conditions of the theorem
+% - Discuss that training on signal vs background instead of signal+background vs background is OK because this learns a function which is 1:1. => focus the capacity of the classifier; Generalization to decomposed ratios
+% - Discuss about the need of calibration in case of imperfect classifiers (was first paragraphs of section 5)
+
 \section{Approximating likelihood ratios with classifiers}
 \label{sec:approx}
 
@@ -344,12 +368,12 @@ on a parametrized function $s$ that is strictly monotonic with the density ratio
 \begin{equation}
 r(\mathbf{x};\theta_0, \theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}.
 \end{equation}
-As derived below, this allows to recast the original likelihood ratio test into an alternate
-form in which supervised learning can be used to build
+As derived below, this allows to recast the original likelihood ratio test into
+an alternate form in which supervised learning can be used to build
 $s(\mathbf{x}; \theta_0, \theta_1)$ as a discriminative classifier.  In
-Section~\ref{sec:generalized-likelihood-ratio} we extend this result to generalized likelihood ratio tests,
-where it will be useful to have the classifier  parametrized in terms of
-$(\theta_0, \theta_1)$.
+Section~\ref{sec:generalized-likelihood-ratio} we extend this result to
+generalized likelihood ratio tests, where it will be useful to have the
+classifier  parametrized in terms of $(\theta_0, \theta_1)$.
 
 \subsection{Likelihood ratios under change of variable}
 
@@ -415,13 +439,9 @@ Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_Y(y=s(\mathbf{x
 
 \begin{proposition} \label{thm:best-classifier}
 Let $\mathbf{X} = (X_1, ..., X_p)$ and $Y$ be random input and output variables
-with values in ${\cal X} \subseteq \mathbb{R}^p$\footnote{Without loss of
-generality, the discussion assumes continuous random variables, but can be
-extended to random variables of mixed types with the Dirac delta function.}
+with values in ${\cal X} \subseteq \mathbb{R}^p$
 and ${\cal Y} = \{0, 1\}$ and mixed joint probability density  function
-$p_{\mathbf{X},Y}(\mathbf{x}, y)$\footnote{Defined as
-$p_{\mathbf{X},Y}(\mathbf{x}, y) = p_{\mathbf{X}|Y}(\mathbf{x}|y) P(Y=y) =
-P(Y=y|X=x) p_{\mathbf{X}}(\mathbf{x})$.}. For the squared error loss, the best
+$p_{\mathbf{X},Y}(\mathbf{x}, y)$. For the squared error loss, the best
 regression function $s : {\cal X} \mapsto [0, 1]$, or equivalently the best
 probabilistic classifier, is
 \begin{equation}
@@ -476,19 +496,23 @@ that it is not a necessary procedure since Theorem~\ref{thm:ratio-equivalence} h
 for any monotonic function $m$ of the density ratio, i.e., not for
 $m(r(\mathbf{x})) = \frac{r(\mathbf{x})}{1 + r(\mathbf{x})}$ only.
 
-Equivalently, since $m^{-1}(s^*(\mathbf{x})) = \frac{1 - s^*(\mathbf{x})}{s^*(\mathbf{x})} = r(\mathbf{x})$,
-Proposition~\ref{thm:best-classifier} shows that the density ratio estimation problem is strictly
-equivalent to probabilistic classification, and that algorithms proposed to
-solve one can be used for solving the other. In this context, Theorem~\ref{thm:ratio-equivalence}
-shows that in case we learn a probabilistic classifier $s(\mathbf{x})$
-which is imperfect up to a monotonic transformation of $r(\mathbf{x})$, then
-one can still resort to calibration (i.e., modelling $p_Y(y=s(\mathbf{x}))$)
-to compute $r(\mathbf{x})$ exactly.
+Equivalently, since $m^{-1}(s^*(\mathbf{x})) = \frac{1 -
+s^*(\mathbf{x})}{s^*(\mathbf{x})} = r(\mathbf{x})$,
+Proposition~\ref{thm:best-classifier} shows that the likelihood ratio estimation
+problem is directly related to probabilistic classification, and that algorithms
+proposed to solve one can be used for solving the other. In this context,
+Theorem~\ref{thm:ratio-equivalence} shows that in case we learn a probabilistic
+classifier $s(\mathbf{x})$ which is imperfect up to a monotonic transformation
+of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modelling
+$p_Y(y=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
 
-\glnote{Discuss that training on signal vs background instead of signal+background vs background is OK because this learns a function which is 1:1.}
+\glnote{Discuss that training on signal vs background instead of
+signal+background vs background is OK because this learns a function which is
+1:1.}
 
-\glnote{Discuss the capacity of the classifier; Generalization to decomposed ratios
-Discuss about the need of calibration in case of imperfect classifiers (was first paragraphs of section 5)}
+\glnote{Discuss the capacity of the classifier; Generalization to decomposed
+ratios Discuss about the need of calibration in case of imperfect classifiers
+(was first paragraphs of section 5)}
 
 % \section{Dimensionality reduction and calibration}
 %
@@ -560,6 +584,11 @@ Discuss about the need of calibration in case of imperfect classifiers (was firs
 % This is equivalent to approximating the likelihood function for $\theta_0$  when $\theta_1$ is held fixed.
 
 
+% Generalized likelihood ratio tests ===========================================
+
+% - mathematical problem (was section 4)
+% - maximum likelihood estimator inference from ratios
+% - discussion on parameterized classifier and practicalities regarding embedding (was sections 5.2 and 5.3)
 
 \section{Generalized likelihood ratio tests}
 \label{sec:generalized-likelihood-ratio}
@@ -623,7 +652,6 @@ algorithms with various surrogate loss functions lead to discriminative
 classifiers that approximate a monotonic function of per-event likelihood ratio
 $q(x)$.
 
-
 \subsection{Training a parametrized classifier}
 
 In order to provide parameter inference in the likelihood-free setting, we must train a family of  classifiers parametrized by $\theta_0$ and $\theta_1$, the
@@ -646,47 +674,97 @@ as input to the classifier; their values will be specified via the enveloping (g
 % \end{algorithmic}
 % \end{algorithm}%\vspace{-1.5em}
 
-\bigskip
-
-While the function $p(x|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$ will minimize the expected squared loss based on
-training data produced according to Algorithm~\ref{alg:training}, it is not clear how training data from $\theta'_0 \ne \theta_0$ and $\theta'_1 \ne \theta_1$ will influence a real world classifier with finite capacity. This is left as an area for future work.
+While the function $p(x|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$ will minimize
+the expected squared loss based on training data produced according to
+Algorithm~\ref{alg:training}, it is not clear how training data from $\theta'_0
+\ne \theta_0$ and $\theta'_1 \ne \theta_1$ will influence a real world
+classifier with finite capacity. This is left as an area for future work.
 
 \subsection{Practicalities of embedding the classifier into the likelihood}
 
+Once the classifier is trained, we can use the generative model together with a
+univariate density estimation technique (e.g. histograms or kernel density
+estimation) to approximate $\hat{p}(\hat{s}|\theta)$ for specific parameter
+points. For an single parameter point, this is a tractable univariate density
+estimation problem. The challenge comes from the need to estimate this density
+for all values of $\theta$. A straight forward approach would be to run the
+generative model on demand for any particular value of $\theta$. In the context
+of a likelihood fit this would mean that the optimization algorithm that is
+trying to maximize the likelihood with respect to $\theta$ needs access to the
+generative model $p(x|\theta)$. This can be  impractical when the generative
+model is computationally expensive or has high-latency (for instance some human
+intervention is required to reconfigure the generative model).  In  HEP with a
+fixed classifier, it has become common  to interpolate the distribution between
+discrete values of $\theta$ in order to produce a continuous parametrization for
+$\hat p(\hat s | \theta)$~\citep{Cranmer:2012sba}.
 
-Once the classifier is trained, we can use the generative model together with a univariate density estimation technique (e.g. histograms or kernel density estimation) to approximate $\hat{p}(\hat{s}|\theta)$ for specific parameter points.
-For an single parameter point, this is a tractable univariate density estimation problem. The challenge comes from the need to estimate this density for all values of $\theta$.
-A straight forward approach would be to run the generative model on demand for any particular value of $\theta$.
-In the context of a likelihood fit this would mean that the optimization algorithm that is trying to maximize the likelihood with respect to $\theta$ needs access to the generative model $p(x|\theta)$. This can be  impractical when the generative model is computationally expensive or has high-latency (for instance some human intervention is required to reconfigure the generative model).  In  HEP with a fixed classifier, it has become common  to interpolate the distribution between discrete values of $\theta$ in order to produce a continuous parametrization for $\hat p(\hat s | \theta)$~\citep{Cranmer:2012sba}.
+There is a mild technical challenge in embedding the classifier into the
+likelihood. In the case of a fixed classifier $\hat s(x)$ it is possible to
+pre-compute $\hat s_e=\hat s(x_e)$ and never refer back to the original features
+$x_e$. In the parametrized setting it is not possible to pre-compute $\hat
+s(x_e; \theta_0, \theta_1)$ since one does not know the true values of
+$\theta_0$ and $\theta_1$. Thus one must implement the embedding of the
+classifier as in Eq.~\ref{eq:embedding}.  A concrete realization of this has
+been performed for probability models implemented with the \texttt{RooFit}
+probabilistic programing language and  classifiers implemented with
+\texttt{scikit-learn} and
+\texttt{TMVA}~\citep{Verkerke:2003ir,scikit-learn,Hocker:2007ht}.
 
-There is a mild technical challenge in embedding the classifier into the likelihood. In the case of a fixed classifier $\hat s(x)$ it is possible to pre-compute $\hat s_e=\hat s(x_e)$ and never refer back to the original features $x_e$. In the parametrized setting it is not possible to pre-compute $\hat s(x_e; \theta_0, \theta_1)$ since one does not know the true values of  $\theta_0$ and $\theta_1$. Thus one must implement the embedding of the classifier as in Eq.~\ref{eq:embedding}.  A concrete realization of this has been performed for probability models implemented with the \texttt{RooFit} probabilistic programing language and  classifiers implemented with \texttt{scikit-learn} and \texttt{TMVA}~\citep{Verkerke:2003ir,scikit-learn,Hocker:2007ht}.
+One can easily imagine a number of approaches to embedding the classifier and
+estimating the density $\hat p(\hat s|\theta)$ and the relative merits of those
+approaches will depend critically on the dimensionality of $\theta$ and the
+computational cost of the generative model. We leave a more general strategy for
+this overarching optimization problem as an area of future work.
 
 
-One can easily imagine a number of approaches to embedding the classifier and estimating the density $\hat p(\hat s|\theta)$ and the relative merits of those approaches will depend critically on the dimensionality of $\theta$ and the computational cost of the generative model. We leave a more general strategy for this overarching optimization problem as an area of future work.
+% Applications =================================================================
 
-\section{Applications in HEP}
+% - typical usage in HEP with a concrete experimental example.
+%   * illustrate the method for several classifiers (new)
+%    * illustrate the method for several calibration routines (new)
+%    * compare with other methods (new)
+% - ratio of mixtures and decomposition (special case of generalized likelihood rario tests when parameters only affect the mixture coefficients => no need for parametrized classifiers)
+% - measure of particles properties, with a concrete example. Comparison with other likelihood-free inference methods (new)
 
-In HEP we are often searching for some
-class of events, generically referred to as \textit{signal}, in the presence of a separate class
-of \textit{background} events.  For each event we measure some quantities $x$ that have corresponding distributions
-$p_b(x|\nu)$ for background and $p_s(x|\nu)$ for signal, where $\nu$ are nuisance parameters describing
-uncertainties in the underlying physics prediction or response of the measurement device. The
-total model is a mixture of the signal and background, and $\mu$ is the mixture coefficient associate
-to the signal component.
+\section{Applications}
+
+In HEP we are often searching for some class of events, generically referred to
+as \textit{signal}, in the presence of a separate class of \textit{background}
+events.  For each event we measure some quantities $x$ that have corresponding
+distributions $p_b(x|\nu)$ for background and $p_s(x|\nu)$ for signal, where
+$\nu$ are nuisance parameters describing uncertainties in the underlying physics
+prediction or response of the measurement device. The total model is a mixture
+of the signal and background, and $\mu$ is the mixture coefficient associate to
+the signal component.
 \begin{equation}\label{eq:hepGen}
 p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu p_s( x_e \, |\,  \nu)  + (1-\mu)\, p_b( x_e \,|\, \nu) \,\right] \; ,
 \end{equation}
-New particle searches at the LHC are typically framed as hypothesis test where the null corresponds to $\mu=0$, and the
-generalized likelihood ratio (profiling over $\nu$ as in Eq.~\ref{eq:cmle}) is used as a test statistic~\citep{Cowan:2010js}. This approach was used for the discovery of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa}.
-
+New particle searches at the LHC are typically framed as hypothesis test where
+the null corresponds to $\mu=0$, and the generalized likelihood ratio (profiling
+over $\nu$ as in Eq.~\ref{eq:cmle}) is used as a test
+statistic~\citep{Cowan:2010js}. This approach was used for the discovery of the
+Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa}.
 
 \subsection{Typical usage pattern}
 
-In this setting, large samples of pseudo-data $\{x_i, y_i\}$ generated with some nominal values of the parameters $\nu_0$, where $y=0$ corresponds to the background density $p_b(x|\nu_0)$  and $y=1$ corresponds to signal density $p_s(x|\nu_0)$. Importantly, the $y=1$ label corresponds to the signal only, and not to the alternate signal-plus-background hypothesis. The resulting classifier approximates the regression function $p_s(x|\nu_0)/(p_s(x|\nu_0)+p_b(x|\nu_0))$, which is one to one with the likelihood ratio of the null to the alternate $p(x|\mu=0,\nu_0)/p(x|\mu,\nu_0)$ for all $\mu$. Associating the $y=1$ label to the signal component has advantages because it helps the classifier focus its capacity on the relevant regions in the feature space, particularly when the signal is a very small perturbation to the background (i.e. $\mu \ll 1$).
+In this setting, large samples of pseudo-data $\{x_i, y_i\}$ generated with some
+nominal values of the parameters $\nu_0$, where $y=0$ corresponds to the
+background density $p_b(x|\nu_0)$  and $y=1$ corresponds to signal density
+$p_s(x|\nu_0)$. Importantly, the $y=1$ label corresponds to the signal only, and
+not to the alternate signal-plus-background hypothesis. The resulting classifier
+approximates the regression function $p_s(x|\nu_0)/(p_s(x|\nu_0)+p_b(x|\nu_0))$,
+which is one to one with the likelihood ratio of the null to the alternate
+$p(x|\mu=0,\nu_0)/p(x|\mu,\nu_0)$ for all $\mu$. Associating the $y=1$ label to
+the signal component has advantages because it helps the classifier focus its
+capacity on the relevant regions in the feature space, particularly when the
+signal is a very small perturbation to the background (i.e. $\mu \ll 1$).
 
- Once the classifier is trained, large samples of pseudo-data are drawn from $p_s(x | \nu)$ and $p_b(x | \nu)$ and we estimate the distributions  $\hat{p}_s(\hat s | \nu)$ and $\hat{p}_b(\hat s | \nu)$ continuously parametrized in $\nu$.
-An example of the distributions of $\hat s$ for the signal and background events with $\nu=\nu_0$ is shown in Figure~\ref{fig:tmva}.
-
+ Once the classifier is trained, large samples of pseudo-data are drawn from
+ $p_s(x | \nu)$ and $p_b(x | \nu)$ and we estimate the distributions
+ $\hat{p}_s(\hat s | \nu)$ and $\hat{p}_b(\hat s | \nu)$ continuously
+ parametrized in $\nu$. An example of the distributions of $\hat s$ for the
+ signal and background events with $\nu=\nu_0$ is shown in
+ Figure~\ref{fig:tmva}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -696,37 +774,62 @@ An example of the distributions of $\hat s$ for the signal and background events
 \label{fig:tmva}
 \end{center}
 \end{figure}
-%\bigskip
 
 These steps feed into a subsequent statistical test based on the observed data
-${D=(x_1, \dots, x_n)}$. For each event, the classifier is evaluated and one performs inference on a parameter $\mu$ related to the presence of the signal contribution. In particular, one forms the statistical model\footnote{Sometimes there is an additional Poisson term when expected number of signal and background events is known, which is referred to as an extended likelihood or marked Poisson model.}
+${D=(x_1, \dots, x_n)}$. For each event, the classifier is evaluated and one
+performs inference on a parameter $\mu$ related to the presence of the signal
+contribution. In particular, one forms the statistical model\footnote{Sometimes
+there is an additional Poisson term when expected number of signal and
+background events is known, which is referred to as an extended likelihood or
+marked Poisson model.}
 \begin{equation}\label{eq:typicalML}
 p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu \hat{p}_s( \hat s(x_e) \, |\,  \nu)  + (1-\mu)\, \hat{p}_b( \hat s(x_e) \,|\, \nu) \,\right] \; .
 \end{equation}
 
 \subsection{Comments on typical usage of machine learning in HEP}
 
-Nuisance parameters are an after thought in the typical usage of machine learning in HEP. In fact, most discussions would related to the training and optimizing the classifier only consider $p_b(x)$ and $p_s(x)$ with $\nu=\nu_0$ being implicit. However, as experimentalists we know that we must account for various forms of systematic uncertainty, parametrized by nuisance parameters $\nu$. In practice, we take the classifier as fixed and then propagate uncertainty through the classifier as in Eq.~\ref{eq:typicalML}. Building the distribution $p(\hat s|\nu)$ for values of $\nu$ other than the nominal $\nu_0$ used to train the classifier can be thought of as a calibration necessary for classical statistical inference; however, this classifier is clearly not optimal for $\nu \ne \nu_0$.
+Nuisance parameters are an after thought in the typical usage of machine
+learning in HEP. In fact, most discussions would related to the training and
+optimizing the classifier only consider $p_b(x)$ and $p_s(x)$ with $\nu=\nu_0$
+being implicit. However, as experimentalists we know that we must account for
+various forms of systematic uncertainty, parametrized by nuisance parameters
+$\nu$. In practice, we take the classifier as fixed and then propagate
+uncertainty through the classifier as in Eq.~\ref{eq:typicalML}. Building the
+distribution $p(\hat s|\nu)$ for values of $\nu$ other than the nominal $\nu_0$
+used to train the classifier can be thought of as a calibration necessary for
+classical statistical inference; however, this classifier is clearly not optimal
+for $\nu \ne \nu_0$.
 
 \subsection{A more powerful  approach}
 
-The standard use of machine learning in HEP can be improved by training a parametrized classifier corresponding to the generalized likelihood ratio test
+The standard use of machine learning in HEP can be improved by training a
+parametrized classifier corresponding to the generalized likelihood ratio test
 \begin{equation}
 \lambda(\mu) = \frac{p(D|\mu, \hat{\hat{\nu}})}{p(D|\hat \mu, {\hat{\nu}})} \;,
 \end{equation}
 following the approach outlined in Section~\ref{S:GLR}.
 
-There is an interesting distinction between this approach and the standard use in which the classifier is trained for a fixed $\nu_0$. In the standard use one trains a classifier for signal vs. background, which is equivalent (in an ideal setting) to training a classifier for  null (background-only) vs. alternate (signal-plus-backgound) since the resulting regression functions are one-to-one with each other.
-In contrast, in the case of the generalized likelihood ratio test
+There is an interesting distinction between this approach and the standard use
+in which the classifier is trained for a fixed $\nu_0$. In the standard use one
+trains a classifier for signal vs. background, which is equivalent (in an ideal
+setting) to training a classifier for  null (background-only) vs. alternate
+(signal-plus-backgound) since the resulting regression functions are one-to-one
+with each other. In contrast, in the case of the generalized likelihood ratio
+test
 \begin{equation}\label{eq:hep_improved}
  \frac{p(x| 0, \hat{\hat{ \nu}})}{p(x|\hat \mu, \hat\nu)} =  \frac{p_b(x| \hat{\hat{ \nu}})}{ \hat \mu p_s( x_e \, |\,  \hat\nu)  + (1- \hat \mu )\, p_b( x_e \,|\, \hat \nu)} \; ,
 \end{equation}
-the background components don't cancel and there is an additional term $p_b(x| \hat{\hat{ \nu}})/p_b(x| {\hat{ \nu}})$.
-In practice, with classifiers of finite capacity, there will be some tradeoff between taking into account this additional term and the more challenging learning problem when $\mu$ is very small.
+the background components don't cancel and there is an additional term $p_b(x|
+\hat{\hat{ \nu}})/p_b(x| {\hat{ \nu}})$. In practice, with classifiers of finite
+capacity, there will be some tradeoff between taking into account this
+additional term and the more challenging learning problem when $\mu$ is very
+small.
 
 \subsection{Decomposing tests between mixture models into their components}
 
-In this section we generalize the capacity focusing technique of training classifiers to discriminate between components of a mixture model. First, we generalize Eq.~\ref{eq:hepGen} to a mixture model of several components
+In this section we generalize the capacity focusing technique of training
+classifiers to discriminate between components of a mixture model. First, we
+generalize Eq.~\ref{eq:hepGen} to a mixture model of several components
 \begin{equation}
 p(x|\theta)=\sum_c w_c(\theta) p_c(x| \theta) \;.
 \end{equation}
@@ -741,46 +844,148 @@ It is possible to re-write the target likelihood ratio between two mixture model
 \end{eqnarray}
 The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parametrized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
-
-
 \subsection{Measuring particle properties}
 
-While the original motivation for this work was to improve the treatment of systematic uncertainties in new particle searches by parametrizing the classifier in terms of the nuisance parameters $\nu$, the same approach can be used for parameter inference. In the case of new particle searches the parameter of interest is the mixture coefficient for the signal component $p_s(x|\nu)$. When measuring particle properties the distribution of the features also depend on parameters such as a particle's mass and quantum numbers. This is easily accommodated by extending $p_s(x|\nu) \to p_s(x|\theta)$, where $\theta$ includes both parameters of interest and nuisance parameters.
+While the original motivation for this work was to improve the treatment of
+systematic uncertainties in new particle searches by parametrizing the
+classifier in terms of the nuisance parameters $\nu$, the same approach can be
+used for parameter inference. In the case of new particle searches the parameter
+of interest is the mixture coefficient for the signal component $p_s(x|\nu)$.
+When measuring particle properties the distribution of the features also depend
+on parameters such as a particle's mass and quantum numbers. This is easily
+accommodated by extending $p_s(x|\nu) \to p_s(x|\theta)$, where $\theta$
+includes both parameters of interest and nuisance parameters.
 
-This formalism represents a significant step forward in the usage of machine learning in HEP, where classifiers have always been used between two static classes of events and not parametrized explicitly in terms of the physical quantities we wish to measure. The work of  ~\citep{Whiteson:2006ws} is similar as the stochastic optimization was directly trying to minimize the measurement uncertainty of a particle's mass; however, the resulting classifier was fixed. This approach also offers the advantage that it explicitly reformulates the per-experiment optimization to the per-event optimization, which is less computationally intensive.
+This formalism represents a significant step forward in the usage of machine
+learning in HEP, where classifiers have always been used between two static
+classes of events and not parametrized explicitly in terms of the physical
+quantities we wish to measure. The work of  ~\citep{Whiteson:2006ws} is similar
+as the stochastic optimization was directly trying to minimize the measurement
+uncertainty of a particle's mass; however, the resulting classifier was fixed.
+This approach also offers the advantage that it explicitly reformulates the
+per-experiment optimization to the per-event optimization, which is less
+computationally intensive.
 
-Another approach that is similar in spirit is the so-called matrix element method, in which one  directly computes an approximate likelihood ratio by performing a computationally intensive integral associated to the detector response~\citep{Volobouev:2011vb}. In the approach considered in this paper, the detector response is naturally handled by the Monte Carlo sampling used in the simulation of the detector; however, that integral is intractable for the matrix element method. Even with drastic simplifications of the detector response, the matrix element method can take several minutes of CPU time to calculate the likelihood ratio $q(x)$ for a single event. The work here can be seen as aiming at the same conceptual target, but utilizing machine learning to overcome the complexity of the detector simulation. It also offers enormous speed increase for evaluating the likelihood at the cost of an initial training stage. In practice, the matrix element method has only been used for searches and measurement of a single physical parameter (sometimes with a single nuisance parameter as in~\citep{Aaltonen:2010yz}).
+Another approach that is similar in spirit is the so-called matrix element
+method, in which one  directly computes an approximate likelihood ratio by
+performing a computationally intensive integral associated to the detector
+response~\citep{Volobouev:2011vb}. In the approach considered in this paper, the
+detector response is naturally handled by the Monte Carlo sampling used in the
+simulation of the detector; however, that integral is intractable for the matrix
+element method. Even with drastic simplifications of the detector response, the
+matrix element method can take several minutes of CPU time to calculate the
+likelihood ratio $q(x)$ for a single event. The work here can be seen as aiming
+at the same conceptual target, but utilizing machine learning to overcome the
+complexity of the detector simulation. It also offers enormous speed increase
+for evaluating the likelihood at the cost of an initial training stage. In
+practice, the matrix element method has only been used for searches and
+measurement of a single physical parameter (sometimes with a single nuisance
+parameter as in~\citep{Aaltonen:2010yz}).
 
-Contemporary examples where the technique presented here could have major impact on HEP include the measurement of coefficients to quantum mechanical operators describing the decay of the Higgs boson~\citep{Chen:2014pia} and, if we are so lucky, measurement of the mass of supersymmetric particles in cascade decays~\citep{Allanach:2000kt}.  Both of these examples involve data sets with many events, each with a feature vector $x$ that has on the order of 10 components, and a parameter vector $\theta$ with 5-10 parameters of interest and possibly many more nuisance parameters.
-The state of the art for the operator coefficients of the Higgs decay uses the so-called matrix element likelihood analysis (MELA) in which the equivalent of $s(x; \theta_0, \theta_1)$ is approximated by neglecting detector effects~\citep{Gao:2010qx,Bolognesi:2012mm}.
+Contemporary examples where the technique presented here could have major impact
+on HEP include the measurement of coefficients to quantum mechanical operators
+describing the decay of the Higgs boson~\citep{Chen:2014pia} and, if we are so
+lucky, measurement of the mass of supersymmetric particles in cascade
+decays~\citep{Allanach:2000kt}.  Both of these examples involve data sets with
+many events, each with a feature vector $x$ that has on the order of 10
+components, and a parameter vector $\theta$ with 5-10 parameters of interest and
+possibly many more nuisance parameters. The state of the art for the operator
+coefficients of the Higgs decay uses the so-called matrix element likelihood
+analysis (MELA) in which the equivalent of $s(x; \theta_0, \theta_1)$ is
+approximated by neglecting detector effects~\citep{Gao:2010qx,Bolognesi:2012mm}.
 
-\bigskip
 
-\section{Related work}\label{S:Related}
+% Related works ================================================================
 
+\section{Related works}\label{S:Related}
 
-\cite{ClaytonScott} and \cite{JMLR:v14:tong13a} consider the machine learning problem associated to Neyman-Pearson hypothesis testing. As in this work, they consider the situation where one does not have access to the underlying distributions, but only has i.i.d. samples from each hypothesis. This work generalizes that goal from the Neyman-Pearson setting to generalized likelihood ratio tests and emphasizes the connection with classification. Perhaps a  formal treatment similar to the Neyman-Pearson case can be brought to bear in this more general setting.
-In a similarly titled work, \cite{Gutmann2014} advocate using the cross-validated classification accuracy as the similarity metric used in ABC. While the goal there is also parameter inference in the likelihood-free setting,  ``classifier ABC'' is very different than the approach presented here.
-\cite{TommiJaakkola} explore a way of leveraging generative models to derive kernel functions for use in discriminative methods. This interesting work is distinct from the point made here in which the generative model is being used for the purpose of providing training data and calibration.
+\cite{ClaytonScott} and \cite{JMLR:v14:tong13a} consider the machine learning
+problem associated to Neyman-Pearson hypothesis testing. As in this work, they
+consider the situation where one does not have access to the underlying
+distributions, but only has i.i.d. samples from each hypothesis. This work
+generalizes that goal from the Neyman-Pearson setting to generalized likelihood
+ratio tests and emphasizes the connection with classification. Perhaps a  formal
+treatment similar to the Neyman-Pearson case can be brought to bear in this more
+general setting. In a similarly titled work, \cite{Gutmann2014} advocate using
+the cross-validated classification accuracy as the similarity metric used in
+ABC. While the goal there is also parameter inference in the likelihood-free
+setting,  ``classifier ABC'' is very different than the approach presented here.
+\cite{TommiJaakkola} explore a way of leveraging generative models to derive
+kernel functions for use in discriminative methods. This interesting work is
+distinct from the point made here in which the generative model is being used
+for the purpose of providing training data and calibration.
 %\cite{McCallum} consider a hybrid generative/discriminative classifier; however, the goal of that work is not to leverage a generative model for the data, but to use both approaches to learn different subsets of the parameters in a single hybrid classifier.
-\cite{BiancaZadrozny} emphasize the importance of calibrated probability estimates from decision trees and naive Bayesian classifiers and investigate various approaches to achieve this. In contrast to that work, we are not interested in calibrated probability estimates for $p(y|x)$ for individual events, but instead we use the calibration to correct for non-linear transformations of the target likelihood ratio and, perhaps, to provide calibrated p-values based on those likelihood ratio tests. \cite{Ihler2004} take on a different problem (tests of statistical independence) by using machine learning algorithms to find  scalar maps from the high-dimensional feature space that achieve the desired statistical goal when the fundamental high-dimensional test is intractable.
+\cite{BiancaZadrozny} emphasize the importance of calibrated probability
+estimates from decision trees and naive Bayesian classifiers and investigate
+various approaches to achieve this. In contrast to that work, we are not
+interested in calibrated probability estimates for $p(y|x)$ for individual
+events, but instead we use the calibration to correct for non-linear
+transformations of the target likelihood ratio and, perhaps, to provide
+calibrated p-values based on those likelihood ratio tests. \cite{Ihler2004} take
+on a different problem (tests of statistical independence) by using machine
+learning algorithms to find  scalar maps from the high-dimensional feature space
+that achieve the desired statistical goal when the fundamental high-dimensional
+test is intractable.
+
+\cite{Neal:2007zz} also considered the problem of approximating the likelihood
+function when only a generative model is available. That work sketches a scheme
+in which one uses a classifier with both $x$ and $\theta$ as an input to serve
+as a dimensionality reduction map. The key distinction comes in the handling of
+$\theta$.  Neal says  ``we cannot use the classifier on real data, since we
+don't know the correct value for [$\theta]$'' and goes on to outline an approach
+where one uses regression on a per-event basis to estimate $\hat{\theta}(x)$ and
+perform the composition $s(x; \hat{\theta}(x))$ (much like
+profiling).\footnote{Neal considers a lower-dimensional `bottlenecks'
+$\theta^*=g(\theta)$, which are not essential to the discussion here.}  This can
+lead to a significant loss of information since (at least in most particle
+physics examples) a single event carries little information about the true value
+of $\theta$, though the full data set $D$ may be informative -- for instance, a
+single observation would not be sufficient to estimate the variance of a
+distribution, though repeated observations would.  The work of Neal correctly
+identifies this as an approximation of the target likelihood even in the case of
+a ideal classifier. In contrast, the approach described here does not eliminate
+the dependence of the classifier on $\theta$.\footnote{As a technical point,
+in Neal's work, the focus is on approximating the likelihood function (up to a
+multiplicative constant), which is equivalent to evaluating the ratio  with
+respect to a fixed $\theta_1$ as in Eq.~\ref{eq:mle_withs}. In Neal's case, the
+dependence on $\theta$ is eliminated via $s(x; \hat{\theta}(x))$ and the map is
+constant; however, in this approach the map ratio is explicitly parametrized in
+terms of $\theta$, so the ratio is important for canceling the corresponding
+Jacobian factors.} Instead, we embed a parametrized classifier into the
+likelihood and postpone the evaluation of the classifier to the point of
+evaluation of the likelihood when $\theta$ is explicitly being tested. This
+avoids the loss of information that occurs from the regression step
+$\hat{\theta}(x)$ proposed by Neal and leads to Theorem~1, which is an exact
+result in the case of an ideal classifier. In both cases, the quality of the
+classifier is factorized from the calibration of its density, which allows for
+valid inference even if there is a loss of power due to a non ideal classifier.
 
 
-\cite{Neal:2007zz} also considered the problem of approximating the likelihood function when only a generative model is available. That work sketches a scheme in which one uses a classifier with both $x$ and $\theta$ as an input to serve as a dimensionality reduction map.
-The key distinction comes in the handling of $\theta$.  Neal says  ``we cannot use the classifier on real data, since we don't know the correct value for [$\theta]$'' and goes on to outline an approach where one uses regression on a per-event basis to estimate $\hat{\theta}(x)$ and perform the composition $s(x; \hat{\theta}(x))$ (much like profiling).\footnote{Neal considers a lower-dimensional `bottlenecks' $\theta^*=g(\theta)$, which are not essential to the discussion here.}  This can lead to a significant loss of information since (at least in most particle physics examples) a single event carries little information about the true value of $\theta$, though the full data set $D$ may be informative -- for instance, a single observation would not be sufficient to estimate the variance of a distribution, though repeated observations would.  The work of Neal correctly identifies this as an approximation of the target likelihood even in the case of a ideal classifier. In contrast, the approach described here does not eliminate the dependence of the classifier on $\theta$.%
-\footnote{As a technical point, in Neal's work, the focus is on approximating the likelihood function (up to a multiplicative constant), which is equivalent to evaluating the ratio  with respect to a fixed $\theta_1$ as in Eq.~\ref{eq:mle_withs}. In Neal's case, the dependence on $\theta$ is eliminated via $s(x; \hat{\theta}(x))$ and the map is constant; however, in this approach the map ratio is explicitly parametrized in terms of $\theta$, so the ratio is important for canceling the corresponding Jacobian factors.} Instead, we embed a parametrized classifier into the likelihood and postpone the evaluation of the classifier to the point of evaluation of the likelihood when $\theta$ is explicitly being tested. This avoids the loss of information that occurs from the regression step $\hat{\theta}(x)$ proposed by Neal and leads to Theorem~1, which is an exact result in the case of an ideal classifier. In both cases, the quality of the classifier is factorized from the calibration of its density, which allows for valid inference even if there is a loss of power due to a non ideal classifier.
-
-
+% Conclusions ==================================================================
 
 \section{Conclusions}
 
-We have outlined a technique to reformulate generalized likelihood ratio test over a high-dimensional data set with multiple events in terms of a univariate density of a classifier score.
-We have shown that a parametrized family of discriminative classifiers $\hat s(x; \theta_0, \theta_1)$ trained and calibrated with a simulator  $p(x|\theta)$ can be used to approximate the  likelihood ratio  $\prod_i p(x_i|\theta_0)/p(x_i|\theta_1)$ even when it is not possible to directly evaluate the likelihood $p(x|\theta)$.
+We have outlined a technique to reformulate generalized likelihood ratio test
+over a high-dimensional data set with multiple events in terms of a univariate
+density of a classifier score. We have shown that a parametrized family of
+discriminative classifiers $\hat s(x; \theta_0, \theta_1)$ trained and
+calibrated with a simulator  $p(x|\theta)$ can be used to approximate the
+likelihood ratio  $\prod_i p(x_i|\theta_0)/p(x_i|\theta_1)$ even when it is not
+possible to directly evaluate the likelihood $p(x|\theta)$.
 %A technique for decomposing this ratio when the generative model is a mixture of components was presented with the aim to help focus capacity of the classifier when $p(x|\theta_0)$ and $p(x|\theta_1)$ differ primarily by a small mixture coefficient.  This approach leverages the power of machine learning in a classical statistical setting.
-It offers an alternative to approximate Bayesian computation for parameter inference in the likelihood-free setting that can also be used in the frequentist formalism without specifying a prior over the parameters. A strength of this approach is that it separates the quality of the approximation of the target likelihood from the quality of the calibration. The former is related to the ability of supervised learning approaches to  classification, which will continue to improve. The calibration procedure for a particular parameter point is fairly straight forward since it involves estimating a univariate density using a generative model of the data. The difficulty of the calibration stage is performing this calibration continuously in $\theta$. Different strategies to this calibration are anticipated depending on the dimensionality of $\theta$, the complexity of the resulting likelihood function, and the difficulties associated to running the simulator.
-
-
-
+It offers an alternative to approximate Bayesian computation for parameter
+inference in the likelihood-free setting that can also be used in the
+frequentist formalism without specifying a prior over the parameters. A strength
+of this approach is that it separates the quality of the approximation of the
+target likelihood from the quality of the calibration. The former is related to
+the ability of supervised learning approaches to  classification, which will
+continue to improve. The calibration procedure for a particular parameter point
+is fairly straight forward since it involves estimating a univariate density
+using a generative model of the data. The difficulty of the calibration stage is
+performing this calibration continuously in $\theta$. Different strategies to
+this calibration are anticipated depending on the dimensionality of $\theta$,
+the complexity of the resulting likelihood function, and the difficulties
+associated to running the simulator.
 
 \bibliographystyle{apalike}
 \bibliography{learning.bib}
