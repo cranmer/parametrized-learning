@@ -17,7 +17,7 @@
 
 \usepackage{amssymb}
 \usepackage{amsmath}
-\usepackage{theorem}
+\usepackage{amsthm}
 \usepackage{xfrac}
 \usepackage{hyperref}
 \usepackage{color}
@@ -29,7 +29,8 @@
 
 \numberwithin{equation}{section}
 \theoremstyle{plain}
-\newtheorem{thm}{Theorem}[section]
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
 
 \newcommand{\glnote}[1]{\textcolor{red}{[GL: #1]}}
 
@@ -43,7 +44,7 @@
 
 \if1\blind
 {
-  \title{\bf Approximating Likelihood Ratios with Calibrated Classifiers}
+  \title{\bf Approximating Likelihood Ratios with Calibrated Discriminative Classifiers}
   \author{Kyle Cranmer and Gilles Louppe\\
           New York University}
   \maketitle
@@ -82,14 +83,14 @@ consequence, we show why and how discriminative classifiers can be used to
 approximate the likelihood ratio when only a generative model for the data is
 available. In particular, the proposed method offers a machine learning-based
 approach to statistical inference that is complementary to likelihood-free
-Bayesian inference algorithms (e.g., ABC), as it does not require the definition
-of a prior over model parameters.
-\glnote{Also mention conclusions on experimental results, as required by JASA guidelines.}
+Bayesian inference algorithms, like Approximate Bayesian Computation, as it does
+not require the definition of a prior over model parameters. \glnote{Also
+mention conclusions on experimental results, as required by JASA guidelines.}
 
 \end{abstract}
 
 \noindent%
-{\it Keywords:}  likelihood ratio, statistical inference, classification, particle physics
+{\it Keywords:}  likelihood ratio, likelihood-free inference, classification, particle physics
 \vfill
 
 \newpage
@@ -122,7 +123,7 @@ hypothesis tests or confidence intervals using the (generalized or profile)
 likelihood ratio as a test statistic. With the advance of computing technology,
 it has become increasingly common that a simulator (or generative model) is used
 to describe complex processes that tie parameters $\theta$ of an underlying
-theory and measurement apparatus to high-dimensional observations $x$. However,
+theory and measurement apparatus to high-dimensional observations $\mathbf{x}$. However,
 directly evaluating the likelihood function in these cases is often impossible
 or is computationally impractical. In this likelihood-free setting, various
 methods for statistical inference have been proposed, including most notably the
@@ -131,7 +132,7 @@ from the posterior distribution of model parameters \glnote{Add references}.
 
 The main result of this paper is to show that the likelihood ratio is invariant
 under dimensionality reduction, under the assumption that the transformation is
-monotonic with the likelihood ratio. As a direct consequence, we propose an
+monotonic with the likelihood ratio. As a direct consequence, we derive and propose an
 alternative machine learning-based approach for likelihood-free inference that
 can also be used in a classical (frequentist) setting where a prior over the
 model parameters is not available. More specifically, we demonstrate why and how
@@ -166,7 +167,7 @@ calibration.
 % learned during HiggsML~\citep{HepML}, the largest Kaggle challenge in history.
 
 As a concrete example, let us consider searches for new particles at the Large
-Hadron Collider (LHC). The simulator that is sampling from $p(x|\theta)$ is
+Hadron Collider (LHC). The simulator that is sampling from $p(\mathbf{x}|\theta)$ is
 based on quantum field theory, a detailed simulation of the particle detector,
 and data processing algorithms that transform raw sensor data into the feature
 vector $x$~\citep{Sjostrand:2006za,Agostinelli:2002hh}. The ATLAS and CMS
@@ -183,7 +184,8 @@ an interpolation algorithm is used to approximate the parametrized
 model~\citep{Cranmer:2012sba}. In particular, to improve the statistical power
 of these tests, hundreds of these searches have already been using supervised
 learning to train discriminative classifiers that take advantage of a high
-dimensional feature vector $x$.
+dimensional feature vector $\mathbf{x}$. \glnote{We should then elaborate on how the
+proposed method could help these searches.}
 
 % While classification accuracy can lead to optimal approaches for simple
 % hypothesis tests~\citep{Dempster1965}, that is no longer true in the context of
@@ -216,149 +218,353 @@ The rest of this paper is organized as follows. In Section...
 \section{Likelihood ratio tests}
 \label{sec:likelihood-ratio-tests}
 
-\subsection{Notation and Assumptions}
+% 2) Likelihood ratio tests
+%
+% Introduce the mathematical problem with notations (was 1.1 and 1.2 before)
+% I would keep some of the comments of 1.3, but I feel some are not necessary
 
-We use the following notation:
-\begin{itemize}
- \item $x$: a vector of features for an event
- \item $D$: a data set of $D=\{x_1, \dots, x_n\}$, where $x_e$ are assumed to be i.i.d.
- \item $\theta$: parameters of a statistical model
-\item $p(x| \theta)$:  probability density  (simulation-based model) for $x$ given $\theta$
-%\item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
-\item $y$: a class label used for training a classifier.
-\item $s(x;\theta_0, \theta_1)$: real-valued discriminative classification score, parametrized by $\theta_0$ and $\theta_1$
-%\item $p( s | \theta )$ The probability density function for $s$ implied by $p(x|\theta)$ and $s(x)$
-\item $p( s_{\theta_0, \theta_1} | \theta )$: The probability density  for $s(x; \theta_0, \theta_1)$ implied by $p(x|\theta)$
-\end{itemize}
-We will assume the $x_e$ are i.i.d., so that $p(D|\theta) = \prod_{e=1}^n p(x_e | \theta)$.
+% \subsection{Notation and Assumptions}
+%
+% We use the following notation:
+% \begin{itemize}
+%  \item $x$: a vector of features for an event
+%  \item $D$: a data set of $D=\{x_1, \dots, x_n\}$, where $x_e$ are assumed to be i.i.d.
+%  \item $\theta$: parameters of a statistical model
+% \item $p(x| \theta)$:  probability density  (simulation-based model) for $x$ given $\theta$
+% %\item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
+% \item $y$: a class label used for training a classifier.
+% \item $s(x;\theta_0, \theta_1)$: real-valued discriminative classification score, parametrized by $\theta_0$ and $\theta_1$
+% %\item $p( s | \theta )$ The probability density function for $s$ implied by $p(x|\theta)$ and $s(x)$
+% \item $p( s_{\theta_0, \theta_1} | \theta )$: The probability density  for $s(x; \theta_0, \theta_1)$ implied by $p(x|\theta)$
+% \end{itemize}
+% We will assume the $x_e$ are i.i.d., so that $p(D|\theta) = \prod_{e=1}^n p(x_e | \theta)$.
 
-\subsection{Prelude}
+% \subsection{Prelude}
+%
+% In the setting where one is interested in simple hypothesis testing between a null $\theta=\theta_0$ against an alternate $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio
+% \begin{equation}
+% T(D; \theta_0, \theta_1) = \prod_{e=1}^n \frac{ p(x_e|\theta_0)}{ p(x_e|\theta_1)}
+% \end{equation}
+% is the most powerful test statistic. In order to evaluate $T(D)$, one must be able to evaluate the probability density
+% $p(x| \theta)$ at any value $x$. However, it is increasingly common in science that one has a complex simulation that
+% can act as generative model  for $p(x|\theta)$, but one cannot evaluate the density directly. For instance, this is the case
+% high energy physics where the simulation of particle detectors can only be done in the `forward mode'. This same setting has been considered by \cite{ClaytonScott}, \cite{JMLR:v14:tong13a}, and \cite{Neal:2007zz}.
 
-In the setting where one is interested in simple hypothesis testing between a null $\theta=\theta_0$ against an alternate $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio
+Let $\mathbf{X}$ be a random vector with values $\mathbf{x} \in {\cal X}
+\subseteq \mathbb{R}^p$ and let $p_\mathbf{X}(\mathbf{x}|\theta)$ denote the
+density probability of $\mathbf{X}$ at value $\mathbf{x}$ under the
+parametrization $\theta$. Let also assume some i.i.d. observed data ${\cal D} = \{
+\mathbf{x}_1, \dots, \mathbf{x}_n \}$. In the setting where one is interested in
+simple hypothesis testing between a null $\theta=\theta_0$ against an alternate
+$\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio
+\begin{equation}\label{eqn:likelihood-ratio-test}
+T({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{X}(\mathbf{x}|\theta_0)}{ p_\mathbf{X}(\mathbf{x}|\theta_1)}
+\end{equation}
+is the most powerful test statistic. In order to evaluate $T({\cal D})$, one
+must be able to evaluate the probability density $p_\mathbf{X}(\mathbf{x}|
+\theta)$ at any value $\mathbf{x}$. However, it is increasingly common in
+science that one has a complex simulation that can act as generative model for
+$p_\mathbf{X}(\mathbf{x}|\theta)$, but one cannot evaluate the density directly.
+For instance, this is the case in high energy physics~\citep{Neal:2007zz} where
+the simulation of particle detectors can only be done in the forward mode.
+\glnote{Reinsert citations for \cite{ClaytonScott} and \cite{JMLR:v14:tong13a}.}
+
+% The main result of this paper is to generalize the observation that one can form an equivalent test based on
+% %\begin{equation}
+% %T'(D) = \prod_{e=1}^n \frac{ p(\,s(x_e; \theta_1, \theta_0) \mid \theta_1)}{ p(\,s(x_e; \theta_1, \theta_0)\mid\theta_0)}
+% %\end{equation}
+% \begin{equation}\label{eq:equivLRtest}
+% T'(D; \theta_0, \theta_1) = \prod_{e=1}^n \frac{ p(s_e | \theta_0)}{ p(s_e | \theta_1)}
+% \end{equation}
+% if
+% \begin{equation}\label{eq:montonic}
+% s_e = s(x_e; \theta_0, \theta_1) = m\left(\, p(x_e|\theta_0) / p(x_e|\theta_1) \,\right) \;
+% %s_e = s(x_e; \theta_0, \theta_1) = m\left(\frac{ p(x_e|\theta_0)}{ p(x_e|\theta_1)} \right) \;
+% \end{equation}
+% where $m$ is any strictly increasing or decreasing function. This result will be proven below.
+% This allows us to recast the original likelihood ratio test into an alternate form in which supervised learning is used to train the discriminative classifier $s(x; \theta_0, \theta_1)$. The discriminative classifier can be trained with data $(x,y=0)$ generated
+% from $p(x|\theta_0)$ and $(x,y=1)$ generated from $p(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the classifier  parametrized in terms of $(\theta_0, \theta_1)$.
+%
+% Here we see that the original goal for simple hypothesis testing (i.e. to make a decision to accept or reject the null hypothesis based on the entire data set $D$) has been reformulated into a per-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
+
+% \subsection{Comments on classification and frequentist hypothesis tests}
+%
+% Vast literature exists around generative and discriminative
+% classifiers~\citep{AndrewY.Ng}. Typically, generative classifiers learn a model
+% for the joint probability $p(x,y)$, of the inputs $x$ and the classification
+% label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative
+% classifiers model the posterior $p(y|x)$ directly. For classification tasks, one
+% then thresholds on $p(y|x)$. In both cases this description in terms of a
+% posterior requires a prior distribution for $p(y)$, which is either modeled
+% explicitly or learned from the training data. This familiar formulation of
+% classification may lead to some confusion in the setting of the current work.
+%
+% The first possible source of confusion we wish to avoid is that here
+% $p(x|\theta)$  is a  \textit{generative statistical model} for the features $x$,
+% not a generative classifier. We think of the  $p(x|\theta)$ along the lines of a
+% traditional scientific theory or simulator, able to make predictions about $x$
+% and being motivated by domain-specific considerations.
+%
+% The second possible source of confusion is that we are not directly interested
+% in calibrating the classification score in terms of a per-event posterior
+% probability $p(y|x)$. Instead, we are interested in the approximation of the
+% per-experiment likelihood function or likelihood ratio, which might be used for
+% several purposes, including the calculation of p-values.
+%
+% Lastly, in the setting of frequentist hypothesis tests and confidence intervals,
+% we do not have a prior $\pi(\theta)$. While we can use the generative models to
+% produce training data $(x,y=0)$ generated from $p(x|\theta_0)$ and $(x,y=1)$
+% generated from $p(x|\theta_1)$, the relative mix $p(y)$ is arbitrary.  When
+% $p(y=0)=p(y=1)=\sfrac{1}{2}$, then
+% \begin{equation}
+% p(y=1 | x) = \frac{p(x|y=1)}{p(x|y=0)+p(x|y=1)} = \frac{p(x|\theta_1)}{p(x|\theta_0)+p(x|\theta_1))} \;,
+% \end{equation}
+% which is monotonic with the desired likelihood ratio
+% $p(x|\theta_1)/p(x|\theta_0)$. Since the prior $p(y)$ is not needed for the
+% target likelihood ratio test and because the classifier score $p(y|x)$ may not
+% be well calibrated, we choose to denote the classifier score $s(x)$ and simply
+% think of it as a deterministic dimensionality reduction map $s: X \to
+% \mathbb{R}$.  Similar points have been made by~\cite{ClaytonScott} and
+% \cite{Neal:2007zz}.
+
+
+\section{Approximating likelihood ratios with classifiers}
+\label{sec:approx}
+
+\glnote{Think of a better section title? The equivalence is strict, not approximate.}
+
+The main result of this paper is to generalize the observation that one can
+form a test statistic
+\begin{equation}\label{eqn:likelihood-ratio-test-equiv}
+T'({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{Y}(y=s(\mathbf{x}; \theta_0, \theta_1) | \theta_0)}{ p_\mathbf{Y}(y=s(\mathbf{x}; \theta_0, \theta_1) | \theta_1)}
+\end{equation}
+that is strictly equivalent to \ref{eqn:likelihood-ratio-test}, provided the change
+of variable $\mathbf{Y} = s(\mathbf{X}; \theta_0, \theta_1)$ is based
+on a parametrized function $s$ that is strictly monotonic with the density ratio
 \begin{equation}
-T(D; \theta_0, \theta_1) = \prod_{e=1}^n \frac{ p(x_e|\theta_0)}{ p(x_e|\theta_1)}
+r(\mathbf{x};\theta_0, \theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}.
 \end{equation}
-is the most powerful test statistic. In order to evaluate $T(D)$, one must be able to evaluate the probability density
-$p(x| \theta)$ at any value $x$. However, it is increasingly common in science that one has a complex simulation that
-can act as generative model  for $p(x|\theta)$, but one cannot evaluate the density directly. For instance, this is the case
-high energy physics where the simulation of particle detectors can only be done in the `forward mode'. This same setting has been considered by \cite{ClaytonScott}, \cite{JMLR:v14:tong13a}, and \cite{Neal:2007zz}.
+As derived below, this allows to recast the original likelihood ratio test into an alternate
+form in which supervised learning can be used to build
+$s(\mathbf{x}; \theta_0, \theta_1)$ as a discriminative classifier.  In
+Section~\ref{sec:generalized-likelihood-ratio} we extend this result to generalized likelihood ratio tests,
+where it will be useful to have the classifier  parametrized in terms of
+$(\theta_0, \theta_1)$.
 
-The main result of this paper is to generalize the observation that one can form an equivalent test based on
-%\begin{equation}
-%T'(D) = \prod_{e=1}^n \frac{ p(\,s(x_e; \theta_1, \theta_0) \mid \theta_1)}{ p(\,s(x_e; \theta_1, \theta_0)\mid\theta_0)}
-%\end{equation}
-\begin{equation}\label{eq:equivLRtest}
-T'(D; \theta_0, \theta_1) = \prod_{e=1}^n \frac{ p(s_e | \theta_0)}{ p(s_e | \theta_1)}
-\end{equation}
-if
-\begin{equation}\label{eq:montonic}
-s_e = s(x_e; \theta_0, \theta_1) = m\left(\, p(x_e|\theta_0) / p(x_e|\theta_1) \,\right) \;
-%s_e = s(x_e; \theta_0, \theta_1) = m\left(\frac{ p(x_e|\theta_0)}{ p(x_e|\theta_1)} \right) \;
-\end{equation}
-where $m$ is any strictly increasing or decreasing function. This result will be proven below.
-This allows us to recast the original likelihood ratio test into an alternate form in which supervised learning is used to train the discriminative classifier $s(x; \theta_0, \theta_1)$. The discriminative classifier can be trained with data $(x,y=0)$ generated
-from $p(x|\theta_0)$ and $(x,y=1)$ generated from $p(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the classifier  parametrized in terms of $(\theta_0, \theta_1)$.
+\subsection{Likelihood ratios under change of variable}
 
-Here we see that the original goal for simple hypothesis testing (i.e. to make a decision to accept or reject the null hypothesis based on the entire data set $D$) has been reformulated into a per-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
+\begin{theorem}
+    \label{thm:ratio-equivalence}
+    Let $\mathbf{X}$ be a random vector vector with values in ${\cal X} \subseteq \mathbb{R}^p$ and parametrized probability
+    density $p_{\mathbf{X}}(\mathbf{x} = (x_1, ..., x_p)|\theta)$ and let
+    $s : \mathbb{R}^p \mapsto \mathbb{R}$ be a function monotonic with the density ratio
+    $r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$,
+    for given parameters $\theta_0$ and $\theta_1$. In these conditions,
+    \begin{equation}
+        r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} = \frac{p_\mathbf{Y}(y=s(\mathbf{x};\theta_0,\theta_1)|\theta_0)}{p_\mathbf{Y}(y=s(\mathbf{x};\theta_0,\theta_1)|\theta_1)},
+    \end{equation}
+    where $p_\mathbf{Y}(y=s(\mathbf{x};\theta_0,\theta_1)|\theta)$ is the induced probability density of
+    $\mathbf{Y} = s(\mathbf{X};\theta_0,\theta_1)$.
+\end{theorem}
 
-\subsection{Comments on classification and frequentist hypothesis tests}
+\begin{proof}
+Omitting for clarity the parametrization $(\theta_0,\theta_1)$ of $s(\mathbf{X};\theta_0,\theta_1)$, we have
+\begin{align}
+p_Y(y=s(\mathbf{x})|\theta_0) &= \frac{d}{dy} P(s(\mathbf{X}) \leq y) \nonumber \\
+&= \frac{d}{dy}  \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) \leq y\}} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
+&= \frac{d}{dy} \int_{\mathbb{R}^p} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
+&= \int_{\mathbb{R}^p} \frac{d}{dy} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
+&= \int_{\mathbb{R}^p} \delta(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime
+\end{align}
+where $H$ and $\delta$ are respectively the Heaviside step and the Dirac delta
+functions. Intuitively, this last expression can be understood as the integral
+over all $\mathbf{x}^\prime \in \mathbb{R}^p$ such that $s(\mathbf{x}^\prime) = y$, as picked
+by the Dirac delta function. Given Theorem 6.1.5 of \citet{Hrmander1990},
+it further comes
+\begin{align}
+p_Y(y=s(\mathbf{x})|\theta_0) &= \int_{\mathbb{R}^p} \delta(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
+&= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \label{eqn:hormander}
+\end{align}
+where $|\nabla s(\mathbf{x}^\prime)| = \sqrt{\sum_{i=1}^p |\frac{\partial}{\partial x_i} s(\mathbf{x}^\prime)|^2}$
+and where $dS_{\mathbf{x}^\prime}$ is the Euclidean surface measure on $\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}$.
+Also, since $s(\mathbf{x})$ is monotonic with
+$\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$,
+it exists an invertible function $m:\mathbb{R}^+ \mapsto \mathbb{R}$ such
+that $s(\mathbf{x}) = m(\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)})$.
+In particular, we have
+\begin{align}
+\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} &= m^{-1}(s(\mathbf{x})) \nonumber \\
+p_\mathbf{X}(\mathbf{x}|\theta_0) &= m^{-1}(s(\mathbf{x})) p_\mathbf{X}(\mathbf{x}|\theta_1) \label{eqn:mapping}
+\end{align}
+Combining equations \ref{eqn:hormander} and \ref{eqn:mapping}, we have
+\begin{align}
+p_Y(y=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}} \frac{p_\mathbf{X}(\mathbf{x}^\prime|\theta_0)}{|\nabla s(\mathbf{x}^\prime)|} dS_{\mathbf{x}^\prime} \nonumber \\
+&= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+&= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(y) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+&= m^{-1}(s(\mathbf{x})) \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}
+\end{align}
+Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_Y(y=s(\mathbf{x})|\theta_1)$, finally yielding
+\begin{align}
+\frac{p_Y(y=s(\mathbf{x})|\theta_0)}{p_Y(y=s(\mathbf{x})|\theta_1)} &= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \frac{\int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}}{ \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} } \nonumber \\
+&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}.
+\end{align}
+\end{proof}
 
-Vast literature exists around generative and discriminative classifiers~\citep{AndrewY.Ng}. Typically, generative classifiers learn a model for the joint probability $p(x,y)$, of the inputs $x$ and the classification label $y$, and predict $p(y|x)$ via Bayes rule. In contrast, discriminative classifiers model the posterior $p(y|x)$ directly. For classification tasks, one then thresholds on $p(y|x)$. In both cases this description in terms of a posterior requires a prior distribution for $p(y)$, which is either modeled explicitly or learned from the training data.
-This familiar formulation of classification may lead to some confusion in the setting of the current work.
+\subsection{Probabilistic classification for approximating ratios}
 
-The first possible source of confusion we wish to avoid is that here $p(x|\theta)$  is a  \textit{generative statistical model} for the features $x$, not a generative classifier. We think of the  $p(x|\theta)$ along the lines of a traditional scientific theory or simulator, able to make predictions about $x$ and being motivated by domain-specific considerations.
-
-The second possible source of confusion is that
-we are not directly interested in calibrating the classification score in terms of a per-event posterior probability $p(y|x)$.
-Instead, we are interested in the approximation of the per-experiment likelihood function or likelihood ratio, which might be used for several purposes, including the calculation of p-values.
-
-Lastly, in the setting of frequentist hypothesis tests and confidence intervals, we do not have a prior $\pi(\theta)$.
-While we can use the generative models to produce training data $(x,y=0)$ generated
-from $p(x|\theta_0)$ and $(x,y=1)$ generated from $p(x|\theta_1)$, the relative mix $p(y)$
-is arbitrary.  When $p(y=0)=p(y=1)=\sfrac{1}{2}$, then
+\begin{proposition} \label{thm:best-classifier}
+Let $\mathbf{X} = (X_1, ..., X_p)$ and $Y$ be random input and output variables
+with values in ${\cal X} \subseteq \mathbb{R}^p$\footnote{Without loss of
+generality, the discussion assumes continuous random variables, but can be
+extended to random variables of mixed types with the Dirac delta function.}
+and ${\cal Y} = \{0, 1\}$ and mixed joint probability density  function
+$p_{\mathbf{X},Y}(\mathbf{x}, y)$\footnote{Defined as
+$p_{\mathbf{X},Y}(\mathbf{x}, y) = p_{\mathbf{X}|Y}(\mathbf{x}|y) P(Y=y) =
+P(Y=y|X=x) p_{\mathbf{X}}(\mathbf{x})$.}. For the squared error loss, the best
+regression function $s : {\cal X} \mapsto [0, 1]$, or equivalently the best
+probabilistic classifier, is
 \begin{equation}
-p(y=1 | x) = \frac{p(x|y=1)}{p(x|y=0)+p(x|y=1)} = \frac{p(x|\theta_1)}{p(x|\theta_0)+p(x|\theta_1))} \;,
+s^*(\mathbf{x}) = \frac{P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{P(Y=0) p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
 \end{equation}
-which is monotonic with the desired likelihood ratio $p(x|\theta_1)/p(x|\theta_0)$.
-Since the prior $p(y)$ is not needed for the target likelihood ratio test and because the classifier score $p(y|x)$ may not be well calibrated, we choose to denote the classifier score $s(x)$ and simply think of it as a deterministic dimensionality reduction map $s: X \to \mathbb{R}$.  Similar points have been made by~\cite{ClaytonScott} and \cite{Neal:2007zz}.
+\end{proposition}
 
-
-
-\section{Dimensionality reduction and calibration}
-
-
-We are interested in reformulating the target likelihood ratio
+\begin{proof}
+For the squared error loss,
+\begin{align}
+s^*(\mathbf{x}) &= \argmin_{s(\mathbf{x})} \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ (Y - s(\mathbf{x}))^2 \} \nonumber \\
+&=  \argmin_{s(\mathbf{x})} \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y^2 \} - 2s(\mathbf{x}) \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + s(\mathbf{x})^2 \nonumber \\
+&=  \argmin_{s(\mathbf{x})} -2s(\mathbf{x}) \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + s(\mathbf{x})^2
+\end{align}
+The last expression is minimized when $\frac{d}{ds(\mathbf{x})} (-2s(\mathbf{x}) \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + s(\mathbf{x})^2) = 0$,
+that is when $-2 \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + 2 s(\mathbf{x}) = 0$, hence
 \begin{equation}
-\ln T(D; \theta_0, \theta_1) =   \sum_{e=1}^n \underbrace{\log \left[ \frac {p(x_e | \theta_0) }{ p(x_e | \theta_1) } \right]}_{q(x_e)} \;.
+s^*(\mathbf{x}) = \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \}.
 \end{equation}
-Here we see that the test statistic $T$ for the experiment is composed of a sum over events of the per-event function $q(x)$. A sum over a monotonic, but non-linear function of $q(x)$ would not lead to an equivalent statistic.
+For ${\cal Y} = \{ 0, 1 \}$,
+\begin{align}
+\mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} &= P(Y=0|\mathbf{X}=\mathbf{x}) \times 0 +  P(Y=1|\mathbf{X}=\mathbf{x}) \times 1 \nonumber \\
+&= \frac{P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{p_{\mathbf{X}}(\mathbf{x})} \nonumber \\
+&= \frac{P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{P(Y=0) p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
+\end{align}
+\end{proof}
 
-The important part of the per-event function $q(x)$ is that it defines iso-contours in the feature space $x$. As we will show, our goal is to learn a monotonic function of $p(x|\theta_0)/p(x|\theta_1)$, which will share the same iso-contours. Then the remaining challenge is to find the appropriate monotonic function that gives back a linear function of $q(x)$. Our claim is that the generative model $p(x|\theta)$ can be used to calibrate the density $p(s|\theta)$ and that
-\begin{equation}\label{eq:enveloping}
-\ln T'(D; \theta_0, \theta_1) = \sum_{e=1}^n \underbrace{\log \left[ \frac {p(s_e | \theta_0) }{ p(s_e | \theta_1) } \right]}_{q(s_e)} \;,
-\end{equation}
-leads to an equivalent statistic.
-
-For notational simplicity, let $p_0(x) = p(x|\theta_0)$, $p_1(x) = p(x|\theta_1)$, and $\sfunc(x)=s(x; \theta_0, \theta_1)$.
-The distribution of $x$ totally determines the distribution of $s$.
-In the application at hand, the function $s$ maps a high-dimensional feature vector $x$ to $\mathbb{R}^+$.
-Let $\Omega_{\sstar}$ be the level set $\{x \mid s(x; \theta_0, \theta_1) = \sstar \}$ and \mbox{$\hat{n}=\nabla s(x) / |\nabla s(x)|$} be the orthonormal vector to $\Omega_{\sstar}$ at the point $x$.
-
-We need to show that for all $x$, the density
+For $P(Y=0)=P(Y=1)=\frac{1}{2}$, the best regression function $s^*$ simplifies
+to
 \begin{equation}
-p(q_x|\theta) = \int dx \delta(q_x-q_x(x)) p(x|\theta)  / | \hat{n} \cdot \nabla q_x  |
+s^*(\mathbf{x}) = \frac{p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
 \end{equation}
-is equal to the density
+If we further assume that samples for $Y=0$ are drawn from some parametrized
+distribution with probability density $p_{\mathbf{X}}(\mathbf{x}|\theta_0)$
+and similarly for $Y=1$, then the best regression function can be rewritten
+as
 \begin{equation}
-p(q_s|\theta) = \int dx \delta(q_s-q_s(s(x))) \, p(x|\theta) \, / | \hat{n} \cdot \nabla q_s  | \; .
-\end{equation}
-It is sufficient to show that $q_x(x) = q_s(s(x))$.
-%$ \forall x\in\Omega_{\sstar}$.
-The function $q_s(s)$ is based on the induced densities $p_0(s)$ and $p_1(s)$.  The induced density $p_1(s)$ is given by
-\begin{equation}
-p_1(\sstar) = \int dx \delta(\sstar-s(x)) p_1(x) = \int d\Omega_{\sstar} p_1(x)  / | \hat{n} \cdot \nabla s  |
-\end{equation}
-and a similar equation for $p_0(s)$.
-%\textbf{Do we need Jacobian for x $\to$ s independent of delta function part, I think that's double counting?}
-
-\textbf{\flushleft Theorem 1:}
-We have the following equality
-\begin{equation}
-\frac{p_1(s(x))}{p_0(s(x))} =  \frac{p_1(x)}{p_0(x)}  \; . %\;\hspace{3em} \forall x\in\Omega_{\sstar}\; .
-\end{equation}
-\textbf{Proof}
-For $x\in \Omega_{\sstar}$, we can factor out of the integral the constant $p_1(x)/p_0(x)$.
-Thus
-\begin{equation}
-p_1(\sstar) =  \int d\Omega_{\sstar} p_1(x) / | \hat{n} \cdot \nabla s  |= \frac{p_1(x)}{p_0(x)} \int d\Omega_{\sstar} p_0(x)  / | \hat{n} \cdot \nabla s  | \;,
-%p_1(\sstar) = \int dx \delta(\sstar-s(x)) p_1(x) = \int d\Omega_{\sstar} p_1(x) / | \hat{n} \cdot \nabla s  |= \frac{p_1(x)}{p_0(x)} \int d\Omega_{\sstar} p_0(x)  / | \hat{n} \cdot \nabla s  | \;,
-\end{equation}
-and the integrals cancel in the likelihood ratio
-\begin{equation}
-\frac{p_1(\sstar)}{p_0(\sstar)} = \frac{p_1(x)}{p_0(x)} \frac{\int d\Omega_{\sstar} p_0(x)/ | \hat{n} \cdot \nabla s  |}{ \int d\Omega_{\sstar} p_0(x) / | \hat{n} \cdot \nabla s  |} = \frac{p_1(x)}{p_0(x)}  \;\hspace{3em} \forall x\in\Omega_{\sstar}.
+s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mathbf{x} | \theta_0) + p_{\mathbf{X}}(\mathbf{x} | \theta_1)}.
 \end{equation}
 
-One can think of the ratio $p_1(s)/p_0(s)$ as a way of calibrating the the discriminative classifier and correcting for the monotonic transformation $m$ of the desired likelihood ratio as in Eq.~\ref{eq:montonic}.
+In particular, this regression function satisfies conditions of
+Theorem~\ref{thm:ratio-equivalence} since $s^*(\mathbf{x}) =
+m(\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)})$,
+for $m(r(\mathbf{x})) = \frac{1}{1 + r(\mathbf{x})}$, is monotonic
+with
+$\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$.
+In other words, Proposition~\ref{thm:best-classifier} yields a sufficient
+procedure for Theorem~\ref{thm:ratio-equivalence} to hold, guaranteeing that any {\it
+universally strongly consistent} algorithm can be used for learning $s^*$.
+Note however,
+that it is not a necessary procedure since Theorem~\ref{thm:ratio-equivalence} holds
+for any monotonic function $m$ of the density ratio, i.e., not for
+$m(r(\mathbf{x})) = \frac{r(\mathbf{x})}{1 + r(\mathbf{x})}$ only.
+
+Equivalently, since $m^{-1}(s^*(\mathbf{x})) = \frac{1 - s^*(\mathbf{x})}{s^*(\mathbf{x})} = r(\mathbf{x})$,
+Proposition~\ref{thm:best-classifier} shows that the density ratio estimation problem is strictly
+equivalent to probabilistic classification, and that algorithms proposed to
+solve one can be used for solving the other. In this context, Theorem~\ref{thm:ratio-equivalence}
+shows that in case we learn a probabilistic classifier $s(\mathbf{x})$
+which is imperfect up to a monotonic transformation of $r(\mathbf{x})$, then
+one can still resort to calibration (i.e., modelling $p_Y(y=s(\mathbf{x}))$)
+to compute $r(\mathbf{x})$ exactly.
+
+\glnote{Discuss that training on signal vs background instead of signal+background vs background is OK because this learns a function which is 1:1.}
+
+\glnote{Discuss the capacity of the classifier; Generalization to decomposed ratios
+Discuss about the need of calibration in case of imperfect classifiers (was first paragraphs of section 5)}
+
+% \section{Dimensionality reduction and calibration}
+%
+% We are interested in reformulating the target likelihood ratio
+% \begin{equation}
+% \ln T(D; \theta_0, \theta_1) =   \sum_{e=1}^n \underbrace{\log \left[ \frac {p(x_e | \theta_0) }{ p(x_e | \theta_1) } \right]}_{q(x_e)} \;.
+% \end{equation}
+% Here we see that the test statistic $T$ for the experiment is composed of a sum over events of the per-event function $q(x)$. A sum over a monotonic, but non-linear function of $q(x)$ would not lead to an equivalent statistic.
+%
+% The important part of the per-event function $q(x)$ is that it defines iso-contours in the feature space $x$. As we will show, our goal is to learn a monotonic function of $p(x|\theta_0)/p(x|\theta_1)$, which will share the same iso-contours. Then the remaining challenge is to find the appropriate monotonic function that gives back a linear function of $q(x)$. Our claim is that the generative model $p(x|\theta)$ can be used to calibrate the density $p(s|\theta)$ and that
+% \begin{equation}\label{eq:enveloping}
+% \ln T'(D; \theta_0, \theta_1) = \sum_{e=1}^n \underbrace{\log \left[ \frac {p(s_e | \theta_0) }{ p(s_e | \theta_1) } \right]}_{q(s_e)} \;,
+% \end{equation}
+% leads to an equivalent statistic.
+%
+% For notational simplicity, let $p_0(x) = p(x|\theta_0)$, $p_1(x) = p(x|\theta_1)$, and $\sfunc(x)=s(x; \theta_0, \theta_1)$.
+% The distribution of $x$ totally determines the distribution of $s$.
+% In the application at hand, the function $s$ maps a high-dimensional feature vector $x$ to $\mathbb{R}^+$.
+% Let $\Omega_{\sstar}$ be the level set $\{x \mid s(x; \theta_0, \theta_1) = \sstar \}$ and \mbox{$\hat{n}=\nabla s(x) / |\nabla s(x)|$} be the orthonormal vector to $\Omega_{\sstar}$ at the point $x$.
+%
+% We need to show that for all $x$, the density
+% \begin{equation}
+% p(q_x|\theta) = \int dx \delta(q_x-q_x(x)) p(x|\theta)  / | \hat{n} \cdot \nabla q_x  |
+% \end{equation}
+% is equal to the density
+% \begin{equation}
+% p(q_s|\theta) = \int dx \delta(q_s-q_s(s(x))) \, p(x|\theta) \, / | \hat{n} \cdot \nabla q_s  | \; .
+% \end{equation}
+% It is sufficient to show that $q_x(x) = q_s(s(x))$.
+% %$ \forall x\in\Omega_{\sstar}$.
+% The function $q_s(s)$ is based on the induced densities $p_0(s)$ and $p_1(s)$.  The induced density $p_1(s)$ is given by
+% \begin{equation}
+% p_1(\sstar) = \int dx \delta(\sstar-s(x)) p_1(x) = \int d\Omega_{\sstar} p_1(x)  / | \hat{n} \cdot \nabla s  |
+% \end{equation}
+% and a similar equation for $p_0(s)$.
+% %\textbf{Do we need Jacobian for x $\to$ s independent of delta function part, I think that's double counting?}
+%
+% \textbf{\flushleft Theorem 1:}
+% We have the following equality
+% \begin{equation}
+% \frac{p_1(s(x))}{p_0(s(x))} =  \frac{p_1(x)}{p_0(x)}  \; . %\;\hspace{3em} \forall x\in\Omega_{\sstar}\; .
+% \end{equation}
+% \textbf{Proof}
+% For $x\in \Omega_{\sstar}$, we can factor out of the integral the constant $p_1(x)/p_0(x)$.
+% Thus
+% \begin{equation}
+% p_1(\sstar) =  \int d\Omega_{\sstar} p_1(x) / | \hat{n} \cdot \nabla s  |= \frac{p_1(x)}{p_0(x)} \int d\Omega_{\sstar} p_0(x)  / | \hat{n} \cdot \nabla s  | \;,
+% %p_1(\sstar) = \int dx \delta(\sstar-s(x)) p_1(x) = \int d\Omega_{\sstar} p_1(x) / | \hat{n} \cdot \nabla s  |= \frac{p_1(x)}{p_0(x)} \int d\Omega_{\sstar} p_0(x)  / | \hat{n} \cdot \nabla s  | \;,
+% \end{equation}
+% and the integrals cancel in the likelihood ratio
+% \begin{equation}
+% \frac{p_1(\sstar)}{p_0(\sstar)} = \frac{p_1(x)}{p_0(x)} \frac{\int d\Omega_{\sstar} p_0(x)/ | \hat{n} \cdot \nabla s  |}{ \int d\Omega_{\sstar} p_0(x) / | \hat{n} \cdot \nabla s  |} = \frac{p_1(x)}{p_0(x)}  \;\hspace{3em} \forall x\in\Omega_{\sstar}.
+% \end{equation}
+%
+% One can think of the ratio $p_1(s)/p_0(s)$ as a way of calibrating the the discriminative classifier and correcting for the monotonic transformation $m$ of the desired likelihood ratio as in Eq.~\ref{eq:montonic}.
+
+% \section{Embedding the classifier into the likelihood}
+%
+% Thus far we have shown that the target likelihood ratio $p(x|\theta_0)/p(x|\theta_1)$ with high dimensional features $x$ can be reproduced via the univariate densities $p(s|\theta_0)/p(s|\theta_1)$ if the classifier $s(x|\theta_0, \theta_1)$ is a strictly increasing function of $p(x|\theta_0)/p(x|\theta_1)$. We now generalize from the ratio of two simple hypotheses specified by $\theta_0$ and $\theta_1$ to the case where $\theta$ are continuous model parameters.
+%  We postpone the practicalities of training the classifier and estimating the density to Section~\ref{S:classifier} and continue in the likelihood-free setting with idealized classifiers and their densities.
+%
+% In the case of a fixed classifier $s(x)$ it is possible to compute $s_e=s(x_e)$ for the observed data and never refer back to the original features $x_e$. In the parametrized setting it is not possible to pre-compute $s(x_e; \theta_0, \theta_1)$ since $\theta_0$ and $\theta_1$ are unknown.
+%
+% The critical observation is that  if we postpone the evaluation of the classifier to the stage of evaluating the enveloping likelihood ratio, then we can identify the value of the parameters  that are being compared in the likelihood ratio with the values used as input to $s(x;\theta_0, \theta_1)$.
+% \begin{equation}\label{eq:embedding}
+% T(D; \theta_0, \theta_1) = \prod_e \frac{p(x_e|\theta_0)}{p(x_e|\theta_1)} = \prod_e  \frac{ p (s(x_e; \theta_0, \theta_1) | \theta_0)}
+% {p (s(x_e; \theta_0,  \theta_1) | \theta_1) } \; .
+% \end{equation}
+% This is equivalent to approximating the likelihood function for $\theta_0$  when $\theta_1$ is held fixed.
 
 
-\section{Embedding the classifier into the likelihood}
 
-Thus far we have shown that the target likelihood ratio $p(x|\theta_0)/p(x|\theta_1)$ with high dimensional features $x$ can be reproduced via the univariate densities $p(s|\theta_0)/p(s|\theta_1)$ if the classifier $s(x|\theta_0, \theta_1)$ is a strictly increasing function of $p(x|\theta_0)/p(x|\theta_1)$. We now generalize from the ratio of two simple hypotheses specified by $\theta_0$ and $\theta_1$ to the case where $\theta$ are continuous model parameters.
- We postpone the practicalities of training the classifier and estimating the density to Section~\ref{S:classifier} and continue in the likelihood-free setting with idealized classifiers and their densities.
+\section{Generalized likelihood ratio tests}
+\label{sec:generalized-likelihood-ratio}
 
-In the case of a fixed classifier $s(x)$ it is possible to compute $s_e=s(x_e)$ for the observed data and never refer back to the original features $x_e$. In the parametrized setting it is not possible to pre-compute $s(x_e; \theta_0, \theta_1)$ since $\theta_0$ and $\theta_1$ are unknown.
-
-The critical observation is that  if we postpone the evaluation of the classifier to the stage of evaluating the enveloping likelihood ratio, then we can identify the value of the parameters  that are being compared in the likelihood ratio with the values used as input to $s(x;\theta_0, \theta_1)$.
-\begin{equation}\label{eq:embedding}
-T(D; \theta_0, \theta_1) = \prod_e \frac{p(x_e|\theta_0)}{p(x_e|\theta_1)} = \prod_e  \frac{ p (s(x_e; \theta_0, \theta_1) | \theta_0)}
-{p (s(x_e; \theta_0,  \theta_1) | \theta_1) } \; .
-\end{equation}
-This is equivalent to approximating the likelihood function for $\theta_0$  when $\theta_1$ is held fixed.
-
-
-
-
-\section{Composite hypotheses and the generalized likelihood ratio}\label{S:GLR}
+% \section{Composite hypotheses and the generalized likelihood ratio}\label{S:GLR}
 
 In the case of composite hypotheses $\theta \in \Theta_0$ against an alternative $\theta \in \Theta_0^C$, the generalized likelihood ratio\footnote{Also known as the profile likelihood ratio.} test is commonly used
 \begin{equation}
@@ -385,14 +591,37 @@ It is important that we include the denominator $p(s(x_e; \theta, \theta_1) |\th
 
 \section{Learning the correct mapping and its distribution}\label{S:classifier}
 
-In order for this approach to be useful in the likelihood-free setting, where it is not possible to evaluate the density $p(x|\theta)$, we need to be able to approximate both $s(x|\theta_0, \theta_1)$ and $p(s|\theta)$ based on samples $\{x_i\}$ drawn from the generative model $p(x|\theta)$.  Denote the  dimensionality reduction map $\hat{s}(x; \theta_0, \theta_1)$ and its distribution $\hat{p}(\hat{s}|\theta)$.
+In order for this approach to be useful in the likelihood-free setting, where it
+is not possible to evaluate the density $p(x|\theta)$, we need to be able to
+approximate both $s(x|\theta_0, \theta_1)$ and $p(s|\theta)$ based on samples
+$\{x_i\}$ drawn from the generative model $p(x|\theta)$.  Denote the
+dimensionality reduction map $\hat{s}(x; \theta_0, \theta_1)$ and its
+distribution $\hat{p}(\hat{s}|\theta)$.
 
-One strength of this approach is that it factorizes the approximation of the per-event likelihood ratio ($\hat{s}(x; \theta_0, \theta_1) \approx s(x; \theta_0, \theta_1)$) from the calibration procedure ($\hat p(\hat s| \theta) \approx p(\hat{s}|\theta)$). Thus, even if the classifier does a poor job of reproducing the level sets of the per-event likelihood ratio, the density of $\hat{s}$ can still be well calibrated. In that case, one might loose power, but the resulting inference will still be valid. This point was made by \cite{Neal:2007zz} and is well appreciated by the particle physics community that typically takes a conservative attitude towards the use of machine learning classifiers precisely due to concerns about the calibration $p$-values in the face of nuisance parameters associated to the simulator.
+One strength of this approach is that it factorizes the approximation of the
+per-event likelihood ratio ($\hat{s}(x; \theta_0, \theta_1) \approx s(x;
+\theta_0, \theta_1)$) from the calibration procedure ($\hat p(\hat s| \theta)
+\approx p(\hat{s}|\theta)$). Thus, even if the classifier does a poor job of
+reproducing the level sets of the per-event likelihood ratio, the density of
+$\hat{s}$ can still be well calibrated. In that case, one might loose power, but
+the resulting inference will still be valid. This point was made by
+\cite{Neal:2007zz} and is well appreciated by the particle physics community
+that typically takes a conservative attitude towards the use of machine learning
+classifiers precisely due to concerns about the calibration $p$-values in the
+face of nuisance parameters associated to the simulator.
 
-\subsection{The fixed discriminative classification setting}
-For fixed $\theta_0$ and $\theta_1$ we can generate
-large samples from each model and train a classifier. To be concrete, let us use $p(x|\theta_0)$ to generate training
-data $(x_i,  y_i=0)$ and $p(x|\theta_1)$ to generate training data $(x_i , y_i=1)$. With balanced training data   \mbox{($p(y=1)=p(y=0)=\sfrac{1}{2}$)} a quadratic loss function will lead to classifiers that approximate the regression function  $\hat{s}(x) \approx p(y|x) = p(x|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$, which is  monotonic with the desired per-event likelihood ratio $q(x)$. Thus, standard supervised learning algorithms with various surrogate loss functions lead to discriminative classifiers that approximate a monotonic function of per-event likelihood ratio $q(x)$.
+\subsection{The fixed discriminative classification setting} For fixed
+$\theta_0$ and $\theta_1$ we can generate large samples from each model and
+train a classifier. To be concrete, let us use $p(x|\theta_0)$ to generate
+training data $(x_i,  y_i=0)$ and $p(x|\theta_1)$ to generate training data
+$(x_i , y_i=1)$. With balanced training data
+\mbox{($p(y=1)=p(y=0)=\sfrac{1}{2}$)} a quadratic loss function will lead to
+classifiers that approximate the regression function  $\hat{s}(x) \approx p(y|x) =
+p(x|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$, which is  monotonic with the
+desired per-event likelihood ratio $q(x)$. Thus, standard supervised learning
+algorithms with various surrogate loss functions lead to discriminative
+classifiers that approximate a monotonic function of per-event likelihood ratio
+$q(x)$.
 
 
 \subsection{Training a parametrized classifier}
