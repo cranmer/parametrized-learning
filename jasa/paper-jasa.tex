@@ -590,9 +590,6 @@ reduction map $s: \mathbb{R}^p \to \mathbb{R}$.  Similar points have been made
 by~\cite{ClaytonScott} and \cite{Neal:2007zz}.
 
 
-
-
-
 % Generalized likelihood ratio tests ===========================================
 
 % - mathematical problem (was section 4)
@@ -601,6 +598,8 @@ by~\cite{ClaytonScott} and \cite{Neal:2007zz}.
 
 \section{Generalized likelihood ratio tests}
 \label{sec:generalized-likelihood-ratio}
+
+\glnote{Needs some work.}
 
 % Thus far we have shown that the target likelihood ratio
 % $p(x|\theta_0)/p(x|\theta_1)$ with high dimensional features $x$ can be
@@ -611,6 +610,16 @@ by~\cite{ClaytonScott} and \cite{Neal:2007zz}.
 % continuous model parameters. We postpone the practicalities of training the
 % classifier and estimating the density to Section~\ref{S:classifier} and continue
 % in the likelihood-free setting with idealized classifiers and their densities.
+
+Thus far we have shown that the target likelihood ratio
+$p(\mathbf{x}|\theta_0)/p(\mathbf{x}|\theta_1)$ with high dimensional features
+$\mathbf{x}$ can be reproduced via the univariate densities
+$p(s(\mathbf{x};\theta_0,\theta_1)|\theta_0)/p(s(\mathbf{x};\theta_0,\theta_1)|\theta_1)$
+if the reduction $s(\mathbf{x}|\theta_0, \theta_1)$ is monotonic with
+$p(\mathbf{x}|\theta_0)/p(\mathbf{x}|\theta_1)$. We now generalize from the
+ratio of two simple hypotheses specified by $\theta_0$ and $\theta_1$ to the
+case of composite hypothesis testing where $\theta$ are continuous model
+parameters.
 %
 % In the case of a fixed classifier $s(x)$ it is possible to compute $s_e=s(x_e)$
 % for the observed data and never refer back to the original features $x_e$. In
@@ -633,11 +642,12 @@ by~\cite{ClaytonScott} and \cite{Neal:2007zz}.
 % \section{Composite hypotheses and the generalized likelihood ratio}\label{S:GLR}
 
 In the case of composite hypotheses $\theta \in \Theta_0$ against an alternative
-$\theta \in \Theta_0^C$, the generalized likelihood ratio\footnote{Also known as
-the profile likelihood ratio.} test is commonly used
-\begin{equation}
-\lambda(\Theta_0) =  \frac{ \sup_{\theta \in \Theta_0} p(D | \theta)}{ \sup_{\theta \in \Theta} p(D | \theta)} \; .
+$\theta \in \Theta_0^C$, the generalized likelihood ratio test, also known as
+the profile likelihood ratio test, is commonly used
+\begin{equation}\label{eqn:generalized-lr}
+\lambda(\Theta_0) =  \frac{ \sup_{\theta \in \Theta_0} p({\cal D} | \theta)}{ \sup_{\theta \in \Theta} p({\cal D} | \theta)} \; .
 \end{equation}
+\glnote{For the denominator, shouldnt we have $\theta \in \Theta_0^C$ instead?}
 This generalized likelihood ratio can be used both for hypothesis tests in the
 presence of nuisance parameters or to create confidence intervals with or
 without nuisance parameters.  Often, the parameter vector is broken into two
@@ -646,47 +656,48 @@ parameters of interest while the $\nu$ components are considered nuisance
 parameters. In that case $\Theta_0$ corresponds to all values of $\nu$ with
 $\mu$ fixed.
 
-Denote the maximum likelihood estimator
+Let denote the maximum likelihood estimator
 \begin{equation}\label{eq:mle}
-\hat{\theta} = \argmax_\theta  p(D | \theta)
+\hat{\theta} = \argmax_\theta  p({\cal D} | \theta) \; .
 \end{equation}
-and the conditional maximum likelihood estimator
-\begin{equation}\label{eq:cmle}
-\hat{\hat{\theta}} = \argmax_{\theta \in \Theta_0}  p(D | \theta) \; .
-\end{equation}
-
+% and the conditional maximum likelihood estimator
+% \begin{equation}\label{eq:cmle}
+% \hat{\hat{\theta}} = \argmax_{\theta \in \Theta_0}  p({\cal D} | \theta) \; .
+% \end{equation}
 It is not obvious that if we are working with the distributions $p(s|\theta)$
-(for some particular $s(x; \theta_0, \theta_1)$ comparison) that we can find the
+(for some particular $s(\mathbf{x}; \theta_0, \theta_1)$ comparison) that we can find the
 same estimators. Fortunately, there is a construction based on $p(s|\theta)$
 that works. The maximum likelihood estimate of Eq.~\ref{eq:mle} is the same as
-the value that maximizes the likelihood ratio with respect to $p(D|\theta_1)$
-for some fixed value of $\theta_1$. This allows us to use Theorem~1 toreformulate the maximum likelihood estimate
-
-\begin{equation}\label{eq:mle_withs}
-\hat{\theta} = %\argmax_\theta \frac{ p(D | \theta)}{ p(D | \theta_1)} =
-\argmax_\theta  \sum \ln \frac{p(x_e | \theta)}{p(x_e|\theta_1)} = \argmax_\theta  \sum \ln \frac{p(s(x_e; \theta, \theta_1) | \theta)}{p(s(x_e; \theta, \theta_1) |\theta_1)} \; .
-\end{equation}
-It is important that we include the denominator $p(s(x_e; \theta, \theta_1)
+the value that maximizes the likelihood ratio with respect to $p({\cal
+D}|\theta_1)$ for some fixed value of $\theta_1$. This allows us to use
+Theorem~\ref{thm:ratio-equivalence} to reformulate the maximum likelihood estimate:
+\begin{align}\label{eq:mle_withs}
+\hat{\theta} &= \argmax_\theta  p({\cal D} | \theta) \nonumber \\
+&= \argmax_\theta  \prod \frac{p(\mathbf{x}| \theta)}{p(\mathbf{x}|\theta_1)} \nonumber \\
+&= \argmax_\theta  \prod \frac{p(s(\mathbf{x}; \theta, \theta_1) | \theta)}{p(s(\mathbf{x}; \theta, \theta_1) |\theta_1)} \; .
+\end{align}
+Note that it is important that we include the denominator $p(s(\mathbf{x}; \theta, \theta_1)
 |\theta_1)$ because this cancels Jacobian factors that vary with $\theta$.
 
+\subsection{Parametrized classifier}
 
-
-
-
-\subsection{Training a parametrized classifier}
+\glnote{Needs to be clarified.}
+\glnote{Do we put back the algorithm snippet? I think this could be directly
+explained in words.}
 
 In order to provide parameter inference in the likelihood-free setting, we must
-train a family of  classifiers parametrized by $\theta_0$ and $\theta_1$, the
+train a family of classifiers parametrized by $\theta_0$ and $\theta_1$, the
 parameters associated to the null and alternate hypotheses, respectively. While
 this could be done independently for all $\theta_0$ and $\theta_1$, it is
 desirable and convenient to have a smooth evolution of the classification score
 as a function of the parameters. Thus, we anticipate a single learning stage
-based on training data with input $(x, \theta_0, \theta_1)_i$ and target $y_i$.
+based on training data with input $(\mathbf{x}, \theta_0, \theta_1)_i$ and target $y_i$.
 Somewhat unusually, the unknown values of the parameters are taken as input to
 the classifier; their values will be specified via the enveloping (generalized)
-likelihood ratio of Eq.~\ref{eq:enveloping}. We denote the learned family of
-classifiers $\hat{s}(x; \theta_0, \theta_0)$, and anticipate the training based
+likelihood ratio of Eqn.~\ref{eqn:generalized-lr}. We denote the learned family of
+classifiers $\hat{s}(\mathbf{x}; \theta_0, \theta_1)$, and anticipate the training based
 roughly on the following algorithmic flow.
+
 % \begin{algorithm}[ht]
 % \caption{Training of the parametrized classifier.}\label{alg:training}
 % \begin{algorithmic}
@@ -703,13 +714,15 @@ roughly on the following algorithmic flow.
 % \end{algorithmic}
 % \end{algorithm}%\vspace{-1.5em}
 
-While the function $p(x|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$ will minimize
+While the function $p(\mathbf{x}|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$ will minimize
 the expected squared loss based on training data produced according to
 Algorithm~\ref{alg:training}, it is not clear how training data from $\theta'_0
 \ne \theta_0$ and $\theta'_1 \ne \theta_1$ will influence a real world
 classifier with finite capacity. This is left as an area for future work.
 
-\subsection{Practicalities of embedding the classifier into the likelihood}
+\subsection{Parametrized calibration}
+
+\glnote{Needs to be clarified as well.}
 
 Once the classifier is trained, we can use the generative model together with a
 univariate density estimation technique (e.g. histograms or kernel density
@@ -727,17 +740,18 @@ fixed classifier, it has become common  to interpolate the distribution between
 discrete values of $\theta$ in order to produce a continuous parametrization for
 $\hat p(\hat s | \theta)$~\citep{Cranmer:2012sba}.
 
-There is a mild technical challenge in embedding the classifier into the
-likelihood. In the case of a fixed classifier $\hat s(x)$ it is possible to
-pre-compute $\hat s_e=\hat s(x_e)$ and never refer back to the original features
-$x_e$. In the parametrized setting it is not possible to pre-compute $\hat
-s(x_e; \theta_0, \theta_1)$ since one does not know the true values of
-$\theta_0$ and $\theta_1$. Thus one must implement the embedding of the
-classifier as in Eq.~\ref{eq:embedding}.  A concrete realization of this has
-been performed for probability models implemented with the \texttt{RooFit}
-probabilistic programing language and  classifiers implemented with
-\texttt{scikit-learn} and
-\texttt{TMVA}~\citep{Verkerke:2003ir,scikit-learn,Hocker:2007ht}.
+% There is a mild technical challenge in embedding the classifier into the
+% likelihood. In the case of a fixed classifier $\hat s(x)$ it is possible to
+% pre-compute $\hat s_e=\hat s(x_e)$ and never refer back to the original features
+% $x_e$. In the parametrized setting it is not possible to pre-compute $\hat
+% s(x_e; \theta_0, \theta_1)$ since one does not know the true values of
+% $\theta_0$ and $\theta_1$. Thus one must implement the embedding of the
+% classifier as in Eq.~\ref{eq:embedding}.
+%  A concrete realization of this has
+% been performed for probability models implemented with the \texttt{RooFit}
+% probabilistic programing language and  classifiers implemented with
+% \texttt{scikit-learn} and
+% \texttt{TMVA}~\citep{Verkerke:2003ir,scikit-learn,Hocker:2007ht}.
 
 One can easily imagine a number of approaches to embedding the classifier and
 estimating the density $\hat p(\hat s|\theta)$ and the relative merits of those
@@ -758,14 +772,23 @@ this overarching optimization problem as an area of future work.
 
 \section{Applications}
 
-In HEP we are often searching for some class of events, generically referred to
-as \textit{signal}, in the presence of a separate class of \textit{background}
-events.  For each event we measure some quantities $x$ that have corresponding
-distributions $p_b(x|\nu)$ for background and $p_s(x|\nu)$ for signal, where
-$\nu$ are nuisance parameters describing uncertainties in the underlying physics
-prediction or response of the measurement device. The total model is a mixture
-of the signal and background, and $\mu$ is the mixture coefficient associate to
-the signal component.
+\subsection{High energy physics}
+
+\glnote{Add a concrete HEP example where we illustrate and compare
+the method for several classifiers and calibration algorithms.}
+\glnote{Notations need to be adapted.}
+\glnote{Rethink the outline? Start with comparison of mixtures (5.1.4) and then
+specialize to background vs background+signal, and thereby discuss that we can
+focus the capacity of the classifier.}
+
+In high energy physics, we are often searching for some class of events,
+generically referred to as \textit{signal}, in the presence of a separate class
+of \textit{background} events.  For each event we measure some quantities $x$
+that have corresponding distributions $p_b(x|\nu)$ for background and
+$p_s(x|\nu)$ for signal, where $\nu$ are nuisance parameters describing
+uncertainties in the underlying physics prediction or response of the
+measurement device. The total model is a mixture of the signal and background,
+and $\mu$ is the mixture coefficient associate to the signal component.
 \begin{equation}\label{eq:hepGen}
 p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu p_s( x_e \, |\,  \nu)  + (1-\mu)\, p_b( x_e \,|\, \nu) \,\right] \; ,
 \end{equation}
@@ -775,7 +798,7 @@ over $\nu$ as in Eq.~\ref{eq:cmle}) is used as a test
 statistic~\citep{Cowan:2010js}. This approach was used for the discovery of the
 Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa}.
 
-\subsection{Typical usage pattern}
+\subsubsection{Typical usage pattern}
 
 In this setting, large samples of pseudo-data $\{x_i, y_i\}$ generated with some
 nominal values of the parameters $\nu_0$, where $y=0$ corresponds to the
@@ -796,7 +819,7 @@ signal is a very small perturbation to the background (i.e. $\mu \ll 1$).
  signal and background events with $\nu=\nu_0$ is shown in
  Figure~\ref{fig:tmva}.
 
-\begin{figure}[htbp]
+\begin{figure}[t]
 \begin{center}
  \includegraphics[height=1.7in]{figures/example-TMVA-BDT.pdf}
  \includegraphics[height=1.7in]{figures/example-TMVA-ROC.pdf}
@@ -816,7 +839,7 @@ marked Poisson model.}
 p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu \hat{p}_s( \hat s(x_e) \, |\,  \nu)  + (1-\mu)\, \hat{p}_b( \hat s(x_e) \,|\, \nu) \,\right] \; .
 \end{equation}
 
-\subsection{Comments on typical usage of machine learning in HEP}
+\subsubsection{Comments on typical usage of machine learning in HEP}
 
 Nuisance parameters are an after thought in the typical usage of machine
 learning in HEP. In fact, most discussions would related to the training and
@@ -830,7 +853,7 @@ used to train the classifier can be thought of as a calibration necessary for
 classical statistical inference; however, this classifier is clearly not optimal
 for $\nu \ne \nu_0$.
 
-\subsection{A more powerful  approach}
+\subsubsection{A more powerful  approach}
 
 The standard use of machine learning in HEP can be improved by training a
 parametrized classifier corresponding to the generalized likelihood ratio test
@@ -855,7 +878,7 @@ capacity, there will be some tradeoff between taking into account this
 additional term and the more challenging learning problem when $\mu$ is very
 small.
 
-\subsection{Decomposing tests between mixture models into their components}
+\subsubsection{Decomposing tests between mixture models into their components}
 
 In this section we generalize the capacity focusing technique of training
 classifiers to discriminate between components of a mixture model. First, we
@@ -874,7 +897,10 @@ It is possible to re-write the target likelihood ratio between two mixture model
 \end{eqnarray}
 The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parametrized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
-\subsection{Measuring particle properties}
+\subsection{Likelihood-free inference}
+
+\glnote{Rework this section, add a concrete example and compare with other
+likelihood-free inference algorithms.}
 
 While the original motivation for this work was to improve the treatment of
 systematic uncertainties in new particle searches by parametrizing the
@@ -927,7 +953,11 @@ approximated by neglecting detector effects~\citep{Gao:2010qx,Bolognesi:2012mm}.
 
 % Related works ================================================================
 
-\section{Related works}\label{S:Related}
+\section{Related works}
+\label{sec:related}
+
+\glnote{Add related works on density ratio estimation.}
+\glnote{Remove others that are less directly related.}
 
 \cite{ClaytonScott} and \cite{JMLR:v14:tong13a} consider the machine learning
 problem associated to Neyman-Pearson hypothesis testing. As in this work, they
@@ -994,6 +1024,7 @@ valid inference even if there is a loss of power due to a non ideal classifier.
 % Conclusions ==================================================================
 
 \section{Conclusions}
+\label{sec:conclusions}
 
 We have outlined a technique to reformulate generalized likelihood ratio test
 over a high-dimensional data set with multiple events in terms of a univariate
