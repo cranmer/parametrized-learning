@@ -614,11 +614,11 @@ by~\cite{ClaytonScott} and \cite{Neal:2007zz}.
 % in the likelihood-free setting with idealized classifiers and their densities.
 
 Thus far we have shown that the target likelihood ratio
-$p(\mathbf{x}|\theta_0)/p(\mathbf{x}|\theta_1)$ with high dimensional features
+$r(\mathbf{x};\theta_0,\theta_1)=p(\mathbf{x}|\theta_0)/p(\mathbf{x}|\theta_1)$ with high dimensional features
 $\mathbf{x}$ can be reproduced via the univariate densities
-$p(s(\mathbf{x};\theta_0,\theta_1)|\theta_0)/p(s(\mathbf{x};\theta_0,\theta_1)|\theta_1)$
-if the reduction $s(\mathbf{x}|\theta_0, \theta_1)$ is monotonic with
-$p(\mathbf{x}|\theta_0)/p(\mathbf{x}|\theta_1)$. We now generalize from the
+$p(s(\mathbf{x})|\theta_0)$ and $p(s(\mathbf{x})|\theta_1)$
+if the reduction $s(\mathbf{x})$ is monotonic with
+$r(\mathbf{x};\theta_0,\theta_1)$. We now generalize from the
 ratio of two simple hypotheses specified by $\theta_0$ and $\theta_1$ to the
 case of composite hypothesis testing where $\theta$ are continuous model
 parameters.
@@ -647,9 +647,8 @@ In the case of composite hypotheses $\theta \in \Theta_0$ against an alternative
 $\theta \in \Theta_0^C$, the generalized likelihood ratio test, also known as
 the profile likelihood ratio test, is commonly used
 \begin{equation}\label{eqn:generalized-lr}
-\lambda(\Theta_0) =  \frac{ \sup_{\theta \in \Theta_0} p({\cal D} | \theta)}{ \sup_{\theta \in \Theta} p({\cal D} | \theta)} \; .
+\Lambda({\cal D}; \Theta_0) =  \frac{ \sup_{\theta \in \Theta_0} p({\cal D} | \theta)}{ \sup_{\theta \in \Theta} p({\cal D} | \theta)} \; .
 \end{equation}
-\glnote{For the denominator, shouldnt we have $\theta \in \Theta_0^C$ instead?}
 This generalized likelihood ratio can be used both for hypothesis tests in the
 presence of nuisance parameters or to create confidence intervals with or
 without nuisance parameters.  Often, the parameter vector is broken into two
@@ -666,19 +665,20 @@ Let denote the maximum likelihood estimator
 % \begin{equation}\label{eq:cmle}
 % \hat{\hat{\theta}} = \argmax_{\theta \in \Theta_0}  p({\cal D} | \theta) \; .
 % \end{equation}
-It is not obvious that if we are working with the distributions $p(s|\theta)$
-(for some particular $s(\mathbf{x}; \theta_0, \theta_1)$ comparison) that we can find the
-same estimators. Fortunately, there is a construction based on $p(s|\theta)$
-that works. The maximum likelihood estimate of Eq.~\ref{eq:mle} is the same as
+It is not obvious that if we are working instead with distributions $p(s(\mathbf{x})|\theta)$
+that we can find the
+same estimators. Fortunately, there is a construction based on $s$
+that works. The maximum likelihood estimate of Eqn.~\ref{eq:mle} is the same as
 the value that maximizes the likelihood ratio with respect to $p({\cal
 D}|\theta_1)$ for some fixed value of $\theta_1$. This allows us to use
 Theorem~\ref{thm:ratio-equivalence} to reformulate the maximum likelihood estimate:
 \begin{align}\label{eq:mle_withs}
 \hat{\theta} &= \argmax_\theta  p({\cal D} | \theta) \nonumber \\
 &= \argmax_\theta  \prod \frac{p(\mathbf{x}| \theta)}{p(\mathbf{x}|\theta_1)} \nonumber \\
-&= \argmax_\theta  \prod \frac{p(s(\mathbf{x}; \theta, \theta_1) | \theta)}{p(s(\mathbf{x}; \theta, \theta_1) |\theta_1)} \; .
+&= \argmax_\theta  \prod \frac{p(s(\mathbf{x}; \theta, \theta_1) | \theta)}{p(s(\mathbf{x}; \theta, \theta_1) |\theta_1)} \;
 \end{align}
-Note that it is important that we include the denominator $p(s(\mathbf{x}; \theta, \theta_1)
+where $s(\mathbf{x};\theta,\theta_1)$ denotes a \textit{parametrized} transformation $s$
+of $X$ in terms of $(\theta,\theta_1)$. Note that it is important that we include the denominator $p(s(\mathbf{x}; \theta, \theta_1)
 |\theta_1)$ because this cancels Jacobian factors that vary with $\theta$.
 
 \subsection{Parametrized classifier}
