@@ -319,17 +319,17 @@ and \cite{JMLR:v14:tong13a}.}
 The main result of this paper (see Theorem~\ref{thm:ratio-equivalence}) is to
 generalize the observation that one can form a test statistic
 \begin{equation}\label{eqn:likelihood-ratio-test-equiv}
-T'({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{Y}(y=s(\mathbf{x}; \theta_0, \theta_1) | \theta_0)}{ p_\mathbf{Y}(y=s(\mathbf{x}; \theta_0, \theta_1) | \theta_1)}
+T'({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{Y}(y=s(\mathbf{x}) | \theta_0)}{ p_\mathbf{Y}(y=s(\mathbf{x}) | \theta_1)}
 \end{equation}
 that is strictly equivalent to \ref{eqn:likelihood-ratio-test}, provided the change
-of variable $\mathbf{Y} = s(\mathbf{X}; \theta_0, \theta_1)$ is based
-on a parametrized function $s$ that is strictly monotonic with the density ratio
+of variable $\mathbf{Y} = s(\mathbf{X})$ is based
+on a (parametrized) function $s$ that is strictly monotonic with the density ratio
 \begin{equation}
 r(\mathbf{x};\theta_0, \theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}.
 \end{equation}
 As derived below, this allows to recast the original likelihood ratio test into
 an alternate form in which supervised learning can be used to build
-$s(\mathbf{x}; \theta_0, \theta_1)$ as a discriminative classifier.  In
+$s(\mathbf{x})$ as a discriminative classifier.  In
 Section~\ref{sec:generalized-likelihood-ratio} we extend this result to
 generalized likelihood ratio tests, where it will be useful to have the
 classifier  parametrized in terms of $(\theta_0, \theta_1)$.
@@ -399,14 +399,14 @@ classifier  parametrized in terms of $(\theta_0, \theta_1)$.
     $r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$,
     for given parameters $\theta_0$ and $\theta_1$. In these conditions,
     \begin{equation}
-        r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} = \frac{p_\mathbf{Y}(y=s(\mathbf{x};\theta_0,\theta_1)|\theta_0)}{p_\mathbf{Y}(y=s(\mathbf{x};\theta_0,\theta_1)|\theta_1)},
+        r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} = \frac{p_\mathbf{Y}(y=s(\mathbf{x})|\theta_0)}{p_\mathbf{Y}(y=s(\mathbf{x})|\theta_1)},
     \end{equation}
     where $p_\mathbf{Y}(y=s(\mathbf{x};\theta_0,\theta_1)|\theta)$ is the induced probability density of
     $\mathbf{Y} = s(\mathbf{X};\theta_0,\theta_1)$.
 \end{theorem}
 
 \begin{proof}
-Omitting for clarity the parametrization $(\theta_0,\theta_1)$ of $s(\mathbf{X};\theta_0,\theta_1)$, we have
+Starting from the definition of the probability density function, we have
 \begin{align}
 p_Y(y=s(\mathbf{x})|\theta_0) &= \frac{d}{dy} P(s(\mathbf{X}) \leq y) \nonumber \\
 &= \frac{d}{dy}  \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) \leq y\}} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
@@ -508,7 +508,6 @@ as
 \begin{equation}
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mathbf{x} | \theta_0) + p_{\mathbf{X}}(\mathbf{x} | \theta_1)}.
 \end{equation}
-
 In particular, this regression function satisfies conditions of
 Theorem~\ref{thm:ratio-equivalence} since $s^*(\mathbf{x}) =
 m(\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)})$,
@@ -534,18 +533,18 @@ $p_Y(y=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
 
 \subsection{Learning the correct mapping and its distribution}
 
-\glnote{This section needs to be improved.}
+\glnote{This section needs to be improved. Not sure we need a section on its own for that either.}
 
 In order for this approach to be useful in the likelihood-free setting, where it
 is not possible to evaluate the density $p(\mathbf{x}|\theta)$, we need to be
-able to approximate both $s(\mathbf{x};\theta_0, \theta_1)$ and
+able to approximate both $s(\mathbf{x})$ and
 $p(s(\mathbf{x})|\theta)$ based on samples $\{x_i\}$ drawn from the generative
 model $p(\mathbf{x}|\theta)$.  Denote the dimensionality reduction map
-$\hat{s}(x; \theta_0, \theta_1)$ and its distribution $\hat{p}(\hat{s}|\theta)$.
+$\hat{s}(x)$ and its distribution $\hat{p}(\hat{s}|\theta)$.
 
 One strength of this approach is that it factorizes the approximation of the
-per-event likelihood ratio ($\hat{s}(\mathbf{x}; \theta_0, \theta_1) \approx
-s(\mathbf{x}; \theta_0, \theta_1)$) from the calibration procedure ($\hat p(\hat
+per-event likelihood ratio ($\hat{s}(\mathbf{x}) \approx
+s(\mathbf{x})$) from the calibration procedure ($\hat p(\hat
 s| \theta) \approx p(\hat{s}|\theta)$). Thus, even if the classifier does a poor
 job of reproducing the level sets of the per-event likelihood ratio, the density
 of $\hat{s}$ can still be well calibrated. In that case, one might loose power,
