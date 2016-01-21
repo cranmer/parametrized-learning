@@ -657,29 +657,30 @@ parameters of interest while the $\nu$ components are considered nuisance
 parameters. In that case $\Theta_0$ corresponds to all values of $\nu$ with
 $\mu$ fixed.
 
-Let denote the maximum likelihood estimator
+Evaluating Eqn.~\ref{eqn:generalized-lr} requires finding the maximum likelihood
+estimator
 \begin{equation}\label{eq:mle}
-\hat{\theta} = \argmax_\theta  p({\cal D} | \theta) \; .
+    \hat{\theta} = \argmax_\theta p({\cal D} | \theta),
 \end{equation}
-% and the conditional maximum likelihood estimator
-% \begin{equation}\label{eq:cmle}
-% \hat{\hat{\theta}} = \argmax_{\theta \in \Theta_0}  p({\cal D} | \theta) \; .
-% \end{equation}
-It is not obvious that if we are working instead with distributions $p(s(\mathbf{x})|\theta)$
-that we can find the
-same estimators. Fortunately, there is a construction based on $s$
-that works. The maximum likelihood estimate of Eqn.~\ref{eq:mle} is the same as
-the value that maximizes the likelihood ratio with respect to $p({\cal
-D}|\theta_1)$ for some fixed value of $\theta_1$. This allows us to use
-Theorem~\ref{thm:ratio-equivalence} to reformulate the maximum likelihood estimate:
+which is again
+made difficult in the likelihood-free setting.  Also, it is not obvious that if
+we are working instead with distributions $p(s(\mathbf{x})|\theta)$ that we can
+find the same estimators. Fortunately, there is a construction based on $s$ that
+works: the maximum likelihood estimate of Eqn.~\ref{eq:mle} is the same as the
+value that maximizes the likelihood ratio with respect to $p({\cal D}|\theta_1)$,
+for some fixed value of $\theta_1$. This allows us to use
+Theorem~\ref{thm:ratio-equivalence} to reformulate the maximum likelihood
+estimate as
 \begin{align}\label{eq:mle_withs}
 \hat{\theta} &= \argmax_\theta  p({\cal D} | \theta) \nonumber \\
 &= \argmax_\theta  \prod \frac{p(\mathbf{x}| \theta)}{p(\mathbf{x}|\theta_1)} \nonumber \\
-&= \argmax_\theta  \prod \frac{p(s(\mathbf{x}; \theta, \theta_1) | \theta)}{p(s(\mathbf{x}; \theta, \theta_1) |\theta_1)} \;
+&= \argmax_\theta  \prod \frac{p(s(\mathbf{x}; \theta, \theta_1) | \theta)}{p(s(\mathbf{x}; \theta, \theta_1) |\theta_1)} \;,
 \end{align}
-where $s(\mathbf{x};\theta,\theta_1)$ denotes a \textit{parametrized} transformation $s$
-of $X$ in terms of $(\theta,\theta_1)$. Note that it is important that we include the denominator $p(s(\mathbf{x}; \theta, \theta_1)
-|\theta_1)$ because this cancels Jacobian factors that vary with $\theta$.
+where $s(\mathbf{x};\theta,\theta_1)$ denotes a \textit{parametrized}
+transformation $s$ of $X$ in terms of $(\theta,\theta_1)$ that is monotonic
+with $r(\mathbf{x};\theta,\theta_1)$. Note that it is important that we include
+the denominator $p(s(\mathbf{x}; \theta, \theta_1) |\theta_1)$ because this
+cancels Jacobian factors that vary with $\theta$.
 
 \subsection{Parametrized classifier}
 
