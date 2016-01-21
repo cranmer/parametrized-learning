@@ -131,25 +131,26 @@ The likelihood function is the central object that summarizes the information
 from an experiment needed for inference of model parameters. The likelihood
 function is key to many areas of science that report the results of classical
 hypothesis tests or confidence intervals using the (generalized or profile)
-likelihood ratio as a test statistic. With the advance of computing technology,
-it has become increasingly common that a simulator (or generative model) is used
-to describe complex processes that tie parameters $\theta$ of an underlying
-theory and measurement apparatus to high-dimensional observations $\mathbf{x}$. However,
-directly evaluating the likelihood function in these cases is often impossible
-or is computationally impractical. In this likelihood-free setting, various
-methods for statistical inference have been proposed, including most notably the
-Approximate Bayesian Computation (ABC) class of algorithms aiming at sampling
-from the posterior distribution of model parameters \glnote{Add references}.
+likelihood ratio as a test statistic. At the same time, with the advance of
+computing technology, it has become increasingly common that a simulator (or
+generative model) is used to describe complex processes that tie parameters
+$\theta$ of an underlying theory and measurement apparatus to high-dimensional
+observations $\mathbf{x}$. However, directly evaluating the likelihood function
+in these cases is often impossible or is computationally impractical. In this
+likelihood-free setting, various methods for statistical inference have been
+proposed, including most notably the Approximate Bayesian Computation (ABC)
+class of algorithms aiming at sampling from the posterior distribution of model
+parameters \glnote{Add references}.
 
 The main result of this paper is to show that the likelihood ratio is invariant
-under dimensionality reduction, under the assumption that the transformation is
-monotonic with the likelihood ratio. As a direct consequence, we derive and propose an
-alternative machine learning-based approach for likelihood-free inference that
-can also be used in a classical (frequentist) setting where a prior over the
-model parameters is not available. More specifically, we demonstrate why and how
-discriminative classifiers can be used to construct equivalent likelihood ratio
-tests when only a generative model for the data is available for training and
-calibration.
+under dimensionality reduction, under the assumption that the corresponding
+transformation is monotonic with the likelihood ratio. As a direct consequence,
+we derive and propose an alternative machine learning-based approach for
+likelihood-free inference that can also be used in a classical (frequentist)
+setting where a prior over the model parameters is not available. More
+specifically, we demonstrate why and how discriminative classifiers can be used
+to construct equivalent likelihood ratio tests when only a generative model for
+the data is available for training and calibration.
 
 % As a concrete example, consider searches for new particles at the Large Hadron
 % Collider. The simulator that is sampling from $p(x|\theta)$ is based on quantum
@@ -181,7 +182,7 @@ As a concrete example, let us consider searches for new particles at the Large
 Hadron Collider (LHC). The simulator that is sampling from $p(\mathbf{x}|\theta)$ is
 based on quantum field theory, a detailed simulation of the particle detector,
 and data processing algorithms that transform raw sensor data into the feature
-vector $x$~\citep{Sjostrand:2006za,Agostinelli:2002hh}. The ATLAS and CMS
+vector $\mathbf{x}$~\citep{Sjostrand:2006za,Agostinelli:2002hh}. The ATLAS and CMS
 experiments have published  hundreds papers where the final result was
 formulated as a hypothesis test or confidence interval using a generalized
 likelihood ratio test~\citep{Cowan:2010js}, including most notably the discovery
@@ -224,7 +225,7 @@ proposed method could help these searches.}
 % dimensionality reduction map to aid in the estimation of the likelihood
 % function.
 
-The rest of this paper is organized as follows. In Section...
+The rest of this paper is organized as follows. In Section... \glnote{todo}
 
 
 % Likelihood ratio tests =======================================================
