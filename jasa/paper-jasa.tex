@@ -273,14 +273,16 @@ $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio
 \begin{equation}\label{eqn:likelihood-ratio-test}
 T({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{X}(\mathbf{x}|\theta_0)}{ p_\mathbf{X}(\mathbf{x}|\theta_1)}
 \end{equation}
-is the most powerful test statistic. In order to evaluate $T({\cal D})$, one
-must be able to evaluate the probability density $p_\mathbf{X}(\mathbf{x}|
-\theta)$ at any value $\mathbf{x}$. However, it is increasingly common in
-science that one has a complex simulation that can act as generative model for
-$p_\mathbf{X}(\mathbf{x}|\theta)$, but one cannot evaluate the density directly.
-For instance, this is the case in high energy physics~\citep{Neal:2007zz} where
-the simulation of particle detectors can only be done in the forward mode.
-\glnote{Reinsert citations for \cite{ClaytonScott} and \cite{JMLR:v14:tong13a}.}
+is the most powerful test statistic.
+
+In order to evaluate $T({\cal D})$, one must be able to evaluate the probability
+density $p_\mathbf{X}(\mathbf{x}| \theta)$ at any value $\mathbf{x}$. However,
+it is increasingly common in science that one has a complex simulation that can
+act as generative model for $p_\mathbf{X}(\mathbf{x}|\theta)$, but one cannot
+evaluate the density directly. For instance, this is the case in high energy
+physics~\citep{Neal:2007zz} where the simulation of particle detectors can only
+be done in the forward mode. \glnote{Reinsert citations for \cite{ClaytonScott}
+and \cite{JMLR:v14:tong13a}.}
 
 
 % Approximating likelihood ratios with classifiers =============================
