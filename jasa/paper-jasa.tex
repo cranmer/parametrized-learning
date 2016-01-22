@@ -194,7 +194,7 @@ are based on the distribution of a single event-level feature that discriminates
 between a hypothesized process of interest (labeled \textit{signal}) and various
 other processes (labeled \textit{background}). Typically, pseudo-data from the
 simulator are used to approximate the density at various parameter points, and
-an interpolation algorithm is used to approximate the parametrized
+an interpolation algorithm is used to approximate the parameterized
 model~\citep{Cranmer:2012sba}. In particular, to improve the statistical power
 of these tests, hundreds of these searches have already been using supervised
 learning to train discriminative classifiers that take advantage of a high
@@ -268,7 +268,7 @@ The rest of this paper is organized as follows. In Section... \glnote{todo}
 Let $\mathbf{X}$ be a random vector with values $\mathbf{x} \in {\cal X}
 \subseteq \mathbb{R}^p$ and let $p_\mathbf{X}(\mathbf{x}|\theta)$ denote the
 density probability of $\mathbf{X}$ at value $\mathbf{x}$ under the
-parametrization $\theta$. Let also assume some i.i.d. observed data ${\cal D} = \{
+parameterization $\theta$. Let also assume some i.i.d. observed data ${\cal D} = \{
 \mathbf{x}_1, \dots, \mathbf{x}_n \}$. In the setting where one is interested in
 simple hypothesis testing between a null $\theta=\theta_0$ against an alternate
 $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio
@@ -325,7 +325,7 @@ T'({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mat
 \end{equation}
 that is strictly equivalent to \ref{eqn:likelihood-ratio-test}, provided the change
 of variable $\mathbf{Y} = s(\mathbf{X})$ is based
-on a (parametrized) function $s$ that is strictly monotonic with the density ratio
+on a (parameterized) function $s$ that is strictly monotonic with the density ratio
 \begin{equation}
 r(\mathbf{x};\theta_0, \theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}.
 \end{equation}
@@ -334,7 +334,7 @@ an alternate form in which supervised learning can be used to build
 $s(\mathbf{x})$ as a discriminative classifier.  In
 Section~\ref{sec:generalized-likelihood-ratio} we extend this result to
 generalized likelihood ratio tests, where it will be useful to have the
-classifier  parametrized in terms of $(\theta_0, \theta_1)$.
+classifier  parameterized in terms of $(\theta_0, \theta_1)$.
 
 \subsection{Likelihood ratios under change of variables}
 
@@ -395,7 +395,7 @@ classifier  parametrized in terms of $(\theta_0, \theta_1)$.
 
 \begin{theorem}
     \label{thm:ratio-equivalence}
-    Let $\mathbf{X}$ be a random vector vector with values in ${\cal X} \subseteq \mathbb{R}^p$ and parametrized probability
+    Let $\mathbf{X}$ be a random vector vector with values in ${\cal X} \subseteq \mathbb{R}^p$ and parameterized probability
     density $p_{\mathbf{X}}(\mathbf{x} = (x_1, ..., x_p)|\theta)$ and let
     $s : \mathbb{R}^p \mapsto \mathbb{R}$ be a function monotonic with the density ratio
     $r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$,
@@ -451,7 +451,7 @@ Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_Y(y=s(\mathbf{x
 \end{align}
 \end{proof}
 
-\subsection{Probabilistic classification for approximating ratios}
+\subsection{Probabilistic classification for likelihood ratios}
 \label{sec:clf-for-ratios}
 
 % \subsection{The fixed discriminative classification setting} For fixed
@@ -504,7 +504,7 @@ to
 \begin{equation}
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
 \end{equation}
-If we further assume that samples for $Y=0$ are drawn from some parametrized
+If we further assume that samples for $Y=0$ are drawn from some parameterized
 distribution with probability density $p_{\mathbf{X}}(\mathbf{x}|\theta_0)$
 and similarly for $Y=1$, then the best regression function can be rewritten
 as
@@ -531,31 +531,34 @@ problem is directly related to probabilistic classification, and that algorithms
 proposed to solve one can be used for solving the other. In this context,
 Theorem~\ref{thm:ratio-equivalence} shows that in case we learn a probabilistic
 classifier $s(\mathbf{x})$ which is imperfect up to a monotonic transformation
-of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modelling
+of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modeling
 $p_Y(y=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
 
-\subsection{Learning the correct mapping and its distribution}
+\subsection{Approximating the reduction map and its distribution}
 
-\glnote{This section needs to be improved. Not sure we need a section on its own for that either.}
-
-In order for this approach to be useful in the likelihood-free setting, where it
-is not possible to evaluate the density $p(\mathbf{x}|\theta)$, we need to be
-able to approximate both $s(\mathbf{x})$ and
-$p(s(\mathbf{x})|\theta)$ based on samples $\{x_i\}$ drawn from the generative
-model $p(\mathbf{x}|\theta)$.  Denote the dimensionality reduction map
-$\hat{s}(x)$ and its distribution $\hat{p}(\hat{s}|\theta)$.
+In order for this approach to be useful in the likelihood-free setting, we need
+to be able to approximate both $s(\mathbf{x})$ and $p(s(\mathbf{x})|\theta)$
+based on a finite number of samples $\{\mathbf{x}_i\}$ drawn from the generative
+model $p(\mathbf{x}|\theta)$.
+Let denote the approximated dimensionality
+reduction map $\hat{s}(\mathbf{x})$ and its approximated distribution
+$\hat{p}(\hat{s}(\mathbf{x})|\theta)$. \glnote{Explain how to approximate $p(s)$ in practice?}
 
 One strength of this approach is that it factorizes the approximation of the
-per-event likelihood ratio ($\hat{s}(\mathbf{x}) \approx
-s(\mathbf{x})$) from the calibration procedure ($\hat p(\hat
-s| \theta) \approx p(\hat{s}|\theta)$). Thus, even if the classifier does a poor
-job of reproducing the level sets of the per-event likelihood ratio, the density
-of $\hat{s}$ can still be well calibrated. In that case, one might loose power,
-but the resulting inference will still be valid. This point was made by
+per-event likelihood ratio ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from the
+calibration procedure ($\hat p(\hat s(\mathbf{x})| \theta) \approx p(\hat{s}(\mathbf{x})|\theta)$).
+Thus, even if the classifier does a poor job at reproducing the level sets of
+the per-event likelihood ratio, the density of $\hat{s}$ can still be well
+calibrated. In that case, one might loose power, but the resulting inference
+will still be valid.\glnote{Shouldn't we elaborate?} This point was made by
 \cite{Neal:2007zz} and is well appreciated by the particle physics community
 that typically takes a conservative attitude towards the use of machine learning
 classifiers precisely due to concerns about the calibration $p$-values in the
 face of nuisance parameters associated to the simulator.
+
+\glnote{We should comment as to what happens if $\hat{s}(x)$ is not monotonic with $r$}
+
+\glnote{Add pseudo-code to summarize the whole pipeline?}
 
 \subsection{Classification and frequentist hypothesis tests}
 
@@ -677,16 +680,16 @@ estimate as
 &= \argmax_\theta  \prod_{\mathbf{x} \in {\cal D}} \frac{p(\mathbf{x}| \theta)}{p(\mathbf{x}|\theta_1)} \nonumber \\
 &= \argmax_\theta  \prod_{\mathbf{x} \in {\cal D}} \frac{p(s(\mathbf{x}; \theta, \theta_1) | \theta)}{p(s(\mathbf{x}; \theta, \theta_1) |\theta_1)} \;,
 \end{align}
-where $s(\mathbf{x};\theta,\theta_1)$ denotes a \textit{parametrized}
+where $s(\mathbf{x};\theta,\theta_1)$ denotes a \textit{parameterized}
 transformation $s$ of $\mathbf{X}$ in terms of $(\theta,\theta_1)$ that is monotonic
 with $r(\mathbf{x};\theta,\theta_1)$. Note that it is important that we include
 the denominator $p(s(\mathbf{x}; \theta, \theta_1) |\theta_1)$ because this
 cancels Jacobian factors that vary with $\theta$.
 
-\subsection{Parametrized classifier}
+\subsection{Parameterized classifier}
 
 In order to provide parameter inference in the likelihood-free setting as
-described above, we must train a family $s(\mathbf{x};\theta,\theta_1)$ of classifiers parametrized by
+described above, we must train a family $s(\mathbf{x};\theta,\theta_1)$ of classifiers parameterized by
 $\theta_0$ and $\theta_1$, the parameters associated to the null and alternate
 hypotheses, respectively. While this could be done independently for all
 $\theta_0$ and $\theta_1$, using the procedure outlined in
@@ -699,7 +702,7 @@ values will be specified via the enveloping (generalized) likelihood ratio of
 Eqn.~\ref{eqn:generalized-lr}.
 
 \begin{algorithm}[t]
-\caption{Training of a parametrized classifier.}\label{alg:training}
+\caption{Training of a parameterized classifier.}\label{alg:training}
     \begin{algorithmic}
         \State ${\cal L := \{ \}}$
         \For{ $\theta_0$ in $\Theta_0$ }
@@ -726,7 +729,7 @@ words? In its current state, the algorithm does not explain how to build ${\cal
 L}$ when the parameter spaces are continuous. It also does not specify how many
 samples should be generated per parameter value.}
 
-\subsection{Parametrized calibration}
+\subsection{Parameterized calibration}
 
 Once the classifier is trained, we can use the generative model together with a
 univariate density estimation technique (e.g. histograms or kernel density
@@ -741,7 +744,7 @@ generative model $p(\mathbf{x}|\theta)$. This can be  impractical when the gener
 model is computationally expensive or has high-latency (for instance some human
 intervention is required to reconfigure the generative model).  In HEP, with a
 fixed classifier, it has become common  to interpolate the distribution between
-discrete values of $\theta$ in order to produce a continuous parametrization for
+discrete values of $\theta$ in order to produce a continuous parameterization for
 $p(s | \theta)$~\citep{Cranmer:2012sba}.
 One can easily imagine a number of approaches to embedding the classifier and
 estimating the density $p(s|\theta)$ and the relative merits of those
@@ -818,7 +821,7 @@ signal is a very small perturbation to the background (i.e. $\mu \ll 1$).
  Once the classifier is trained, large samples of pseudo-data are drawn from
  $p_s(x | \nu)$ and $p_b(x | \nu)$ and we estimate the distributions
  $\hat{p}_s(\hat s | \nu)$ and $\hat{p}_b(\hat s | \nu)$ continuously
- parametrized in $\nu$. An example of the distributions of $\hat s$ for the
+ parameterized in $\nu$. An example of the distributions of $\hat s$ for the
  signal and background events with $\nu=\nu_0$ is shown in
  Figure~\ref{fig:tmva}.
 
@@ -848,7 +851,7 @@ Nuisance parameters are an after thought in the typical usage of machine
 learning in HEP. In fact, most discussions would related to the training and
 optimizing the classifier only consider $p_b(x)$ and $p_s(x)$ with $\nu=\nu_0$
 being implicit. However, as experimentalists we know that we must account for
-various forms of systematic uncertainty, parametrized by nuisance parameters
+various forms of systematic uncertainty, parameterized by nuisance parameters
 $\nu$. In practice, we take the classifier as fixed and then propagate
 uncertainty through the classifier as in Eq.~\ref{eq:typicalML}. Building the
 distribution $p(\hat s|\nu)$ for values of $\nu$ other than the nominal $\nu_0$
@@ -859,7 +862,7 @@ for $\nu \ne \nu_0$.
 \subsubsection{A more powerful  approach}
 
 The standard use of machine learning in HEP can be improved by training a
-parametrized classifier corresponding to the generalized likelihood ratio test
+parameterized classifier corresponding to the generalized likelihood ratio test
 \begin{equation}
 \lambda(\mu) = \frac{p(D|\mu, \hat{\hat{\nu}})}{p(D|\hat \mu, {\hat{\nu}})} \;,
 \end{equation}
@@ -869,7 +872,7 @@ There is an interesting distinction between this approach and the standard use
 in which the classifier is trained for a fixed $\nu_0$. In the standard use one
 trains a classifier for signal vs. background, which is equivalent (in an ideal
 setting) to training a classifier for  null (background-only) vs. alternate
-(signal-plus-backgound) since the resulting regression functions are one-to-one
+(signal-plus-background) since the resulting regression functions are one-to-one
 with each other. In contrast, in the case of the generalized likelihood ratio
 test
 \begin{equation}\label{eq:hep_improved}
@@ -877,7 +880,7 @@ test
 \end{equation}
 the background components don't cancel and there is an additional term $p_b(x|
 \hat{\hat{ \nu}})/p_b(x| {\hat{ \nu}})$. In practice, with classifiers of finite
-capacity, there will be some tradeoff between taking into account this
+capacity, there will be some trade-off between taking into account this
 additional term and the more challenging learning problem when $\mu$ is very
 small.
 
@@ -895,7 +898,7 @@ It is possible to re-write the target likelihood ratio between two mixture model
 &= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(x| \theta_1)}{  p_c(x| \theta_0)}  \right]^{-1} \nonumber \\
 &= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(s_{c,c',\theta_0, \theta_1}| \theta_1)}{ p_c(s_{c,c',\theta_0, \theta_1}| \theta_0)}  \right]^{-1} \label{eq:decomposedResult}
 \end{align}
-The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parametrized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
+The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
 \subsection{Likelihood-free inference}
 
@@ -903,7 +906,7 @@ The second line is a trivial, but useful decomposition into pair-wise classifica
 likelihood-free inference algorithms.}
 
 While the original motivation for this work was to improve the treatment of
-systematic uncertainties in new particle searches by parametrizing the
+systematic uncertainties in new particle searches by parameterizing the
 classifier in terms of the nuisance parameters $\nu$, the same approach can be
 used for parameter inference. In the case of new particle searches the parameter
 of interest is the mixture coefficient for the signal component $p_s(x|\nu)$.
@@ -914,7 +917,7 @@ includes both parameters of interest and nuisance parameters.
 
 This formalism represents a significant step forward in the usage of machine
 learning in HEP, where classifiers have always been used between two static
-classes of events and not parametrized explicitly in terms of the physical
+classes of events and not parameterized explicitly in terms of the physical
 quantities we wish to measure. The work of  ~\citep{Whiteson:2006ws} is similar
 as the stochastic optimization was directly trying to minimize the measurement
 uncertainty of a particle's mass; however, the resulting classifier was fixed.
@@ -1009,9 +1012,9 @@ in Neal's work, the focus is on approximating the likelihood function (up to a
 multiplicative constant), which is equivalent to evaluating the ratio  with
 respect to a fixed $\theta_1$ as in Eq.~\ref{eq:mle_withs}. In Neal's case, the
 dependence on $\theta$ is eliminated via $s(x; \hat{\theta}(x))$ and the map is
-constant; however, in this approach the map ratio is explicitly parametrized in
+constant; however, in this approach the map ratio is explicitly parameterized in
 terms of $\theta$, so the ratio is important for canceling the corresponding
-Jacobian factors.} Instead, we embed a parametrized classifier into the
+Jacobian factors.} Instead, we embed a parameterized classifier into the
 likelihood and postpone the evaluation of the classifier to the point of
 evaluation of the likelihood when $\theta$ is explicitly being tested. This
 avoids the loss of information that occurs from the regression step
@@ -1028,7 +1031,7 @@ valid inference even if there is a loss of power due to a non ideal classifier.
 
 We have outlined a technique to reformulate generalized likelihood ratio test
 over a high-dimensional data set with multiple events in terms of a univariate
-density of a classifier score. We have shown that a parametrized family of
+density of a classifier score. We have shown that a parameterized family of
 discriminative classifiers $\hat s(x; \theta_0, \theta_1)$ trained and
 calibrated with a simulator  $p(x|\theta)$ can be used to approximate the
 likelihood ratio  $\prod_i p(x_i|\theta_0)/p(x_i|\theta_1)$ even when it is not
