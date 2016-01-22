@@ -558,6 +558,8 @@ face of nuisance parameters associated to the simulator.
 
 \glnote{We should comment as to what happens if $\hat{s}(x)$ is not monotonic with $r$}
 
+\glnote{Add reference to \cite{BiancaZadrozny} here.}
+
 \glnote{Add pseudo-code to summarize the whole pipeline?}
 
 \subsection{Classification and frequentist hypothesis tests}
@@ -956,72 +958,93 @@ approximated by neglecting detector effects~\citep{Gao:2010qx,Bolognesi:2012mm}.
 
 % Related works ================================================================
 
-\section{Related works}
+\section{Related work}
 \label{sec:related}
 
-\glnote{Add related works on density ratio estimation.}
-\glnote{Remove others that are less directly related.}
-
-\cite{ClaytonScott} and \cite{JMLR:v14:tong13a} consider the machine learning
-problem associated to Neyman-Pearson hypothesis testing. As in this work, they
-consider the situation where one does not have access to the underlying
-distributions, but only has i.i.d. samples from each hypothesis. This work
-generalizes that goal from the Neyman-Pearson setting to generalized likelihood
-ratio tests and emphasizes the connection with classification. Perhaps a  formal
-treatment similar to the Neyman-Pearson case can be brought to bear in this more
-general setting. In a similarly titled work, \cite{Gutmann2014} advocate using
-the cross-validated classification accuracy as the similarity metric used in
-ABC. While the goal there is also parameter inference in the likelihood-free
-setting,  ``classifier ABC'' is very different than the approach presented here.
-\cite{TommiJaakkola} explore a way of leveraging generative models to derive
-kernel functions for use in discriminative methods. This interesting work is
-distinct from the point made here in which the generative model is being used
-for the purpose of providing training data and calibration.
-%\cite{McCallum} consider a hybrid generative/discriminative classifier; however, the goal of that work is not to leverage a generative model for the data, but to use both approaches to learn different subsets of the parameters in a single hybrid classifier.
-\cite{BiancaZadrozny} emphasize the importance of calibrated probability
-estimates from decision trees and naive Bayesian classifiers and investigate
-various approaches to achieve this. In contrast to that work, we are not
-interested in calibrated probability estimates for $p(y|x)$ for individual
-events, but instead we use the calibration to correct for non-linear
-transformations of the target likelihood ratio and, perhaps, to provide
-calibrated p-values based on those likelihood ratio tests. \cite{Ihler2004} take
-on a different problem (tests of statistical independence) by using machine
-learning algorithms to find  scalar maps from the high-dimensional feature space
-that achieve the desired statistical goal when the fundamental high-dimensional
-test is intractable.
-
-\cite{Neal:2007zz} also considered the problem of approximating the likelihood
-function when only a generative model is available. That work sketches a scheme
-in which one uses a classifier with both $x$ and $\theta$ as an input to serve
-as a dimensionality reduction map. The key distinction comes in the handling of
-$\theta$.  Neal says  ``we cannot use the classifier on real data, since we
-don't know the correct value for [$\theta]$'' and goes on to outline an approach
-where one uses regression on a per-event basis to estimate $\hat{\theta}(x)$ and
-perform the composition $s(x; \hat{\theta}(x))$ (much like
-profiling).\footnote{Neal considers a lower-dimensional `bottlenecks'
-$\theta^*=g(\theta)$, which are not essential to the discussion here.}  This can
-lead to a significant loss of information since (at least in most particle
-physics examples) a single event carries little information about the true value
-of $\theta$, though the full data set $D$ may be informative -- for instance, a
-single observation would not be sufficient to estimate the variance of a
-distribution, though repeated observations would.  The work of Neal correctly
-identifies this as an approximation of the target likelihood even in the case of
-a ideal classifier. In contrast, the approach described here does not eliminate
-the dependence of the classifier on $\theta$.\footnote{As a technical point,
-in Neal's work, the focus is on approximating the likelihood function (up to a
-multiplicative constant), which is equivalent to evaluating the ratio  with
-respect to a fixed $\theta_1$ as in Eq.~\ref{eq:mle_withs}. In Neal's case, the
-dependence on $\theta$ is eliminated via $s(x; \hat{\theta}(x))$ and the map is
-constant; however, in this approach the map ratio is explicitly parameterized in
-terms of $\theta$, so the ratio is important for canceling the corresponding
-Jacobian factors.} Instead, we embed a parameterized classifier into the
-likelihood and postpone the evaluation of the classifier to the point of
-evaluation of the likelihood when $\theta$ is explicitly being tested. This
+The closest work to the proposed method is due to \cite{Neal:2007zz}, who
+similarly considers the problem of approximating the likelihood function when
+only a generative model is available. That work sketches a scheme in which one
+uses a classifier with both $\mathbf{x}$ and $\theta$ as an input to serve as a
+dimensionality reduction map. The key distinction comes in the handling of
+$\theta$.  Neal argues that a classifier cannot be used on real data, since we
+do not know the correct value for $\theta$, and goes on to outline an approach
+where one uses regression on a per-event basis to estimate
+$\hat{\theta}(\mathbf{x})$ and perform the composition $s(\mathbf{x};
+\hat{\theta}(\mathbf{x}))$. As pointed out by the author, this can lead to a
+significant loss of information since a single observation $\mathbf{x}$ may
+carry little information about the true value of $\theta$, though a full data
+set ${\cal D}$ may be informative -- for instance, a single observation would
+not be sufficient to estimate the variance of a distribution, though repeated
+observations would. The work of \cite{Neal:2007zz} correctly identifies this as
+an approximation of the target likelihood even in the case of a ideal
+classifier. In contrast, the approach described here does not eliminate the
+dependence of the classifier on $\theta$\footnote{As a technical point, in
+\citep{Neal:2007zz}, the focus is on approximating the likelihood function (up
+to a multiplicative constant), which is equivalent to evaluating the ratio  with
+respect to a fixed $\theta_1$ as in Eqn.~\ref{eq:mle_withs}. In
+\citep{Neal:2007zz}, the dependence on $\theta$ is eliminated via $s(\mathbf{x};
+\hat{\theta}(\mathbf{x}))$ and the map is constant; however, in this approach
+the map ratio is explicitly parameterized in terms of $\theta$, so the ratio is
+important for canceling the corresponding Jacobian factors. \glnote{Shall we
+keep this footenote? Would be better to give details in the text. JASA
+recommends not using footnotes.}}. Instead, we embed a parameterized classifier
+into the likelihood and postpone the evaluation of the classifier to the point
+of evaluation of the likelihood when $\theta$ is explicitly being tested. This
 avoids the loss of information that occurs from the regression step
-$\hat{\theta}(x)$ proposed by Neal and leads to Theorem~1, which is an exact
-result in the case of an ideal classifier. In both cases, the quality of the
-classifier is factorized from the calibration of its density, which allows for
-valid inference even if there is a loss of power due to a non ideal classifier.
+$\hat{\theta}(\mathbf{x})$ proposed by \cite{Neal:2007zz} and leads to
+Theorem~\ref{thm:ratio-equivalence}, which is an exact result in the case of an
+ideal classifier. In both cases, the quality of the classifier is factorized
+from the calibration of its density, which allows for valid inference even if
+there is a loss of power due to a non ideal classifier. \glnote{We could shorten this paragraph.}
+
+Also close to our work, \cite{ClaytonScott} and \cite{JMLR:v14:tong13a} consider
+the machine learning problem associated to Neyman-Pearson hypothesis testing. In
+a similar setup, they consider the situation where one does not have access to
+the underlying distributions, but only has i.i.d. samples from each hypothesis.
+This work generalizes that goal from the Neyman-Pearson setting to generalized
+likelihood ratio tests and emphasizes the connection with classification.
+% Perhaps a  formal treatment similar to the Neyman-Pearson case can be brought to
+% bear in this more general setting.
+\cite{Ihler2004} take on a different problem
+(tests of statistical independence) by using machine learning algorithms to find
+scalar maps from the high-dimensional feature space that achieve the desired
+statistical goal when the fundamental high-dimensional test is intractable.
+\glnote{Add other references on hypothesis testing with ML?}
+
+% In a similarly titled work, \cite{Gutmann2014} advocate using
+% the cross-validated classification accuracy as the similarity metric used in
+% ABC. While the goal there is also parameter inference in the likelihood-free
+% setting,  their method is very different than the approach presented here.
+% \cite{TommiJaakkola} explore a way of leveraging generative models to derive
+% kernel functions for use in discriminative methods. This interesting work is
+% distinct from the point made here in which the generative model is being used
+% for the purpose of providing training data and calibration.
+% \cite{McCallum} consider a hybrid generative/discriminative classifier;
+% however, the goal of that work is not to leverage a generative model for the
+% data, but to use both approaches to learn different subsets of the parameters in
+% a single hybrid classifier.
+% \cite{BiancaZadrozny} emphasize the importance of calibrated probability
+% estimates from decision trees and naive Bayesian classifiers and investigate
+% various approaches to achieve this. In contrast to that work, we are not
+% interested in calibrated probability estimates for $p(y|x)$ for individual
+% events, but instead we use the calibration to correct for non-linear
+% transformations of the target likelihood ratio and, perhaps, to provide
+% calibrated p-values based on those likelihood ratio tests.
+
+More generally, likelihood ratio testing directly relates to the density ratio
+estimation problem, which consists in estimating the ratio of two probability
+densities from given and finite collections of observations ${\cal D}_0$ and
+${\cal D}_1$. Density ratio estimation is connected to many machine learning
+fundamental problems, including domain adaptation~\citep{sugiyama2012machine}, probabilistic
+classification and regression~\citep{vapnik1998statistical}, outlier
+detection~\citep{hido2011statistical}, and many others. In contrast with the
+proposed method which decouples reduction from calibration, most of the
+approaches proposed within the literature (see
+\cite{sugiyama2012density,gretton2009covariate,nguyen2010estimating,vapnik2013constructive}
+and references therein) provide solutions for estimating
+$r(\mathbf{x};\theta_0,\theta_1)$ directly from $\mathbf{x}$. Under some
+assumptions, the convergence of the obtained estimates was also proven for some
+of these approaches.
 
 
 % Conclusions ==================================================================
