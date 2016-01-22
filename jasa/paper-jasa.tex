@@ -550,7 +550,7 @@ calibration procedure ($\hat p(\hat s(\mathbf{x})| \theta) \approx p(\hat{s}(\ma
 Thus, even if the classifier does a poor job at reproducing the level sets of
 the per-event likelihood ratio, the density of $\hat{s}$ can still be well
 calibrated. In that case, one might loose power, but the resulting inference
-will still be valid.\glnote{Shouldn't we elaborate?} This point was made by
+will still be valid.\glnote{Shouldn't we elaborate? Since this is one of our selling points, we should give more details in my opinion.} This point was made by
 \cite{Neal:2007zz} and is well appreciated by the particle physics community
 that typically takes a conservative attitude towards the use of machine learning
 classifiers precisely due to concerns about the calibration $p$-values in the
@@ -1052,27 +1052,31 @@ of these approaches.
 \section{Conclusions}
 \label{sec:conclusions}
 
-We have outlined a technique to reformulate generalized likelihood ratio test
-over a high-dimensional data set with multiple events in terms of a univariate
-density of a classifier score. We have shown that a parameterized family of
-discriminative classifiers $\hat s(x; \theta_0, \theta_1)$ trained and
-calibrated with a simulator  $p(x|\theta)$ can be used to approximate the
-likelihood ratio  $\prod_i p(x_i|\theta_0)/p(x_i|\theta_1)$ even when it is not
-possible to directly evaluate the likelihood $p(x|\theta)$.
-%A technique for decomposing this ratio when the generative model is a mixture of components was presented with the aim to help focus capacity of the classifier when $p(x|\theta_0)$ and $p(x|\theta_1)$ differ primarily by a small mixture coefficient.  This approach leverages the power of machine learning in a classical statistical setting.
-It offers an alternative to approximate Bayesian computation for parameter
-inference in the likelihood-free setting that can also be used in the
-frequentist formalism without specifying a prior over the parameters. A strength
-of this approach is that it separates the quality of the approximation of the
-target likelihood from the quality of the calibration. The former is related to
-the ability of supervised learning approaches to  classification, which will
-continue to improve. The calibration procedure for a particular parameter point
-is fairly straight forward since it involves estimating a univariate density
-using a generative model of the data. The difficulty of the calibration stage is
-performing this calibration continuously in $\theta$. Different strategies to
-this calibration are anticipated depending on the dimensionality of $\theta$,
-the complexity of the resulting likelihood function, and the difficulties
-associated to running the simulator.
+In this work, we have outlined an approach to reformulate generalized likelihood
+ratio testing over a high-dimensional data set in terms of a univariate density
+of a classifier score. We have shown that a parameterized family of
+discriminative classifiers $\hat s(\mathbf{x}; \theta_0, \theta_1)$ trained and
+calibrated with a simulator can be used to approximate the likelihood ratio,
+even when it is not possible to directly evaluate the likelihood
+$p(\mathbf{x}|\theta)$.
+% A technique for decomposing this ratio when the generative model is a mixture
+% of components was presented with the aim to help focus capacity of the
+% classifier when $p(x|\theta_0)$ and $p(x|\theta_1)$ differ primarily by a small
+% mixture coefficient.  This approach leverages the power of machine learning in a
+% classical statistical setting.
+The proposed method offers an alternative to approximate Bayesian computation
+for parameter inference in the likelihood-free setting that can also be used in
+the frequentist formalism without specifying a prior over the parameters. A
+strength of this approach is that it separates the quality of the approximation
+of the target likelihood from the quality of the calibration. The former is
+related to the ability of supervised learning approaches to  classification,
+which will continue to improve. The calibration procedure for a particular
+parameter point is fairly straight forward since it involves estimating a
+univariate density using a generative model of the data. The difficulty of the
+calibration stage is performing this calibration continuously in $\theta$.
+Different strategies to this calibration are anticipated depending on the
+dimensionality of $\theta$, the complexity of the resulting likelihood function,
+and the difficulties associated to running the simulator.
 
 \bibliographystyle{apalike}
 \bibliography{learning.bib}
