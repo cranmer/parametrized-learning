@@ -645,11 +645,11 @@ $\theta$ are continuous model parameters.
 % \section{Composite hypotheses and the generalized likelihood ratio}\label{S:GLR}
 
 In the case of composite hypotheses $\theta \in \Theta_0$ against an alternative
-$\theta \in \Theta_1$ (possibly such that $\Theta_0 \subseteq \Theta_1$), the
+$\theta \in \Theta_1$ (such that $\Theta_0 \cap \Theta_1 = \emptyset$ and $\Theta_0 \cup \Theta_1 = \Theta$), the
 generalized likelihood ratio test, also known as the profile likelihood ratio
 test, is commonly used
 \begin{equation}\label{eqn:generalized-lr}
-\Lambda({\cal D}; \Theta_0; \Theta_1) =  \frac{ \sup_{\theta \in \Theta_0} p({\cal D} | \theta)}{ \sup_{\theta \in \Theta_1} p({\cal D} | \theta)} \; .
+\Lambda({\cal D}; \Theta_0, \Theta) =  \frac{ \sup_{\theta \in \Theta_0} p({\cal D} | \theta)}{ \sup_{\theta \in \Theta} p({\cal D} | \theta)} \; .
 \end{equation}
 This generalized likelihood ratio can be used both for hypothesis tests in the
 presence of nuisance parameters or to create confidence intervals with or
