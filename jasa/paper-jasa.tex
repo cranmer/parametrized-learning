@@ -75,14 +75,14 @@
 % parametric inference when simulators are used that is complementary to
 % approximate Bayesian computation.
 
-In particle physics, likelihood ratio tests are established tools for
-statistical inference. In many cases, these tests are complicated by the fact
+In many fields of science, generalized likelihood ratio tests are established tools for
+statistical inference. In practice, these tests are often complicated by the fact
 that computer simulators are used as a generative model for the data, which does
 not provide a way to evaluate the likelihood function. In this paper, we
 demonstrate that likelihood ratios are invariant under dimensionality reduction,
 provided the transformation is monotonic with the likelihood ratio. As a direct
 consequence, we show why and how discriminative classifiers can be used to
-approximate the likelihood ratio when only a generative model for the data is
+approximate the generalized likelihood ratio statistic when only a generative model for the data is
 available. In particular, the proposed method offers a machine learning-based
 approach to statistical inference that is complementary to likelihood-free
 Bayesian inference algorithms, like Approximate Bayesian Computation, as it does
@@ -130,19 +130,15 @@ mention conclusions on experimental results, as required by JASA guidelines.}
 % generative model for the data is available for training and calibration.
 
 The likelihood function is the central object that summarizes the information
-from an experiment needed for inference of model parameters. The likelihood
-function is key to many areas of science that report the results of classical
+from an experiment needed for inference of model parameters. In particular, it
+is key to many areas of science that report the results of classical
 hypothesis tests or confidence intervals using the (generalized or profile)
 likelihood ratio as a test statistic. At the same time, with the advance of
 computing technology, it has become increasingly common that a simulator (or
 generative model) is used to describe complex processes that tie parameters
 $\theta$ of an underlying theory and measurement apparatus to high-dimensional
 observations $\mathbf{x}$. However, directly evaluating the likelihood function
-in these cases is often impossible or is computationally impractical. In this
-likelihood-free setting, various methods for statistical inference have been
-proposed, including most notably the Approximate Bayesian Computation (ABC)
-class of algorithms aiming at sampling from the posterior distribution of model
-parameters \glnote{Add references}.
+in these cases is often impossible or is computationally impractical.
 
 The main result of this paper is to show that the likelihood ratio is invariant
 under dimensionality reduction, under the assumption that the corresponding
@@ -151,7 +147,7 @@ we derive and propose an alternative machine learning-based approach for
 likelihood-free inference that can also be used in a classical (frequentist)
 setting where a prior over the model parameters is not available. More
 specifically, we demonstrate why and how discriminative classifiers can be used
-to construct equivalent likelihood ratio tests when only a generative model for
+to construct equivalent generalized likelihood ratio test statistics when only a generative model for
 the data is available for training and calibration.
 
 % As a concrete example, consider searches for new particles at the Large Hadron
@@ -273,11 +269,11 @@ parameterization $\theta$. Let also assume some i.i.d. observed data ${\cal D} =
 simple hypothesis testing between a null $\theta=\theta_0$ against an alternate
 $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio
 \begin{equation}\label{eqn:likelihood-ratio-test}
-T({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{X}(\mathbf{x}|\theta_0)}{ p_\mathbf{X}(\mathbf{x}|\theta_1)}
+\lambda({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{X}(\mathbf{x}|\theta_0)}{ p_\mathbf{X}(\mathbf{x}|\theta_1)}
 \end{equation}
 is the most powerful test statistic.
 
-In order to evaluate $T({\cal D})$, one must be able to evaluate the probability
+In order to evaluate $\lambda({\cal D})$, one must be able to evaluate the probability
 density $p_\mathbf{X}(\mathbf{x}| \theta)$ at any value $\mathbf{x}$. However,
 it is increasingly common in science that one has a complex simulation that can
 act as generative model for $p_\mathbf{X}(\mathbf{x}|\theta)$, but one cannot
@@ -321,7 +317,7 @@ and \cite{JMLR:v14:tong13a}.}
 The main result of this paper (see Theorem~\ref{thm:ratio-equivalence}) is to
 generalize the observation that one can form a test statistic
 \begin{equation}\label{eqn:likelihood-ratio-test-equiv}
-T'({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{Y}(y=s(\mathbf{x}) | \theta_0)}{ p_\mathbf{Y}(y=s(\mathbf{x}) | \theta_1)}
+\lambda'({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{Y}(y=s(\mathbf{x}) | \theta_0)}{ p_\mathbf{Y}(y=s(\mathbf{x}) | \theta_1)}
 \end{equation}
 that is strictly equivalent to \ref{eqn:likelihood-ratio-test}, provided the change
 of variable $\mathbf{Y} = s(\mathbf{X})$ is based
@@ -334,7 +330,7 @@ an alternate form in which supervised learning can be used to build
 $s(\mathbf{x})$ as a discriminative classifier.  In
 Section~\ref{sec:generalized-likelihood-ratio} we extend this result to
 generalized likelihood ratio tests, where it will be useful to have the
-classifier  parameterized in terms of $(\theta_0, \theta_1)$.
+classifier decision function $s$ parameterized in terms of $(\theta_0, \theta_1)$.
 
 \subsection{Likelihood ratios under change of variables}
 
@@ -521,7 +517,7 @@ procedure for Theorem~\ref{thm:ratio-equivalence} to hold, guaranteeing that any
 {\it universally strongly consistent} algorithm can be used for learning $s^*$.
 Note however, that it is not a necessary procedure since
 Theorem~\ref{thm:ratio-equivalence} holds for any monotonic function $m$ of the
-density ratio, i.e., not for $m(r(\mathbf{x})) = \frac{r(\mathbf{x})}{1 +
+density ratio, i.e., not for $m(r(\mathbf{x})) = \frac{1}{1 +
 r(\mathbf{x})}$ only.
 
 Equivalently, since $m^{-1}(s^*(\mathbf{x})) = \frac{1 -
@@ -620,7 +616,7 @@ by~\cite{ClaytonScott} and \cite{Neal:2007zz}.
 % in the likelihood-free setting with idealized classifiers and their densities.
 
 Thus far we have shown that the target likelihood ratio
-$r(\mathbf{x};\theta_0,\theta_1)=p(\mathbf{x}|\theta_0)/p(\mathbf{x}|\theta_1)$
+$r(\mathbf{x};\theta_0,\theta_1)=\frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)}$
 with high dimensional features $\mathbf{x}$ can be reproduced via the univariate
 densities $p(s(\mathbf{x})|\theta_0)$ and $p(s(\mathbf{x})|\theta_1)$ if the
 reduction $s(\mathbf{x})$ is monotonic with $r(\mathbf{x};\theta_0,\theta_1)$.
@@ -649,11 +645,11 @@ $\theta$ are continuous model parameters.
 % \section{Composite hypotheses and the generalized likelihood ratio}\label{S:GLR}
 
 In the case of composite hypotheses $\theta \in \Theta_0$ against an alternative
-$\theta \in \Theta_1$ (possibly such that $\Theta_0 \subseteq \Theta_1$), the
+$\theta \in \Theta_1$ (such that $\Theta_0 \cap \Theta_1 = \emptyset$ and $\Theta_0 \cup \Theta_1 = \Theta$), the
 generalized likelihood ratio test, also known as the profile likelihood ratio
 test, is commonly used
 \begin{equation}\label{eqn:generalized-lr}
-\Lambda({\cal D}; \Theta_0; \Theta_1) =  \frac{ \sup_{\theta \in \Theta_0} p({\cal D} | \theta)}{ \sup_{\theta \in \Theta_1} p({\cal D} | \theta)} \; .
+\Lambda({\cal D}; \Theta_0, \Theta) =  \frac{ \sup_{\theta \in \Theta_0} p({\cal D} | \theta)}{ \sup_{\theta \in \Theta} p({\cal D} | \theta)} \; .
 \end{equation}
 This generalized likelihood ratio can be used both for hypothesis tests in the
 presence of nuisance parameters or to create confidence intervals with or
@@ -674,7 +670,8 @@ obvious that we can find the same estimators if we are working instead with
 $p(s(\mathbf{x})|\theta)$. Fortunately, there is a construction
 based on $s$ that works: the maximum likelihood estimate of Eqn.~\ref{eq:mle} is
 the same as the value that maximizes the likelihood ratio with respect to
-$p({\cal D}|\theta_1)$, for some fixed value of $\theta_1$. This allows us to
+$p({\cal D}|\theta_1)$, for some fixed value of $\theta_1$\glnote{We should mention that the support of $p(\mathbf{x}|\theta_1)$ should cover the support of $p(\mathbf{x}|\theta)$.}.
+This allows us to
 use Theorem~\ref{thm:ratio-equivalence} to reformulate the maximum likelihood
 estimate as
 \begin{align}\label{eq:mle_withs}
@@ -1043,7 +1040,7 @@ approaches proposed within the literature (see
 \cite{sugiyama2012density,gretton2009covariate,nguyen2010estimating,vapnik2013constructive}
 and references therein) provide solutions for estimating
 $r(\mathbf{x};\theta_0,\theta_1)$ directly from $\mathbf{x}$. Under some
-assumptions, the convergence of the obtained estimates was also proven for some
+assumptions, the convergence of the obtained estimates is also proven for some
 of these approaches.
 
 
