@@ -234,6 +234,8 @@ The rest of this paper is organized as follows. In Section... \glnote{todo}
 \section{Likelihood ratio tests}
 \label{sec:likelihood-ratio-tests}
 
+\subsection{Framework}
+
 % \subsection{Notation and Assumptions}
 %
 % We use the following notation:
@@ -291,10 +293,8 @@ and \cite{JMLR:v14:tong13a}.}
 % - Discuss that training on signal vs background instead of signal+background vs background is OK because this learns a function which is 1:1. => focus the capacity of the classifier; Generalization to decomposed ratios
 % - Discuss about the need of calibration in case of imperfect classifiers (was first paragraphs of section 5)
 
-\section{Approximating likelihood ratios with classifiers}
+\subsection{Approximating likelihood ratios with classifiers}
 \label{sec:approx}
-
-\glnote{Think of a better section title? The equivalence is strict, not approximate.}
 
 % The main result of this paper is to generalize the observation that one can form an equivalent test based on
 % %\begin{equation}
@@ -332,7 +332,7 @@ Section~\ref{sec:generalized-likelihood-ratio} we extend this result to
 generalized likelihood ratio tests, where it will be useful to have the
 classifier decision function $s$ parameterized in terms of $(\theta_0, \theta_1)$.
 
-\subsection{Likelihood ratios under change of variables}
+%\subsection{Likelihood ratios under change of variables}
 
 % \section{Dimensionality reduction and calibration}
 %
@@ -406,21 +406,19 @@ classifier decision function $s$ parameterized in terms of $(\theta_0, \theta_1)
 \begin{proof}
 Starting from the definition of the probability density function, we have
 \begin{align}
-p_Y(y=s(\mathbf{x})|\theta_0) &= \frac{d}{dy} P(s(\mathbf{X}) \leq y) \nonumber \\
-&= \frac{d}{dy}  \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) \leq y\}} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
-&= \frac{d}{dy} \int_{\mathbb{R}^p} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
-&= \int_{\mathbb{R}^p} \frac{d}{dy} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
+% p_Y(y=s(\mathbf{x})|\theta_0) &= \frac{d}{dy} P(s(\mathbf{X}) \leq y) \nonumber \\
+p_Y(y=s(\mathbf{x})|\theta_0) &= \frac{d}{dy}  \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) \leq y\}} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
+% &= \frac{d}{dy} \int_{\mathbb{R}^p} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
+% &= \int_{\mathbb{R}^p} \frac{d}{dy} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
 &= \int_{\mathbb{R}^p} \delta(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime
 \end{align}
-where $H$ and $\delta$ are respectively the Heaviside step and the Dirac delta
-functions. Intuitively, this last expression can be understood as the integral
+Intuitively, this expression can be understood as the integral
 over all $\mathbf{x}^\prime \in \mathbb{R}^p$ such that $s(\mathbf{x}^\prime) = y$, as picked
-by the Dirac delta function. Given Theorem 6.1.5 of \citet{Hrmander1990},
+by the Dirac $\delta$ function. Given Theorem 6.1.5 of \citet{Hrmander1990},
 it further comes
-\begin{align}
-p_Y(y=s(\mathbf{x})|\theta_0) &= \int_{\mathbb{R}^p} \delta(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
-&= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \label{eqn:hormander}
-\end{align}
+\begin{equation}
+p_Y(y=s(\mathbf{x})|\theta_0) = \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \label{eqn:hormander}
+\end{equation}
 where $|\nabla s(\mathbf{x}^\prime)| = \sqrt{\sum_{i=1}^p |\frac{\partial}{\partial x_i} s(\mathbf{x}^\prime)|^2}$
 and where $dS_{\mathbf{x}^\prime}$ is the Euclidean surface measure on $\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}$.
 Also, since $s(\mathbf{x})$ is monotonic with
@@ -432,13 +430,13 @@ In particular, we have
 \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} &= m^{-1}(s(\mathbf{x})) \nonumber \\
 p_\mathbf{X}(\mathbf{x}|\theta_0) &= m^{-1}(s(\mathbf{x})) p_\mathbf{X}(\mathbf{x}|\theta_1) \label{eqn:mapping}
 \end{align}
-Combining equations \ref{eqn:hormander} and \ref{eqn:mapping}, we have
+Combining equations \ref{eqn:hormander} and \ref{eqn:mapping}, the density ratio $\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$ can be pulled out of the integral, resulting in
 \begin{align}
-p_Y(y=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}} \frac{p_\mathbf{X}(\mathbf{x}^\prime|\theta_0)}{|\nabla s(\mathbf{x}^\prime)|} dS_{\mathbf{x}^\prime} \nonumber \\
-&= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+% p_Y(y=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \nonumber \\
+p_Y(y=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
 &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(y) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
 &= m^{-1}(s(\mathbf{x})) \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
-&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}
+&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}.
 \end{align}
 Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_Y(y=s(\mathbf{x})|\theta_1)$, finally yielding
 \begin{align}
@@ -447,8 +445,8 @@ Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_Y(y=s(\mathbf{x
 \end{align}
 \end{proof}
 
-\subsection{Probabilistic classification for likelihood ratios}
-\label{sec:clf-for-ratios}
+% \subsection{Probabilistic classification for likelihood ratios}
+% \label{sec:clf-for-ratios}
 
 % \subsection{The fixed discriminative classification setting} For fixed
 % $\theta_0$ and $\theta_1$ we can generate large samples from each model and
@@ -463,74 +461,31 @@ Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_Y(y=s(\mathbf{x
 % classifiers that approximate a monotonic function of per-event likelihood ratio
 % $q(x)$.
 
-\begin{proposition} \label{thm:best-classifier}
-Let $\mathbf{X} = (X_1, ..., X_p)$ and $Y$ be random input and output variables
-with values in ${\cal X} \subseteq \mathbb{R}^p$
-and ${\cal Y} = \{0, 1\}$ and mixed joint probability density  function
-$p_{\mathbf{X},Y}(\mathbf{x}, y)$. For the squared error loss, the best
-regression function $s : {\cal X} \mapsto [0, 1]$, or equivalently the best
-probabilistic classifier, is
-\begin{equation}
-s^*(\mathbf{x}) = \frac{P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{P(Y=0) p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
-\end{equation}
-\end{proposition}
-
-\begin{proof}
-For the squared error loss,
-\begin{align}
-s^*(\mathbf{x}) &= \argmin_{s(\mathbf{x})} \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ (Y - s(\mathbf{x}))^2 \} \nonumber \\
-&=  \argmin_{s(\mathbf{x})} \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y^2 \} - 2s(\mathbf{x}) \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + s(\mathbf{x})^2 \nonumber \\
-&=  \argmin_{s(\mathbf{x})} -2s(\mathbf{x}) \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + s(\mathbf{x})^2
-\end{align}
-The last expression is minimized when $\frac{d}{ds(\mathbf{x})} (-2s(\mathbf{x}) \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + s(\mathbf{x})^2) = 0$,
-that is when $-2 \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + 2 s(\mathbf{x}) = 0$, hence
-\begin{equation}
-s^*(\mathbf{x}) = \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \}.
-\end{equation}
-For ${\cal Y} = \{ 0, 1 \}$,
-\begin{align}
-\mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} &= P(Y=0|\mathbf{X}=\mathbf{x}) \times 0 +  P(Y=1|\mathbf{X}=\mathbf{x}) \times 1 \nonumber \\
-&= \frac{P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{p_{\mathbf{X}}(\mathbf{x})} \nonumber \\
-&= \frac{P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{P(Y=0) p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
-\end{align}
-\end{proof}
-
-For $P(Y=0)=P(Y=1)=\frac{1}{2}$, the best regression function $s^*$ simplifies
-to
-\begin{equation}
-s^*(\mathbf{x}) = \frac{p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
-\end{equation}
-If we further assume that samples for $Y=0$ are drawn from some parameterized
-distribution with probability density $p_{\mathbf{X}}(\mathbf{x}|\theta_0)$
-and similarly for $Y=1$, then the best regression function can be rewritten
-as
+In light of this result, the likelihood ratio estimation problem can now
+be recast as a (probabilistic) classification problem, by noticing that the regression
+function
 \begin{equation}
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mathbf{x} | \theta_0) + p_{\mathbf{X}}(\mathbf{x} | \theta_1)}.
 \end{equation}
-In particular, this regression function satisfies conditions of
-Theorem~\ref{thm:ratio-equivalence} since $s^*(\mathbf{x}) =
-m(\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)})$,
-for $m(r(\mathbf{x})) = \frac{1}{1 + r(\mathbf{x})}$, is monotonic with
-$\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$.
-In other words, Proposition~\ref{thm:best-classifier} yields a sufficient
+modelled by a classifier trained to distinguish samples $\mathbf{x} \sim p_{\theta_0}$
+from samples $\mathbf{x} \sim p_{\theta_1}$ satisfies conditions of
+Theorem~\ref{thm:ratio-equivalence} (see Appendix~\ref{app:clf-for-s} for further details).
+In other words, supervised learning yields a sufficient
 procedure for Theorem~\ref{thm:ratio-equivalence} to hold, guaranteeing that any
 {\it universally strongly consistent} algorithm can be used for learning $s^*$.
 Note however, that it is not a necessary procedure since
 Theorem~\ref{thm:ratio-equivalence} holds for any monotonic function $m$ of the
 density ratio, i.e., not for $m(r(\mathbf{x})) = \frac{1}{1 +
 r(\mathbf{x})}$ only.
-
-Equivalently, since $m^{-1}(s^*(\mathbf{x})) = \frac{1 -
-s^*(\mathbf{x})}{s^*(\mathbf{x})} = r(\mathbf{x})$,
-Proposition~\ref{thm:best-classifier} shows that the likelihood ratio estimation
-problem is directly related to probabilistic classification, and that algorithms
-proposed to solve one can be used for solving the other. In this context,
+Equivalently,
 Theorem~\ref{thm:ratio-equivalence} shows that in case we learn a probabilistic
 classifier $s(\mathbf{x})$ which is imperfect up to a monotonic transformation
 of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modeling
 $p_Y(y=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
 
-\subsection{Approximating the reduction map and its distribution}
+
+
+\subsection{Approximating the reduction map}
 
 In order for this approach to be useful in the likelihood-free setting, we need
 to be able to approximate both $s(\mathbf{x})$ and $p(s(\mathbf{x})|\theta)$
@@ -541,16 +496,19 @@ reduction map $\hat{s}(\mathbf{x})$ and its approximated distribution
 $\hat{p}(\hat{s}(\mathbf{x})|\theta)$. \glnote{Explain how to approximate $p(s)$ in practice?}
 
 One strength of this approach is that it factorizes the approximation of the
-per-event likelihood ratio ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from the
-calibration procedure ($\hat p(\hat s(\mathbf{x})| \theta) \approx p(\hat{s}(\mathbf{x})|\theta)$).
-Thus, even if the classifier does a poor job at reproducing the level sets of
-the per-event likelihood ratio, the density of $\hat{s}$ can still be well
-calibrated. In that case, one might loose power, but the resulting inference
-will still be valid.\glnote{Shouldn't we elaborate? Since this is one of our selling points, we should give more details in my opinion.} This point was made by
-\cite{Neal:2007zz} and is well appreciated by the particle physics community
-that typically takes a conservative attitude towards the use of machine learning
-classifiers precisely due to concerns about the calibration $p$-values in the
-face of nuisance parameters associated to the simulator.
+per-event likelihood ratio ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from
+the calibration procedure ($\hat p(\hat s(\mathbf{x})| \theta) \approx
+p(\hat{s}(\mathbf{x})|\theta)$). Thus, even if the classifier does a poor job at
+reproducing the level sets of the per-event likelihood ratio, the density of
+$\hat{s}$ can still be well calibrated. In that case, one might loose power, but
+the resulting inference will still be valid.\glnote{Shouldn't we elaborate?
+Since this is one of our selling points, we should give more details in my
+opinion.} \glnote{Some of this is also already outlined in the previous section.}
+This point was made by \cite{Neal:2007zz} and is well appreciated by the
+particle physics community that typically takes a conservative attitude towards
+the use of machine learning classifiers precisely due to concerns about the
+calibration $p$-values in the face of nuisance parameters associated to the
+simulator.
 
 \glnote{We should comment as to what happens if $\hat{s}(x)$ is not monotonic with $r$}
 
@@ -558,42 +516,42 @@ face of nuisance parameters associated to the simulator.
 
 \glnote{Add pseudo-code to summarize the whole pipeline?}
 
-\subsection{Classification and frequentist hypothesis tests}
-
-\glnote{Shall we keep everything from this?}
-
-Vast literature exists around generative and discriminative
-classifiers~\citep{AndrewY.Ng}. Typically, generative classifiers learn a model
-for the joint probability $p(\mathbf{x}, y)$, of the inputs $x$ and the classification
-label $y$, and predict $p(y|\mathbf{x})$ via Bayes rule. In contrast, discriminative
-classifiers model the posterior $p(y|\mathbf{x})$ directly. For classification tasks, one
-then thresholds on $p(y|\mathbf{x})$. In both cases this description in terms of a
-posterior requires a prior distribution for $p(y)$, which is either modeled
-explicitly or learned from the training data. This familiar formulation of
-classification may lead to some confusion in the setting of the current work.
-
-The first possible source of confusion we wish to avoid is that here
-$p(\mathbf{x}|\theta)$  is a  \textit{generative statistical model} for the features $\mathbf{x}$,
-not a generative classifier. We think of the  $p(x|\theta)$ along the lines of a
-traditional scientific theory or simulator, able to make predictions about $\mathbf{x}$
-and being motivated by domain-specific considerations.
-
-The second possible source of confusion is that we are not directly interested
-in calibrating the classification score in terms of a per-event posterior
-probability $p(y|\mathbf{x})$. Instead, we are interested in the approximation of the
-per-experiment likelihood function or likelihood ratio, which might be used for
-several purposes, including the calculation of p-values.
-
-Lastly, in the setting of frequentist hypothesis tests and confidence intervals,
-we do not have a prior $\pi(\theta)$. While we can use the generative models to
-produce training data $(\mathbf{x} ,y=0)$ generated from
-$p(\mathbf{x}|\theta_0)$ and $(\mathbf{x}, y=1)$ generated from
-$p(\mathbf{x}|\theta_1)$, the relative mix $p(y)$ is arbitrary. Since the prior
-$p(y)$ is not needed for the target likelihood ratio test and because the
-classifier score $p(y|\mathbf{x})$ may not be well calibrated, we choose to denote the
-classifier score $s(\mathbf{x})$ and simply think of it as a deterministic dimensionality
-reduction map $s: \mathbb{R}^p \to \mathbb{R}$.  Similar points have been made
-by~\cite{ClaytonScott} and \cite{Neal:2007zz}.
+% \subsection{Classification and frequentist hypothesis tests}
+%
+% \glnote{Shall we keep everything from this?}
+%
+% Vast literature exists around generative and discriminative
+% classifiers~\citep{AndrewY.Ng}. Typically, generative classifiers learn a model
+% for the joint probability $p(\mathbf{x}, y)$, of the inputs $x$ and the classification
+% label $y$, and predict $p(y|\mathbf{x})$ via Bayes rule. In contrast, discriminative
+% classifiers model the posterior $p(y|\mathbf{x})$ directly. For classification tasks, one
+% then thresholds on $p(y|\mathbf{x})$. In both cases this description in terms of a
+% posterior requires a prior distribution for $p(y)$, which is either modeled
+% explicitly or learned from the training data. This familiar formulation of
+% classification may lead to some confusion in the setting of the current work.
+%
+% The first possible source of confusion we wish to avoid is that here
+% $p(\mathbf{x}|\theta)$  is a  \textit{generative statistical model} for the features $\mathbf{x}$,
+% not a generative classifier. We think of the  $p(x|\theta)$ along the lines of a
+% traditional scientific theory or simulator, able to make predictions about $\mathbf{x}$
+% and being motivated by domain-specific considerations.
+%
+% The second possible source of confusion is that we are not directly interested
+% in calibrating the classification score in terms of a per-event posterior
+% probability $p(y|\mathbf{x})$. Instead, we are interested in the approximation of the
+% per-experiment likelihood function or likelihood ratio, which might be used for
+% several purposes, including the calculation of p-values.
+%
+% Lastly, in the setting of frequentist hypothesis tests and confidence intervals,
+% we do not have a prior $\pi(\theta)$. While we can use the generative models to
+% produce training data $(\mathbf{x} ,y=0)$ generated from
+% $p(\mathbf{x}|\theta_0)$ and $(\mathbf{x}, y=1)$ generated from
+% $p(\mathbf{x}|\theta_1)$, the relative mix $p(y)$ is arbitrary. Since the prior
+% $p(y)$ is not needed for the target likelihood ratio test and because the
+% classifier score $p(y|\mathbf{x})$ may not be well calibrated, we choose to denote the
+% classifier score $s(\mathbf{x})$ and simply think of it as a deterministic dimensionality
+% reduction map $s: \mathbb{R}^p \to \mathbb{R}$.  Similar points have been made
+% by~\cite{ClaytonScott} and \cite{Neal:2007zz}.
 
 
 % Generalized likelihood ratio tests ===========================================
@@ -777,7 +735,11 @@ this overarching optimization problem as an area of future work.
 %   discuss about focusing the capacity of the classifier
 % - measure of particles properties, with a concrete example. Comparison with other likelihood-free inference methods (new)
 
-\section{Applications}
+\section{Examples and applications}
+
+\subsection{Toy example}
+
+\glnote{todo}
 
 \subsection{High energy physics}
 
@@ -1096,5 +1058,63 @@ and the difficulties associated to running the simulator.
 
 \bibliographystyle{apalike}
 \bibliography{learning.bib}
+
+\appendix
+
+\section{Probabilistic classification for building $s$}
+\label{app:clf-for-s}
+
+In this appendix, we show that the probabilistic classification framework
+yields a reduction $s$ which satisfies conditions of Theorem~\ref{thm:ratio-equivalence}.
+
+\begin{proposition} \label{thm:best-classifier}
+Let $\mathbf{X} = (X_1, ..., X_p)$ and $Y$ be random input and output variables
+with values in ${\cal X} \subseteq \mathbb{R}^p$
+and ${\cal Y} = \{0, 1\}$ and mixed joint probability density  function
+$p_{\mathbf{X},Y}(\mathbf{x}, y)$. For the squared error loss, the best
+regression function $s : {\cal X} \mapsto [0, 1]$, or equivalently the best
+probabilistic classifier, is
+\begin{equation}
+s^*(\mathbf{x}) = \frac{P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{P(Y=0) p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+For the squared error loss,
+\begin{align}
+s^*(\mathbf{x}) &= \argmin_{s(\mathbf{x})} \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ (Y - s(\mathbf{x}))^2 \} \nonumber \\
+&=  \argmin_{s(\mathbf{x})} \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y^2 \} - 2s(\mathbf{x}) \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + s(\mathbf{x})^2 \nonumber \\
+&=  \argmin_{s(\mathbf{x})} -2s(\mathbf{x}) \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + s(\mathbf{x})^2
+\end{align}
+The last expression is minimized when $\frac{d}{ds(\mathbf{x})} (-2s(\mathbf{x}) \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + s(\mathbf{x})^2) = 0$,
+that is when $-2 \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} + 2 s(\mathbf{x}) = 0$, hence
+\begin{equation}
+s^*(\mathbf{x}) = \mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \}.
+\end{equation}
+For ${\cal Y} = \{ 0, 1 \}$,
+\begin{align}
+\mathbb{E}_{Y|\mathbf{X}=\mathbf{x}} \{ Y \} &= P(Y=0|\mathbf{X}=\mathbf{x}) \times 0 +  P(Y=1|\mathbf{X}=\mathbf{x}) \times 1 \nonumber \\
+&= \frac{P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{p_{\mathbf{X}}(\mathbf{x})} \nonumber \\
+&= \frac{P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{P(Y=0) p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + P(Y=1) p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
+\end{align}
+\end{proof}
+
+For $P(Y=0)=P(Y=1)=\frac{1}{2}$, the best regression function $s^*$ simplifies
+to
+\begin{equation}
+s^*(\mathbf{x}) = \frac{p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
+\end{equation}
+If we further assume that samples for $Y=0$ are drawn from some parameterized
+distribution with probability density $p_{\mathbf{X}}(\mathbf{x}|\theta_0)$
+and similarly for $Y=1$, then the best regression function can be rewritten
+as
+\begin{equation}
+s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mathbf{x} | \theta_0) + p_{\mathbf{X}}(\mathbf{x} | \theta_1)}.
+\end{equation}
+In particular, this regression function satisfies conditions of
+Theorem~\ref{thm:ratio-equivalence} since $s^*(\mathbf{x}) =
+m(\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)})$,
+for $m(r(\mathbf{x})) = \frac{1}{1 + r(\mathbf{x})}$, is monotonic with
+$\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$.
 
 \end{document}
