@@ -81,7 +81,7 @@ that computer simulators are used as a generative model for the data, which does
 not provide a way to evaluate the likelihood function. In this paper, we
 demonstrate that likelihood ratios are invariant under dimensionality reductions $\mathbb{R}^p \mapsto \mathbb{R}$,
 provided the transformation is itself monotonic with the likelihood ratio. As a direct
-consequence, we show why and how discriminative classifiers can be used to
+consequence, we show that discriminative classifiers can be used to
 approximate the generalized likelihood ratio statistic when only a generative model for the data is
 available. In particular, the proposed method offers a machine learning-based
 approach to statistical inference that is complementary to likelihood-free
@@ -146,7 +146,7 @@ transformation is itself monotonic with the likelihood ratio. As a direct conseq
 we derive and propose an alternative machine learning-based approach for
 likelihood-free inference that can also be used in a classical (frequentist)
 setting where a prior over the model parameters is not available. More
-specifically, we demonstrate why and how discriminative classifiers can be used
+specifically, we demonstrate that discriminative classifiers can be used
 to construct equivalent generalized likelihood ratio test statistics when only a generative model for
 the data is available for training and calibration.
 
@@ -266,7 +266,7 @@ The rest of this paper is organized as follows. In Section... \glnote{todo}
 Let $\mathbf{X}$ be a random vector with values $\mathbf{x} \in {\cal X}
 \subseteq \mathbb{R}^p$ and let $p_\mathbf{X}(\mathbf{x}|\theta)$ denote the
 density probability of $\mathbf{X}$ at value $\mathbf{x}$ under the
-parameterization $\theta$. Let also assume some i.i.d. observed data ${\cal D} = \{
+parameterization $\theta$. Let also assume i.i.d. observed data ${\cal D} = \{
 \mathbf{x}_1, \dots, \mathbf{x}_n \}$. In the setting where one is interested in
 simple hypothesis testing between a null $\theta=\theta_0$ against an alternate
 $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio
@@ -281,8 +281,7 @@ it is increasingly common in science that one has a complex simulation that can
 act as generative model for $p_\mathbf{X}(\mathbf{x}|\theta)$, but one cannot
 evaluate the density directly. For instance, this is the case in high energy
 physics~\citep{Neal:2007zz} where the simulation of particle detectors can only
-be done in the forward mode. \glnote{Reinsert citations for \cite{ClaytonScott}
-and \cite{JMLR:v14:tong13a}.}
+be done in the forward mode.
 
 
 % Approximating likelihood ratios with classifiers =============================
@@ -737,7 +736,55 @@ this overarching optimization problem as an area of future work.
 
 \section{Mixture models}
 
-\glnote{todo}
+% In this section we generalize the capacity focusing technique of training
+% classifiers to discriminate between components of a mixture model. First, we
+% generalize Eq.~\ref{eq:hepGen} to a mixture model of several components
+% \begin{equation}
+% p(x|\theta)=\sum_c w_c(\theta) p_c(x| \theta) \;.
+% \end{equation}
+% It is possible to re-write the target likelihood ratio between two mixture models in terms of pairwise classification problems.
+% \begin{align}
+% \frac{p(x|\theta_0)}{p(x|\theta_1)} &= \frac{\sum_c w_c(\theta_0) p_c(x| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(x| \theta_1)} \nonumber \\
+% &= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(x| \theta_1)}{  p_c(x| \theta_0)}  \right]^{-1} \nonumber \\
+% &= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(s_{c,c',\theta_0, \theta_1}| \theta_1)}{ p_c(s_{c,c',\theta_0, \theta_1}| \theta_0)}  \right]^{-1} \label{eq:decomposedResult}
+% \end{align}
+% The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
+
+In the setting of (simple or composite) hypothesis testing between
+models defined as mixtures of several components, i.e. when
+\begin{equation}
+p(\mathbf{x}|\theta)=\sum_c w_c(\theta) p_c(\mathbf{x}| \theta),
+\end{equation}
+the target likelihood ratio can be rewritten in terms of pairwise
+classification problems. We indeed have
+\begin{align}
+\frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)} &= \frac{\sum_c w_c(\theta_0) p_c(\mathbf{x}| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(\mathbf{x}| \theta_1)} \nonumber \\
+&= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(\mathbf{x}| \theta_1)}{  p_c(\mathbf{x}| \theta_0)}  \right]^{-1} \nonumber \\
+&= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(s_{c,c'}(\mathbf{x};\theta_0, \theta_1)| \theta_1)}{ p_c(s_{c,c'}(\mathbf{x};\theta_0, \theta_1)| \theta_0)}  \right]^{-1}. \label{eq:decomposedResult}
+\end{align}
+The second line is a trivial, but a useful decomposition into pairwise
+density ratio sub-problems between $p_{c'}(\mathbf{x}|\theta_1)$ and
+$p_c(\mathbf{x}|\theta_0)$.  The third line uses
+Theorem~\ref{thm:ratio-equivalence} to relate the high-dimensional likelihood
+ratio into an equivalent calibrated likelihood ratio based on the univariate
+density of the corresponding classifier.
+
+In applications where mixture models are commonly used, e.g. as in high energy
+physics, this decomposition allows one to construct better likelihood ratio
+estimates since it forces classifiers $s_{c,c'}$ to focus on simpler
+sub-problems, for which higher accuracy is expected.
+
+Finally, as a technical point, in the situation where the only free parameters
+of the  model are the mixture coefficients $w_c$, the distributions
+$p_{c}(s_{c,c'}(\mathbf{x};\theta_0, \theta_1)| \theta)$ are independent of
+$\theta$. For this reason, sub-ratios $\frac{
+p_{c'}(s_{c,c'}(\mathbf{x};\theta_0, \theta_1)|\theta_1)}{
+p_c(s_{c,c'}(\mathbf{x};\theta_0, \theta_1)|\theta_0)}$ simplify to $\frac{
+p_{c'}(s_{c,c'}(\mathbf{x}))}{ p_c(s_{c,c'}(\mathbf{x}))}$, and can all be
+pre-computed without having to resort to parameterized classification and
+calibration.
+
+
 
 \section{Examples and applications}
 
@@ -846,21 +893,6 @@ capacity, there will be some trade-off between taking into account this
 additional term and the more challenging learning problem when $\mu$ is very
 small.
 
-\subsubsection{Decomposing tests between mixture models into their components}
-
-In this section we generalize the capacity focusing technique of training
-classifiers to discriminate between components of a mixture model. First, we
-generalize Eq.~\ref{eq:hepGen} to a mixture model of several components
-\begin{equation}
-p(x|\theta)=\sum_c w_c(\theta) p_c(x| \theta) \;.
-\end{equation}
-It is possible to re-write the target likelihood ratio between two mixture models in terms of pairwise classification problems.
-\begin{align}
-\frac{p(x|\theta_0)}{p(x|\theta_1)} &= \frac{\sum_c w_c(\theta_0) p_c(x| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(x| \theta_1)} \nonumber \\
-&= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(x| \theta_1)}{  p_c(x| \theta_0)}  \right]^{-1} \nonumber \\
-&= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(s_{c,c',\theta_0, \theta_1}| \theta_1)}{ p_c(s_{c,c',\theta_0, \theta_1}| \theta_0)}  \right]^{-1} \label{eq:decomposedResult}
-\end{align}
-The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
 \subsubsection{Measuring particle properties}
 
