@@ -836,10 +836,11 @@ signal is a very small perturbation to the background (i.e. $\mu \ll 1$).
 These steps feed into a subsequent statistical test based on the observed data
 ${D=(x_1, \dots, x_n)}$. For each event, the classifier is evaluated and one
 performs inference on a parameter $\mu$ related to the presence of the signal
-contribution. In particular, one forms the statistical model\footnote{Sometimes
-there is an additional Poisson term when expected number of signal and
-background events is known, which is referred to as an extended likelihood or
-marked Poisson model.}
+contribution. In particular, one forms the statistical model.
+% \footnote{Sometimes
+% there is an additional Poisson term when expected number of signal and
+% background events is known, which is referred to as an extended likelihood or
+% marked Poisson model.}
 \begin{equation}\label{eq:typicalML}
 p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu \hat{p}_s( \hat s(x_e) \, |\,  \nu)  + (1-\mu)\, \hat{p}_b( \hat s(x_e) \,|\, \nu) \,\right] \; .
 \end{equation}
@@ -970,21 +971,25 @@ $\hat{\theta}(\mathbf{x})$ and perform the composition $s(\mathbf{x};
 \hat{\theta}(\mathbf{x}))$. As pointed out by the author, this can lead to a
 significant loss of information since a single observation $\mathbf{x}$ may
 carry little information about the true value of $\theta$, though a full data
-set ${\cal D}$ may be informative -- for instance, a single observation would
-not be sufficient to estimate the variance of a distribution, though repeated
-observations would. The work of \cite{Neal:2007zz} correctly identifies this as
+set ${\cal D}$ may be informative.
+% for instance, a single observation would
+% not be sufficient to estimate the variance of a distribution, though repeated
+% observations would.
+The work of \cite{Neal:2007zz} correctly identifies this as
 an approximation of the target likelihood even in the case of a ideal
 classifier. In contrast, the approach described here does not eliminate the
-dependence of the classifier on $\theta$\footnote{As a technical point, in
-\citep{Neal:2007zz}, the focus is on approximating the likelihood function (up
-to a multiplicative constant), which is equivalent to evaluating the ratio  with
-respect to a fixed $\theta_1$ as in Eqn.~\ref{eq:mle_withs}. In
-\citep{Neal:2007zz}, the dependence on $\theta$ is eliminated via $s(\mathbf{x};
-\hat{\theta}(\mathbf{x}))$ and the map is constant; however, in this approach
-the map ratio is explicitly parameterized in terms of $\theta$, so the ratio is
-important for canceling the corresponding Jacobian factors. \glnote{Shall we
-keep this footenote? Would be better to give details in the text. JASA
-recommends not using footnotes.}}. Instead, we embed a parameterized classifier
+dependence of the classifier on $\theta$.
+% \footnote{As a technical point, in
+% \citep{Neal:2007zz}, the focus is on approximating the likelihood function (up
+% to a multiplicative constant), which is equivalent to evaluating the ratio  with
+% respect to a fixed $\theta_1$ as in Eqn.~\ref{eq:mle_withs}. In
+% \citep{Neal:2007zz}, the dependence on $\theta$ is eliminated via $s(\mathbf{x};
+% \hat{\theta}(\mathbf{x}))$ and the map is constant; however, in this approach
+% the map ratio is explicitly parameterized in terms of $\theta$, so the ratio is
+% important for canceling the corresponding Jacobian factors. \glnote{Shall we
+% keep this footenote? Would be better to give details in the text. JASA
+% recommends not using footnotes.}}.
+Instead, we embed a parameterized classifier
 into the likelihood and postpone the evaluation of the classifier to the point
 of evaluation of the likelihood when $\theta$ is explicitly being tested. This
 avoids the loss of information that occurs from the regression step
@@ -992,7 +997,7 @@ $\hat{\theta}(\mathbf{x})$ proposed by \cite{Neal:2007zz} and leads to
 Theorem~\ref{thm:ratio-equivalence}, which is an exact result in the case of an
 ideal classifier. In both cases, the quality of the classifier is factorized
 from the calibration of its density, which allows for valid inference even if
-there is a loss of power due to a non ideal classifier. \glnote{We could shorten this paragraph.}
+there is a loss of power due to a non ideal classifier.
 
 Also close to our work, \cite{ClaytonScott} and \cite{JMLR:v14:tong13a} consider
 the machine learning problem associated to Neyman-Pearson hypothesis testing. In
@@ -1006,7 +1011,6 @@ likelihood ratio tests and emphasizes the connection with classification.
 (tests of statistical independence) by using machine learning algorithms to find
 scalar maps from the high-dimensional feature space that achieve the desired
 statistical goal when the fundamental high-dimensional test is intractable.
-\glnote{Add other references on hypothesis testing with ML?}
 
 % In a similarly titled work, \cite{Gutmann2014} advocate using
 % the cross-validated classification accuracy as the similarity metric used in
@@ -1032,13 +1036,27 @@ More generally, likelihood ratio testing directly relates to the density ratio
 estimation problem, which consists in estimating the ratio of two probability
 densities from given and finite collections of observations ${\cal D}_0$ and
 ${\cal D}_1$. Density ratio estimation is connected to many machine learning
-fundamental problems, including domain adaptation~\citep{sugiyama2012machine}, probabilistic
-classification and regression~\citep{vapnik1998statistical}, outlier
-detection~\citep{hido2011statistical}, and many others. In contrast with the
-proposed method which decouples reduction from calibration, most of the
+fundamental problems, including transfer learning~\citep{sugiyama2012machine},
+probabilistic classification and regression~\citep{vapnik1998statistical},
+outlier detection~\citep{hido2011statistical}, and many others. For learning
+under covariate shift, \cite{shimodaira2000improving} and \cite{sugiyama2005input} estimate
+the density ratio $r(\mathbf{x};\theta_0,\theta_1) =
+\frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)}$ from straightforward
+approximations $\hat{p}(\mathbf{x}|\theta_0)$ and $\hat{p}(\mathbf{x}|\theta_1)$
+separately obtained using kernel density estimation. Despite its theoretical
+consistency, this approach is known to be ineffective in
+practice~\citep{sugiyama2007covariate,bickel2009discriminative}, in particular
+as it relies on solving a problem (i.e., modelling distributions, possibly for high dimensional cases) that is
+more difficult than required (i.e., modelling a ratio between distributions).
+While the proposed method also proceeds in two similar steps, estimating
+$p(s(\mathbf{x}))$ is a much simpler problem than estimating $p(\mathbf{x})$,
+since $s$ projects $\mathbf{x}$ into a one-dimensional space in which only
+the informative content of $r(\mathbf{x})$ is preserved.
+In contrast with the
+proposed method which decouples reduction from calibration, other
 approaches proposed within the literature (see
 \cite{sugiyama2012density,gretton2009covariate,nguyen2010estimating,vapnik2013constructive}
-and references therein) provide solutions for estimating
+and references therein) also provide solutions for estimating
 $r(\mathbf{x};\theta_0,\theta_1)$ directly from $\mathbf{x}$. Under some
 assumptions, the convergence of the obtained estimates is also proven for some
 of these approaches.
@@ -1049,6 +1067,7 @@ of these approaches.
 \section{Conclusions}
 \label{sec:conclusions}
 
+\glnote{Improve given new draft.}
 In this work, we have outlined an approach to reformulate generalized likelihood
 ratio testing over a high-dimensional data set in terms of a univariate density
 of a classifier score. We have shown that a parameterized family of
