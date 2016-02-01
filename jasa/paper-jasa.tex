@@ -463,7 +463,7 @@ Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_U(u=s(\mathbf{x
 In light of this result, the likelihood ratio estimation problem can now
 be recast as a (probabilistic) classification problem, by noticing that the regression
 function
-\begin{equation}
+\begin{equation}\label{eqn:best-s-clf}
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mathbf{x} | \theta_0) + p_{\mathbf{X}}(\mathbf{x} | \theta_1)}.
 \end{equation}
 modeled by a classifier trained to distinguish samples $\mathbf{x} \sim p_{\theta_0}$
@@ -483,35 +483,47 @@ of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modeling
 $p_U(u=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
 
 
+\subsection{Learning and calibrating $s$}
 
-\subsection{Approximating the reduction map}
+In order for the proposed approach to be useful in the likelihood-free setting,
+we need to be able to approximate both $s(\mathbf{x})$ and
+$p(s(\mathbf{x})|\theta)$ based on a finite number of samples $\{\mathbf{x}_i\}$
+drawn from the generative model $p(\mathbf{x}|\theta)$.
 
-In order for this approach to be useful in the likelihood-free setting, we need
-to be able to approximate both $s(\mathbf{x})$ and $p(s(\mathbf{x})|\theta)$
-based on a finite number of samples $\{\mathbf{x}_i\}$ drawn from the generative
-model $p(\mathbf{x}|\theta)$.
-Let denote the approximated dimensionality
-reduction map $\hat{s}(\mathbf{x})$ and its approximated distribution
-$\hat{p}(\hat{s}(\mathbf{x})|\theta)$. \glnote{Explain how to approximate $p(s)$ in practice?}
+As outlined above, any consistent probalilistic classification algorithm can be
+used for learning an approximate  map $\hat{s}(\mathbf{x})$ of
+Eqn.~\ref{eqn:best-s-clf}. In the common case where the density ratio is
+expected to smoothly vary around $\mathbf{x}$, we would however recommend
+learning models whose output value $\hat{s}(\mathbf{x})$ also smoothly varies
+around $\mathbf{x}$, such as neural networks. In particular, tree-based
+methods are not expected to work so well for this use case, since they usually
+model $\hat{s}(\mathbf{x})$ as a non-strictly monotonic composition of step functions.
+\glnote{We should comment as to what happens if $\hat{s}(x)$ is not monotonic with $r$}
 
-One strength of this approach is that it factorizes the approximation of the
-per-event likelihood ratio ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from
+Given a reduction map $s$, our results show that a statistic equivalent to the
+likelihood ratio can be constructed, provided $p(s(\mathbf{x})|\theta)$ can be
+evaluated. Again, we do not have a direct and exact way for evaluating this
+density, but an approximation $\hat p(\hat s(\mathbf{x})| \theta)$ can be built
+instead, e.g. using density estimation or calibration algorithms, such as
+histograms, KDE or isotonic regression, as applied on $\{\hat
+s(\mathbf{x}_i)\}$, for samples $\{\mathbf{x}_i\}$  drawn from the generative
+model. Most notably, learning such an approximation of $p(s(\mathbf{x})|\theta)$
+is a much simpler problem than learning $p(\mathbf{x}|\theta)$, since the
+reduction $s$ projects $\mathbf{x}$ into a one-dimensional space in which only
+the (simpler) informative content of $r(\mathbf{x})$ is preserved.
+
+One strength of the proposed approach is that it factorizes the approximation of the
+per-sample reduction ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from
 the calibration procedure ($\hat p(\hat s(\mathbf{x})| \theta) \approx
 p(\hat{s}(\mathbf{x})|\theta)$). Thus, even if the classifier does a poor job at
 reproducing the level sets of the per-event likelihood ratio, the density of
 $\hat{s}$ can still be well calibrated. In that case, one might loose power, but
-the resulting inference will still be valid.\glnote{Shouldn't we elaborate?
-Since this is one of our selling points, we should give more details in my
-opinion.} \glnote{Some of this is also already outlined in the previous section.}
+the resulting inference will still be valid.
 This point was made by \cite{Neal:2007zz} and is well appreciated by the
 particle physics community that typically takes a conservative attitude towards
 the use of machine learning classifiers precisely due to concerns about the
-calibration $p$-values in the face of nuisance parameters associated to the
+calibration of $p$-values in the face of nuisance parameters associated to the
 simulator.
-
-\glnote{We should comment as to what happens if $\hat{s}(x)$ is not monotonic with $r$}
-
-\glnote{Add reference to \cite{BiancaZadrozny} here.}
 
 \glnote{Add pseudo-code to summarize the whole pipeline?}
 
@@ -627,7 +639,7 @@ obvious that we can find the same estimators if we are working instead with
 $p(s(\mathbf{x})|\theta)$. Fortunately, there is a construction
 based on $s$ that works: the maximum likelihood estimate of Eqn.~\ref{eq:mle} is
 the same as the value that maximizes the likelihood ratio with respect to
-$p({\cal D}|\theta_1)$, for some fixed value of $\theta_1$\glnote{We should mention that the support of $p(\mathbf{x}|\theta_1)$ should cover the support of $p(\mathbf{x}|\theta)$.}.
+$p({\cal D}|\theta_1)$, for some fixed value of $\theta_1$ chosen such that the support of $p(\mathbf{x}|\theta_1)$ covers the support of $p(\mathbf{x}|\theta)$.
 This allows us to
 use Theorem~\ref{thm:ratio-equivalence} to reformulate the maximum likelihood
 estimate as
@@ -640,7 +652,12 @@ where $s(\mathbf{x};\theta,\theta_1)$ denotes a \textit{parameterized}
 transformation $s$ of $\mathbf{X}$ in terms of $(\theta,\theta_1)$ that is monotonic
 with $r(\mathbf{x};\theta,\theta_1)$. Note that it is important that we include
 the denominator $p(s(\mathbf{x}; \theta, \theta_1) |\theta_1)$ because this
-cancels Jacobian factors that vary with $\theta$. \glnote{Say that if $s$ is not monotonic with $r$, then it might be bias $\hat\theta$.}
+cancels Jacobian factors that vary with $\theta$.
+
+Finally, once the maximum likelihood estimates have been found for both the numerator
+and denominator of Eqn.~\ref{eqn:generalized-lr}, the generalized likelihood
+ratio can be estimated as outlined in Section~\ref{sec:approx}
+for simple hypothesis testing.
 
 \subsection{Parameterized classifier}
 
@@ -649,7 +666,7 @@ described above, we must train a family $s(\mathbf{x};\theta,\theta_1)$ of class
 $\theta_0$ and $\theta_1$, the parameters associated to the null and alternate
 hypotheses, respectively. While this could be done independently for all
 $\theta_0$ and $\theta_1$, using the procedure outlined in
-Section~\ref{sec:clf-for-ratios}, it is desirable and convenient to have a
+Section~\ref{sec:likelihood-ratio-tests}, it is desirable and convenient to have a
 smooth evolution of the classification score as a function of the parameters.
 For this reason, we anticipate a single learning stage based on training data with input
 $(\mathbf{x}, \theta_0, \theta_1)_i$ and target $y_i$, as outlined in Algorithm~\ref{alg:training}. Somewhat unusually, the
