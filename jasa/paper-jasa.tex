@@ -79,13 +79,13 @@ In many fields of science, generalized likelihood ratio tests are established to
 statistical inference. In practice, these tests are often complicated by the fact
 that computer simulators are used as a generative model for the data, which does
 not provide a way to evaluate the likelihood function. In this paper, we
-demonstrate that likelihood ratios are invariant under dimensionality reduction,
-provided the transformation is monotonic with the likelihood ratio. As a direct
+demonstrate that likelihood ratios are invariant under dimensionality reductions $\mathbb{R}^p \mapsto \mathbb{R}$,
+provided the transformation is itself monotonic with the likelihood ratio. As a direct
 consequence, we show why and how discriminative classifiers can be used to
 approximate the generalized likelihood ratio statistic when only a generative model for the data is
 available. In particular, the proposed method offers a machine learning-based
 approach to statistical inference that is complementary to likelihood-free
-Bayesian inference algorithms, like Approximate Bayesian Computation, as it does
+Bayesian inference algorithms, such as Approximate Bayesian Computation, as it does
 not require the definition of a prior over model parameters. \glnote{Also
 mention conclusions on experimental results, as required by JASA guidelines.}
 
@@ -141,8 +141,8 @@ observations $\mathbf{x}$. However, directly evaluating the likelihood function
 in these cases is often impossible or is computationally impractical.
 
 The main result of this paper is to show that the likelihood ratio is invariant
-under dimensionality reduction, under the assumption that the corresponding
-transformation is monotonic with the likelihood ratio. As a direct consequence,
+under dimensionality reductions $\mathbb{R}^p \mapsto \mathbb{R}$, under the assumption that the corresponding
+transformation is itself monotonic with the likelihood ratio. As a direct consequence,
 we derive and propose an alternative machine learning-based approach for
 likelihood-free inference that can also be used in a classical (frequentist)
 setting where a prior over the model parameters is not available. More
@@ -188,7 +188,7 @@ of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa} and subsequent
 measurement of its properties. The bulk of the likelihood ratio tests at the LHC
 are based on the distribution of a single event-level feature that discriminates
 between a hypothesized process of interest (labeled \textit{signal}) and various
-other processes (labeled \textit{background}). Typically, pseudo-data from the
+other processes (labeled \textit{background}). Typically, data generated from the
 simulator are used to approximate the density at various parameter points, and
 an interpolation algorithm is used to approximate the parameterized
 model~\citep{Cranmer:2012sba}. In particular, to improve the statistical power
@@ -276,7 +276,7 @@ $\theta=\theta_1$, the Neyman-Pearson lemma states that the likelihood ratio
 is the most powerful test statistic.
 
 In order to evaluate $\lambda({\cal D})$, one must be able to evaluate the probability
-density $p_\mathbf{X}(\mathbf{x}| \theta)$ at any value $\mathbf{x}$. However,
+densities $p_\mathbf{X}(\mathbf{x}| \theta_0)$ and $p_\mathbf{X}(\mathbf{x}| \theta_1)$ at any value $\mathbf{x}$. However,
 it is increasingly common in science that one has a complex simulation that can
 act as generative model for $p_\mathbf{X}(\mathbf{x}|\theta)$, but one cannot
 evaluate the density directly. For instance, this is the case in high energy
@@ -314,13 +314,13 @@ and \cite{JMLR:v14:tong13a}.}
 %
 % Here we see that the original goal for simple hypothesis testing (i.e. to make a decision to accept or reject the null hypothesis based on the entire data set $D$) has been reformulated into a per-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
 
-The main result of this paper (see Theorem~\ref{thm:ratio-equivalence}) is to
+The main result of this paper is to
 generalize the observation that one can form a test statistic
 \begin{equation}\label{eqn:likelihood-ratio-test-equiv}
 \lambda'({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{Y}(y=s(\mathbf{x}) | \theta_0)}{ p_\mathbf{Y}(y=s(\mathbf{x}) | \theta_1)}
 \end{equation}
 that is strictly equivalent to \ref{eqn:likelihood-ratio-test}, provided the change
-of variable $\mathbf{Y} = s(\mathbf{X})$ is based
+of variable $\mathbf{Y} = s(\mathbf{X})$ \glnote{Use another symbol instead $\mathbf{Y}$} is based
 on a (parameterized) function $s$ that is strictly monotonic with the density ratio
 \begin{equation}
 r(\mathbf{x};\theta_0, \theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}.
@@ -641,7 +641,7 @@ where $s(\mathbf{x};\theta,\theta_1)$ denotes a \textit{parameterized}
 transformation $s$ of $\mathbf{X}$ in terms of $(\theta,\theta_1)$ that is monotonic
 with $r(\mathbf{x};\theta,\theta_1)$. Note that it is important that we include
 the denominator $p(s(\mathbf{x}; \theta, \theta_1) |\theta_1)$ because this
-cancels Jacobian factors that vary with $\theta$.
+cancels Jacobian factors that vary with $\theta$. \glnote{Say that if $s$ is not monotonic with $r$, then it might be bias $\hat\theta$.}
 
 \subsection{Parameterized classifier}
 
@@ -660,6 +660,7 @@ Eqn.~\ref{eqn:generalized-lr}.
 
 \begin{algorithm}[t]
 \caption{Training of a parameterized classifier.}\label{alg:training}
+\glnote{Outline the full generalized likelihood ratio estimation pipeline instead}
     \begin{algorithmic}
         \State ${\cal L := \{ \}}$
         \For{ $\theta_0$ in $\Theta_0$ }
@@ -709,8 +710,6 @@ approaches will depend critically on the dimensionality of $\theta$ and the
 computational cost of the generative model. We leave a more general strategy for
 this overarching optimization problem as an area of future work.
 
-\glnote{Sub-sections 4.1 and 4.2 could directly be inlined within section 4. What do you think?}
-
 % There is a mild technical challenge in embedding the classifier into the
 % likelihood. In the case of a fixed classifier $\hat s(x)$ it is possible to
 % pre-compute $\hat s_e=\hat s(x_e)$ and never refer back to the original features
@@ -735,20 +734,21 @@ this overarching optimization problem as an area of future work.
 %   discuss about focusing the capacity of the classifier
 % - measure of particles properties, with a concrete example. Comparison with other likelihood-free inference methods (new)
 
+
+\section{Mixture models}
+
+\glnote{todo}
+
 \section{Examples and applications}
 
 \subsection{Toy example}
 
 \glnote{todo}
+\glnote{+ diagnostics}
 
 \subsection{High energy physics}
 
-\glnote{Add a concrete HEP example where we illustrate and compare
-the method for several classifiers and calibration algorithms.}
-\glnote{Notations need to be adapted.}
-\glnote{Rethink the outline? Start with comparison of mixtures (5.1.4) and then
-specialize to background vs background+signal, and thereby discuss that we can
-focus the capacity of the classifier.}
+\glnote{Rewrite and shorten.}
 
 In high energy physics, we are often searching for some class of events,
 generically referred to as \textit{signal}, in the presence of a separate class
@@ -862,7 +862,7 @@ It is possible to re-write the target likelihood ratio between two mixture model
 \end{align}
 The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
-\subsection{Likelihood-free inference}
+\subsubsection{Measuring particle properties}
 
 \glnote{Rework this section, add a concrete example and compare with other
 likelihood-free inference algorithms.}
@@ -1014,12 +1014,12 @@ While the proposed method also proceeds in two similar steps, estimating
 $p(s(\mathbf{x}))$ is a much simpler problem than estimating $p(\mathbf{x})$,
 since $s$ projects $\mathbf{x}$ into a one-dimensional space in which only
 the informative content of $r(\mathbf{x})$ is preserved.
-In contrast with the
+Finally, in contrast with the
 proposed method which decouples reduction from calibration, other
 approaches proposed within the literature (see
 \cite{sugiyama2012density,gretton2009covariate,nguyen2010estimating,vapnik2013constructive}
 and references therein) also provide solutions for estimating
-$r(\mathbf{x};\theta_0,\theta_1)$ directly from $\mathbf{x}$. Under some
+$r(\mathbf{x};\theta_0,\theta_1)$ directly from $\mathbf{x}$, in one step. Under some
 assumptions, the convergence of the obtained estimates is also proven for some
 of these approaches.
 
@@ -1104,9 +1104,8 @@ to
 \begin{equation}
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
 \end{equation}
-If we further assume that samples for $Y=0$ are drawn from some parameterized
-distribution with probability density $p_{\mathbf{X}}(\mathbf{x}|\theta_0)$
-and similarly for $Y=1$, then the best regression function can be rewritten
+If we further assume that samples for $Y=0$ (resp. $Y=1$) are drawn from some parameterized
+distribution with probability density $p_{\mathbf{X}}(\mathbf{x}|\theta_0)$ (resp. $p_{\mathbf{X}}(\mathbf{x}|\theta_1)$), then the best regression function can be rewritten
 as
 \begin{equation}
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mathbf{x} | \theta_0) + p_{\mathbf{X}}(\mathbf{x} | \theta_1)}.
