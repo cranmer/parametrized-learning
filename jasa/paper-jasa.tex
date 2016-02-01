@@ -47,7 +47,7 @@
 \if1\blind
 {
   \title{\bf Approximating Likelihood Ratios with Calibrated Discriminative Classifiers}
-  \author{Kyle Cranmer and Gilles Louppe\\
+  \author{Kyle Cranmer, Juan Pavez and Gilles Louppe\\
           New York University}
   \maketitle
 } \fi
@@ -234,7 +234,7 @@ The rest of this paper is organized as follows. In Section... \glnote{todo}
 \section{Likelihood ratio tests}
 \label{sec:likelihood-ratio-tests}
 
-\subsection{Framework}
+\subsection{Simple hypothesis testing}
 
 % \subsection{Notation and Assumptions}
 %
@@ -308,18 +308,18 @@ be done in the forward mode.
 % %s_e = s(x_e; \theta_0, \theta_1) = m\left(\frac{ p(x_e|\theta_0)}{ p(x_e|\theta_1)} \right) \;
 % \end{equation}
 % where $m$ is any strictly increasing or decreasing function. This result will be proven below.
-% This allows us to recast the original likelihood ratio test into an alternate form in which supervised learning is used to train the discriminative classifier $s(x; \theta_0, \theta_1)$. The discriminative classifier can be trained with data $(x,y=0)$ generated
-% from $p(x|\theta_0)$ and $(x,y=1)$ generated from $p(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the classifier  parametrized in terms of $(\theta_0, \theta_1)$.
+% This allows us to recast the original likelihood ratio test into an alternate form in which supervised learning is used to train the discriminative classifier $s(x; \theta_0, \theta_1)$. The discriminative classifier can be trained with data $(x,u=0)$ generated
+% from $p(x|\theta_0)$ and $(x,u=1)$ generated from $p(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the classifier  parametrized in terms of $(\theta_0, \theta_1)$.
 %
 % Here we see that the original goal for simple hypothesis testing (i.e. to make a decision to accept or reject the null hypothesis based on the entire data set $D$) has been reformulated into a per-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
 
 The main result of this paper is to
 generalize the observation that one can form a test statistic
 \begin{equation}\label{eqn:likelihood-ratio-test-equiv}
-\lambda'({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{Y}(y=s(\mathbf{x}) | \theta_0)}{ p_\mathbf{Y}(y=s(\mathbf{x}) | \theta_1)}
+\lambda'({\cal D}; \theta_0, \theta_1) = \prod_{\mathbf{x} \in {\cal D}} \frac{ p_\mathbf{U}(u=s(\mathbf{x}) | \theta_0)}{ p_\mathbf{U}(u=s(\mathbf{x}) | \theta_1)}
 \end{equation}
 that is strictly equivalent to \ref{eqn:likelihood-ratio-test}, provided the change
-of variable $\mathbf{Y} = s(\mathbf{X})$ \glnote{Use another symbol instead $\mathbf{Y}$} is based
+of variable $\mathbf{U} = s(\mathbf{X})$ is based
 on a (parameterized) function $s$ that is strictly monotonic with the density ratio
 \begin{equation}
 r(\mathbf{x};\theta_0, \theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}.
@@ -396,30 +396,30 @@ classifier decision function $s$ parameterized in terms of $(\theta_0, \theta_1)
     $r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$,
     for given parameters $\theta_0$ and $\theta_1$. In these conditions,
     \begin{equation}
-        r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} = \frac{p_\mathbf{Y}(y=s(\mathbf{x})|\theta_0)}{p_\mathbf{Y}(y=s(\mathbf{x})|\theta_1)},
+        r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} = \frac{p_\mathbf{U}(u=s(\mathbf{x})|\theta_0)}{p_\mathbf{U}(u=s(\mathbf{x})|\theta_1)},
     \end{equation}
-    where $p_\mathbf{Y}(y=s(\mathbf{x};\theta_0,\theta_1)|\theta)$ is the induced probability density of
-    $\mathbf{Y} = s(\mathbf{X};\theta_0,\theta_1)$.
+    where $p_\mathbf{U}(u=s(\mathbf{x};\theta_0,\theta_1)|\theta)$ is the induced probability density of
+    $\mathbf{U} = s(\mathbf{X};\theta_0,\theta_1)$.
 \end{theorem}
 
 \begin{proof}
 Starting from the definition of the probability density function, we have
 \begin{align}
-% p_Y(y=s(\mathbf{x})|\theta_0) &= \frac{d}{dy} P(s(\mathbf{X}) \leq y) \nonumber \\
-p_Y(y=s(\mathbf{x})|\theta_0) &= \frac{d}{dy}  \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) \leq y\}} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
+% p_U(u=s(\mathbf{x})|\theta_0) &= \frac{d}{dy} P(s(\mathbf{X}) \leq y) \nonumber \\
+p_U(u=s(\mathbf{x})|\theta_0) &= \frac{d}{du}  \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) \leq u\}} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
 % &= \frac{d}{dy} \int_{\mathbb{R}^p} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
 % &= \int_{\mathbb{R}^p} \frac{d}{dy} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
-&= \int_{\mathbb{R}^p} \delta(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime
+&= \int_{\mathbb{R}^p} \delta(u - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime
 \end{align}
 Intuitively, this expression can be understood as the integral
-over all $\mathbf{x}^\prime \in \mathbb{R}^p$ such that $s(\mathbf{x}^\prime) = y$, as picked
+over all $\mathbf{x}^\prime \in \mathbb{R}^p$ such that $s(\mathbf{x}^\prime) = u$, as picked
 by the Dirac $\delta$ function. Given Theorem 6.1.5 of \citet{Hrmander1990},
 it further comes
 \begin{equation}
-p_Y(y=s(\mathbf{x})|\theta_0) = \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \label{eqn:hormander}
+p_U(u=s(\mathbf{x})|\theta_0) = \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \label{eqn:hormander}
 \end{equation}
 where $|\nabla s(\mathbf{x}^\prime)| = \sqrt{\sum_{i=1}^p |\frac{\partial}{\partial x_i} s(\mathbf{x}^\prime)|^2}$
-and where $dS_{\mathbf{x}^\prime}$ is the Euclidean surface measure on $\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}$.
+and where $dS_{\mathbf{x}^\prime}$ is the Euclidean surface measure on $\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}$.
 Also, since $s(\mathbf{x})$ is monotonic with
 $\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$,
 it exists an invertible function $m:\mathbb{R}^+ \mapsto \mathbb{R}$ such
@@ -431,15 +431,15 @@ p_\mathbf{X}(\mathbf{x}|\theta_0) &= m^{-1}(s(\mathbf{x})) p_\mathbf{X}(\mathbf{
 \end{align}
 Combining equations \ref{eqn:hormander} and \ref{eqn:mapping}, the density ratio $\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$ can be pulled out of the integral, resulting in
 \begin{align}
-% p_Y(y=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \nonumber \\
-p_Y(y=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
-&= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(y) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
-&= m^{-1}(s(\mathbf{x})) \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
-&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}.
+% p_U(u=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \nonumber \\
+p_U(u=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+&= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(u) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+&= m^{-1}(s(\mathbf{x})) \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}.
 \end{align}
-Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_Y(y=s(\mathbf{x})|\theta_1)$, finally yielding
+Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_U(u=s(\mathbf{x})|\theta_1)$, finally yielding
 \begin{align}
-\frac{p_Y(y=s(\mathbf{x})|\theta_0)}{p_Y(y=s(\mathbf{x})|\theta_1)} &= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \frac{\int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}}{ \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} } \nonumber \\
+\frac{p_U(u=s(\mathbf{x})|\theta_0)}{p_U(u=s(\mathbf{x})|\theta_1)} &= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \frac{\int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}}{ \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} } \nonumber \\
 &= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}.
 \end{align}
 \end{proof}
@@ -452,7 +452,7 @@ Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_Y(y=s(\mathbf{x
 % train a classifier. To be concrete, let us use $p(x|\theta_0)$ to generate
 % training data $(x_i,  y_i=0)$ and $p(x|\theta_1)$ to generate training data
 % $(x_i , y_i=1)$. With balanced training data
-% \mbox{($p(y=1)=p(y=0)=\sfrac{1}{2}$)} a quadratic loss function will lead to
+% \mbox{($p(u=1)=p(u=0)=\sfrac{1}{2}$)} a quadratic loss function will lead to
 % classifiers that approximate the regression function  $\hat{s}(x) \approx p(y|x) =
 % p(x|\theta_1)/(p(x|\theta_0)+p(x|\theta_1))$, which is  monotonic with the
 % desired per-event likelihood ratio $q(x)$. Thus, standard supervised learning
@@ -466,7 +466,7 @@ function
 \begin{equation}
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mathbf{x} | \theta_0) + p_{\mathbf{X}}(\mathbf{x} | \theta_1)}.
 \end{equation}
-modelled by a classifier trained to distinguish samples $\mathbf{x} \sim p_{\theta_0}$
+modeled by a classifier trained to distinguish samples $\mathbf{x} \sim p_{\theta_0}$
 from samples $\mathbf{x} \sim p_{\theta_1}$ satisfies conditions of
 Theorem~\ref{thm:ratio-equivalence} (see Appendix~\ref{app:clf-for-s} for further details).
 In other words, supervised learning yields a sufficient
@@ -480,7 +480,7 @@ Equivalently,
 Theorem~\ref{thm:ratio-equivalence} shows that in case we learn a probabilistic
 classifier $s(\mathbf{x})$ which is imperfect up to a monotonic transformation
 of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modeling
-$p_Y(y=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
+$p_U(u=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
 
 
 
@@ -543,8 +543,8 @@ simulator.
 %
 % Lastly, in the setting of frequentist hypothesis tests and confidence intervals,
 % we do not have a prior $\pi(\theta)$. While we can use the generative models to
-% produce training data $(\mathbf{x} ,y=0)$ generated from
-% $p(\mathbf{x}|\theta_0)$ and $(\mathbf{x}, y=1)$ generated from
+% produce training data $(\mathbf{x} ,u=0)$ generated from
+% $p(\mathbf{x}|\theta_0)$ and $(\mathbf{x}, u=1)$ generated from
 % $p(\mathbf{x}|\theta_1)$, the relative mix $p(y)$ is arbitrary. Since the prior
 % $p(y)$ is not needed for the target likelihood ratio test and because the
 % classifier score $p(y|\mathbf{x})$ may not be well calibrated, we choose to denote the
@@ -665,9 +665,9 @@ Eqn.~\ref{eqn:generalized-lr}.
         \For{ $\theta_0$ in $\Theta_0$ }
         	\For{ $\theta_1$ in $\Theta_1$ }
         		\State generate $\mathbf{x} \sim p(\mathbf{x}|\theta_0)$
-        		\State append $\{ (\mathbf{x}, \theta_0, \theta_1, y=0) \}$ to ${\cal L}$
+        		\State append $\{ (\mathbf{x}, \theta_0, \theta_1, u=0) \}$ to ${\cal L}$
         		\State generate $\mathbf{x} \sim p(\mathbf{x}|\theta_1)$
-        		\State append $\{ (\mathbf{x}, \theta_0, \theta_1, y=1) \}$ to ${\cal L}$
+        		\State append $\{ (\mathbf{x}, \theta_0, \theta_1, u=1) \}$ to ${\cal L}$
         	\EndFor
         \EndFor
         \State Learn $s(\mathbf{x}; \theta_0, \theta_1)$ from ${\cal L}$
@@ -734,7 +734,7 @@ this overarching optimization problem as an area of future work.
 % - measure of particles properties, with a concrete example. Comparison with other likelihood-free inference methods (new)
 
 
-\section{Mixture models}
+\subsection{Mixture models}
 
 % In this section we generalize the capacity focusing technique of training
 % classifiers to discriminate between components of a mixture model. First, we
@@ -750,7 +750,7 @@ this overarching optimization problem as an area of future work.
 % \end{align}
 % The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
-In the setting of (simple or composite) hypothesis testing between
+In the special case of (simple or composite) hypothesis testing between
 models defined as mixtures of several components, i.e. when
 \begin{equation}
 p(\mathbf{x}|\theta)=\sum_c w_c(\theta) p_c(\mathbf{x}| \theta),
@@ -815,13 +815,13 @@ statistic.
 \subsubsection{Typical usage pattern}
 
 In this setting, large samples of pseudo-data $\{x_i, y_i\}$ generated with some
-nominal values of the parameters $\nu_0$, where $y=0$ corresponds to the
-background density $p_b(x|\nu_0)$  and $y=1$ corresponds to signal density
-$p_s(x|\nu_0)$. Importantly, the $y=1$ label corresponds to the signal only, and
+nominal values of the parameters $\nu_0$, where $u=0$ corresponds to the
+background density $p_b(x|\nu_0)$  and $u=1$ corresponds to signal density
+$p_s(x|\nu_0)$. Importantly, the $u=1$ label corresponds to the signal only, and
 not to the alternate signal-plus-background hypothesis. The resulting classifier
 approximates the regression function $p_s(x|\nu_0)/(p_s(x|\nu_0)+p_b(x|\nu_0))$,
 which is one to one with the likelihood ratio of the null to the alternate
-$p(x|\mu=0,\nu_0)/p(x|\mu,\nu_0)$ for all $\mu$. Associating the $y=1$ label to
+$p(x|\mu=0,\nu_0)/p(x|\mu,\nu_0)$ for all $\mu$. Associating the $u=1$ label to
 the signal component has advantages because it helps the classifier focus its
 capacity on the relevant regions in the feature space, particularly when the
 signal is a very small perturbation to the background (i.e. $\mu \ll 1$).
@@ -1040,8 +1040,8 @@ approximations $\hat{p}(\mathbf{x}|\theta_0)$ and $\hat{p}(\mathbf{x}|\theta_1)$
 separately obtained using kernel density estimation. Despite its theoretical
 consistency, this approach is known to be ineffective in
 practice~\citep{sugiyama2007covariate,bickel2009discriminative}, in particular
-as it relies on solving a problem (i.e., modelling distributions, possibly for high dimensional cases) that is
-more difficult than required (i.e., modelling a ratio between distributions).
+as it relies on modeling numerator and denominator high-dimensional densities,
+which is a harder problem than modeling their ratio only.
 While the proposed method also proceeds in two similar steps, estimating
 $p(s(\mathbf{x}))$ is a much simpler problem than estimating $p(\mathbf{x})$,
 since $s$ projects $\mathbf{x}$ into a one-dimensional space in which only
