@@ -130,7 +130,7 @@ mention conclusions on experimental results, as required by JASA guidelines.}
 % generative model for the data is available for training and calibration.
 
 The likelihood function is the central object that summarizes the information
-from an experiment needed for inference of model parameters. In particular, it
+from an experiment needed for inference of model parameters. It
 is key to many areas of science that report the results of classical
 hypothesis tests or confidence intervals using the (generalized or profile)
 likelihood ratio as a test statistic. At the same time, with the advance of
@@ -405,8 +405,8 @@ classifier decision function $s$ parameterized in terms of $(\theta_0, \theta_1)
 \begin{proof}
 Starting from the definition of the probability density function, we have
 \begin{align}
-% p_U(u=s(\mathbf{x})|\theta_0) &= \frac{d}{dy} P(s(\mathbf{X}) \leq y) \nonumber \\
-p_U(u=s(\mathbf{x})|\theta_0) &= \frac{d}{du}  \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) \leq u\}} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
+% p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) &= \frac{d}{dy} P(s(\mathbf{X}) \leq y) \nonumber \\
+p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) &= \frac{d}{du}  \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) \leq u\}} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
 % &= \frac{d}{dy} \int_{\mathbb{R}^p} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
 % &= \int_{\mathbb{R}^p} \frac{d}{dy} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
 &= \int_{\mathbb{R}^p} \delta(u - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime
@@ -416,7 +416,7 @@ over all $\mathbf{x}^\prime \in \mathbb{R}^p$ such that $s(\mathbf{x}^\prime) = 
 by the Dirac $\delta$ function. Given Theorem 6.1.5 of \citet{Hrmander1990},
 it further comes
 \begin{equation}
-p_U(u=s(\mathbf{x})|\theta_0) = \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \label{eqn:hormander}
+p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) = \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \label{eqn:hormander}
 \end{equation}
 where $|\nabla s(\mathbf{x}^\prime)| = \sqrt{\sum_{i=1}^p |\frac{\partial}{\partial x_i} s(\mathbf{x}^\prime)|^2}$
 and where $dS_{\mathbf{x}^\prime}$ is the Euclidean surface measure on $\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}$.
@@ -431,16 +431,15 @@ p_\mathbf{X}(\mathbf{x}|\theta_0) &= m^{-1}(s(\mathbf{x})) p_\mathbf{X}(\mathbf{
 \end{align}
 Combining equations \ref{eqn:hormander} and \ref{eqn:mapping}, the density ratio $\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$ can be pulled out of the integral, resulting in
 \begin{align}
-% p_U(u=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = y\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \nonumber \\
-p_U(u=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
 &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(u) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
 &= m^{-1}(s(\mathbf{x})) \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
 &= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}.
 \end{align}
-Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_U(u=s(\mathbf{x})|\theta_1)$, finally yielding
+Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_1)$, finally yielding
 \begin{align}
-\frac{p_U(u=s(\mathbf{x})|\theta_0)}{p_U(u=s(\mathbf{x})|\theta_1)} &= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \frac{\int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}}{ \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} } \nonumber \\
-&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}.
+\frac{p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0)}{p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_1)} &= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \frac{\int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}}{ \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} } \nonumber \\
+&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}. \label{eqn:jacob}
 \end{align}
 \end{proof}
 
@@ -461,7 +460,7 @@ Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_U(u=s(\mathbf{x
 % $q(x)$.
 
 In light of this result, the likelihood ratio estimation problem can now
-be recast as a (probabilistic) classification problem, by noticing that the regression
+be recast as a (probabilistic) classification problem, by noticing that the decision
 function
 \begin{equation}\label{eqn:best-s-clf}
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mathbf{x} | \theta_0) + p_{\mathbf{X}}(\mathbf{x} | \theta_1)}.
@@ -480,7 +479,7 @@ Equivalently,
 Theorem~\ref{thm:ratio-equivalence} shows that in case we learn a probabilistic
 classifier $s(\mathbf{x})$ which is imperfect up to a monotonic transformation
 of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modeling
-$p_U(u=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
+$p_{\mathbf{U}}(u=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
 
 
 \subsection{Learning and calibrating $s$}
@@ -495,37 +494,37 @@ used for learning an approximate  map $\hat{s}(\mathbf{x})$ of
 Eqn.~\ref{eqn:best-s-clf}. In the common case where the density ratio is
 expected to smoothly vary around $\mathbf{x}$, we would however recommend
 learning models whose output value $\hat{s}(\mathbf{x})$ also smoothly varies
-around $\mathbf{x}$, such as neural networks. In particular, tree-based
+around $\mathbf{x}$, such as neural networks. For small training sets, tree-based
 methods are not expected to work so well for this use case, since they usually
 model $\hat{s}(\mathbf{x})$ as a non-strictly monotonic composition of step functions.
-\glnote{We should comment as to what happens if $\hat{s}(x)$ is not monotonic with $r$}
+In particular, in such cases where $s(\mathbf{x})$ is not monotonic with $r(\mathbf{x})$, Jacobian
+factors in Eqn.~\ref{eqn:jacob} do not cancel, resulting in a biased
+approximation of the density ratio.
 
 Given a reduction map $s$, our results show that a statistic equivalent to the
 likelihood ratio can be constructed, provided $p(s(\mathbf{x})|\theta)$ can be
 evaluated. Again, we do not have a direct and exact way for evaluating this
 density, but an approximation $\hat p(\hat s(\mathbf{x})| \theta)$ can be built
 instead, e.g. using density estimation or calibration algorithms, such as
-histograms, KDE or isotonic regression, as applied on $\{\hat
+histograms, KDE or isotonic regression, and as applied on $\{\hat
 s(\mathbf{x}_i)\}$, for samples $\{\mathbf{x}_i\}$  drawn from the generative
 model. Most notably, learning such an approximation of $p(s(\mathbf{x})|\theta)$
 is a much simpler problem than learning $p(\mathbf{x}|\theta)$, since the
 reduction $s$ projects $\mathbf{x}$ into a one-dimensional space in which only
 the (simpler) informative content of $r(\mathbf{x})$ is preserved.
 
-One strength of the proposed approach is that it factorizes the approximation of the
-per-sample reduction ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from
-the calibration procedure ($\hat p(\hat s(\mathbf{x})| \theta) \approx
-p(\hat{s}(\mathbf{x})|\theta)$). Thus, even if the classifier does a poor job at
-reproducing the level sets of the per-event likelihood ratio, the density of
+One strength of the proposed approach is that it factorizes the approximation of
+the per-sample reduction ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from the
+calibration procedure ($\hat p(\hat s(\mathbf{x})| \theta) \approx
+p(\hat{s}(\mathbf{x})|\theta)$). Thus, even if the classifier does a poor at
+learning the optimal decision function~\ref{eqn:best-s-clf} and therefore at
+reproducing the level sets of the per-sample likelihood ratio, the density of
 $\hat{s}$ can still be well calibrated. In that case, one might loose power, but
-the resulting inference will still be valid.
-This point was made by \cite{Neal:2007zz} and is well appreciated by the
-particle physics community that typically takes a conservative attitude towards
-the use of machine learning classifiers precisely due to concerns about the
-calibration of $p$-values in the face of nuisance parameters associated to the
-simulator.
-
-\glnote{Add pseudo-code to summarize the whole pipeline?}
+the resulting inference will still be valid. This point was made by
+\cite{Neal:2007zz} and is well appreciated by the particle physics community
+that typically takes a conservative attitude towards the use of machine learning
+classifiers precisely due to concerns about the calibration of $p$-values in the
+face of nuisance parameters associated to the simulator.
 
 % \subsection{Classification and frequentist hypothesis tests}
 %
@@ -662,7 +661,7 @@ for simple hypothesis testing.
 \subsection{Parameterized classifier}
 
 In order to provide parameter inference in the likelihood-free setting as
-described above, we must train a family $s(\mathbf{x};\theta,\theta_1)$ of classifiers parameterized by
+described above, we must train a family $s(\mathbf{x};\theta_0,\theta_1)$ of classifiers parameterized by
 $\theta_0$ and $\theta_1$, the parameters associated to the null and alternate
 hypotheses, respectively. While this could be done independently for all
 $\theta_0$ and $\theta_1$, using the procedure outlined in
@@ -673,6 +672,12 @@ $(\mathbf{x}, \theta_0, \theta_1)_i$ and target $y_i$, as outlined in Algorithm~
 unknown values of the parameters are taken as input to the classifier; their
 values will be specified via the enveloping (generalized) likelihood ratio of
 Eqn.~\ref{eqn:generalized-lr}.
+While the function
+$p(\mathbf{x}|\theta_1)/(p(\mathbf{x}|\theta_0)+p(\mathbf{x}|\theta_1))$ will
+minimize the expected squared error loss based on training data produced
+according to Algorithm~\ref{alg:training}, it is not clear how training data
+from $\theta'_0 \ne \theta_0$ and $\theta'_1 \ne \theta_1$ will influence a real
+world classifier with finite capacity. This is left as an area for future work.
 
 \begin{algorithm}[t]
 \caption{Training of a parameterized classifier.}\label{alg:training}
@@ -691,32 +696,24 @@ Eqn.~\ref{eqn:generalized-lr}.
     \end{algorithmic}
 \end{algorithm}
 
-While the function
-$p(\mathbf{x}|\theta_1)/(p(\mathbf{x}|\theta_0)+p(\mathbf{x}|\theta_1))$ will
-minimize the expected squared error loss based on training data produced
-according to Algorithm~\ref{alg:training}, it is not clear how training data
-from $\theta'_0 \ne \theta_0$ and $\theta'_1 \ne \theta_1$ will influence a real
-world classifier with finite capacity. This is left as an area for future work.
 
-\glnote{Shall we keep Algorithm~\ref{alg:training} or rather give a sketch in
-words? In its current state, the algorithm does not explain how to build ${\cal
-L}$ when the parameter spaces are continuous. It also does not specify how many
-samples should be generated per parameter value.}
 
 \subsection{Parameterized calibration}
 
 Once the classifier is trained, we can use the generative model together with a
 univariate density estimation technique (e.g. histograms or kernel density
 estimation) to approximate $p(s|\theta)$ for specific parameter
-points. For a single parameter point, this is a tractable univariate density
+points. For a single parameter point $\theta$, this is a tractable univariate density
 estimation problem. The challenge comes from the need to calibrate this density
-for all values of $\theta$. A straight forward approach would be to run the
+for all values of $\theta$. A straightforward approach would be to run the
 generative model on demand for any particular value of $\theta$. In the context
 of a likelihood fit this would mean that the optimization algorithm that is
 trying to maximize the likelihood with respect to $\theta$ needs access to the
 generative model $p(\mathbf{x}|\theta)$. This can be  impractical when the generative
 model is computationally expensive or has high-latency (for instance some human
-intervention is required to reconfigure the generative model).  In HEP, with a
+intervention is required to reconfigure the generative model).
+
+In high energy physics, with a
 fixed classifier, it has become common  to interpolate the distribution between
 discrete values of $\theta$ in order to produce a continuous parameterization for
 $p(s | \theta)$~\citep{Cranmer:2012sba}.
@@ -768,11 +765,11 @@ this overarching optimization problem as an area of future work.
 % The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
 In the special case of (simple or composite) hypothesis testing between
-models defined as mixtures of several components, i.e. when
+models defined as mixtures of several components, i.e. when $p(\mathbf{x}|\theta$ can be written as
 \begin{equation}
 p(\mathbf{x}|\theta)=\sum_c w_c(\theta) p_c(\mathbf{x}| \theta),
 \end{equation}
-the target likelihood ratio can be rewritten in terms of pairwise
+the target likelihood ratio can be formulated in terms of pairwise
 classification problems. We indeed have
 \begin{align}
 \frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)} &= \frac{\sum_c w_c(\theta_0) p_c(\mathbf{x}| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(\mathbf{x}| \theta_1)} \nonumber \\
@@ -786,10 +783,10 @@ Theorem~\ref{thm:ratio-equivalence} to relate the high-dimensional likelihood
 ratio into an equivalent calibrated likelihood ratio based on the univariate
 density of the corresponding classifier.
 
-In applications where mixture models are commonly used, e.g. as in high energy
-physics, this decomposition allows one to construct better likelihood ratio
-estimates since it forces classifiers $s_{c,c'}$ to focus on simpler
-sub-problems, for which higher accuracy is expected.
+In applications where mixture models are commonly used this decomposition allows
+one to construct better likelihood ratio estimates since it forces classifiers
+$s_{c,c'}$ to focus on simpler sub-problems, for which higher accuracy is
+expected.
 
 Finally, as a technical point, in the situation where the only free parameters
 of the  model are the mixture coefficients $w_c$, the distributions
@@ -1056,18 +1053,18 @@ the density ratio $r(\mathbf{x};\theta_0,\theta_1) =
 approximations $\hat{p}(\mathbf{x}|\theta_0)$ and $\hat{p}(\mathbf{x}|\theta_1)$
 separately obtained using kernel density estimation. Despite its theoretical
 consistency, this approach is known to be ineffective in
-practice~\citep{sugiyama2007covariate,bickel2009discriminative}, in particular
-as it relies on modeling numerator and denominator high-dimensional densities,
+practice~\citep{sugiyama2007covariate,bickel2009discriminative}, since
+it relies on modeling numerator and denominator high-dimensional densities,
 which is a harder problem than modeling their ratio only.
 While the proposed method also proceeds in two similar steps, estimating
-$p(s(\mathbf{x}))$ is a much simpler problem than estimating $p(\mathbf{x})$,
+$p(s(\mathbf{x}))$ is much easier than estimating $p(\mathbf{x})$,
 since $s$ projects $\mathbf{x}$ into a one-dimensional space in which only
 the informative content of $r(\mathbf{x})$ is preserved.
 Finally, in contrast with the
 proposed method which decouples reduction from calibration, other
 approaches proposed within the literature (see
 \cite{sugiyama2012density,gretton2009covariate,nguyen2010estimating,vapnik2013constructive}
-and references therein) also provide solutions for estimating
+and references therein) provide solutions for estimating
 $r(\mathbf{x};\theta_0,\theta_1)$ directly from $\mathbf{x}$, in one step. Under some
 assumptions, the convergence of the obtained estimates is also proven for some
 of these approaches.
@@ -1078,7 +1075,6 @@ of these approaches.
 \section{Conclusions}
 \label{sec:conclusions}
 
-\glnote{Improve given new draft.}
 In this work, we have outlined an approach to reformulate generalized likelihood
 ratio testing over a high-dimensional data set in terms of a univariate density
 of a classifier score. We have shown that a parameterized family of
@@ -1098,12 +1094,12 @@ strength of this approach is that it separates the quality of the approximation
 of the target likelihood from the quality of the calibration. The former is
 related to the ability of supervised learning approaches to  classification,
 which will continue to improve. The calibration procedure for a particular
-parameter point is fairly straight forward since it involves estimating a
+parameter point is fairly straightforward since it involves estimating a
 univariate density using a generative model of the data. The difficulty of the
 calibration stage is performing this calibration continuously in $\theta$.
 Different strategies to this calibration are anticipated depending on the
 dimensionality of $\theta$, the complexity of the resulting likelihood function,
-and the difficulties associated to running the simulator.
+or the practical issues associated to running the simulator.
 
 \bibliographystyle{apalike}
 \bibliography{learning.bib}
