@@ -825,124 +825,121 @@ calibration.
 
 \subsection{High energy physics}
 
-\glnote{Rewrite and shorten.}
-
 In high energy physics, we are often searching for some class of events,
 generically referred to as \textit{signal}, in the presence of a separate class
-of \textit{background} events.  For each event we measure some quantities $x$
-that have corresponding distributions $p_b(x|\nu)$ for background and
-$p_s(x|\nu)$ for signal, where $\nu$ are nuisance parameters describing
-uncertainties in the underlying physics prediction or response of the
-measurement device. The total model is a mixture of the signal and background,
-and $\mu$ is the mixture coefficient associate to the signal component.
+of \textit{background} events.  For each event we measure some quantities
+$\mathbf{x}$, with corresponding distributions $p_s(\mathbf{x}|\nu)$ for signal
+and $p_b(\mathbf{x}|\nu)$ for background, and where $\nu$ are nuisance
+parameters describing uncertainties in the underlying physics prediction or
+response of the measurement device. The total model is a mixture of the signal
+and background, and $\mu$ is the mixture coefficient associated to the signal
+component, that is
 \begin{equation}\label{eq:hepGen}
-p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu p_s( x_e \, |\,  \nu)  + (1-\mu)\, p_b( x_e \,|\, \nu) \,\right] \; ,
+p( {\cal D} | \mu, \nu) = \prod_{\mathbf{x} \in {\cal D}} \left[ \mu p_s( \mathbf{x} |  \nu)  + (1-\mu) p_b( \mathbf{x} | \nu) \right] \;.
 \end{equation}
-New particle searches at the LHC are typically framed as hypothesis test where
-the null corresponds to $\mu=0$, and the generalized likelihood ratio is used as a test
-statistic.
+Accordingly, new particle searches at the LHC are typically framed as
+hypothesis tests where the null corresponds to $\mu=0$, and the generalized
+likelihood ratio is used as a test statistic.
 
-\subsubsection{Typical usage pattern}
+In this setting, a classifier is usually built from a large sample of data
+$\{\mathbf{x}_i, y_i\}$ generated with some nominal values of the parameters
+$\nu=\nu_0$, with $y=0$ for samples drawn from the background component and
+$y=1$ for samples drawn from the signal component. Importantly, the $y=1$ label
+corresponds to the signal only hypothesis, and not to the alternate
+signal-plus-background hypothesis. The resulting classifier approximates the
+regression function
+$\frac{p_s(\mathbf{x}|\nu_0)}{p_s(\mathbf{x}|\nu_0)+p_b(\mathbf{x}|\nu_0)}$, which is
+one to one with the likelihood ratio of the null to the alternate
+$\frac{p(\mathbf{x}|\mu=0,\nu_0)}{p(\mathbf{x}|\mu,\nu_0)}$ for all $\mu$ and therefore
+satisifies conditions of Theorem~\ref{thm:ratio-equivalence}. Associating the
+$y=1$ label to the signal component has advantages because it helps the
+classifier focus its capacity on the relevant regions in the feature space,
+particularly when the signal is a very small perturbation to the background
+(i.e. $\mu \ll 1$). Once the classifier is trained, large samples of data are
+generated from $p_s(\mathbf{x} | \nu)$ and $p_b(\mathbf{x} | \nu)$ and we
+estimate the distributions $\hat{p}_s(\hat s(\mathbf{x}) | \nu)$ and
+$\hat{p}_b(\hat s(\mathbf{x}) | \nu)$ continuously parameterized in $\nu$.
 
-In this setting, large samples of pseudo-data $\{x_i, y_i\}$ generated with some
-nominal values of the parameters $\nu_0$, where $u=0$ corresponds to the
-background density $p_b(x|\nu_0)$  and $u=1$ corresponds to signal density
-$p_s(x|\nu_0)$. Importantly, the $u=1$ label corresponds to the signal only, and
-not to the alternate signal-plus-background hypothesis. The resulting classifier
-approximates the regression function $p_s(x|\nu_0)/(p_s(x|\nu_0)+p_b(x|\nu_0))$,
-which is one to one with the likelihood ratio of the null to the alternate
-$p(x|\mu=0,\nu_0)/p(x|\mu,\nu_0)$ for all $\mu$. Associating the $u=1$ label to
-the signal component has advantages because it helps the classifier focus its
-capacity on the relevant regions in the feature space, particularly when the
-signal is a very small perturbation to the background (i.e. $\mu \ll 1$).
+ % An example of the distributions of $\hat s$ for the
+ % signal and background events with $\nu=\nu_0$ is shown in
+ % Figure~\ref{fig:tmva}.
 
- Once the classifier is trained, large samples of pseudo-data are drawn from
- $p_s(x | \nu)$ and $p_b(x | \nu)$ and we estimate the distributions
- $\hat{p}_s(\hat s | \nu)$ and $\hat{p}_b(\hat s | \nu)$ continuously
- parameterized in $\nu$. An example of the distributions of $\hat s$ for the
- signal and background events with $\nu=\nu_0$ is shown in
- Figure~\ref{fig:tmva}.
+% \begin{figure}[t]
+% \begin{center}
+%  \includegraphics[height=1.7in]{figures/example-TMVA-BDT.pdf}
+%  \includegraphics[height=1.7in]{figures/example-TMVA-ROC.pdf}
+% \caption{Left: an example of the distributions $p_b(\hat s|\nu)$ and $p_s(\hat s|\nu)$ when the classifier $s$ is a boosted-decision tree (BDT). Right: the corresponding ROC curve (right) for this and other classifiers. (Figures taken from TMVA manual.)}
+% \label{fig:tmva}
+% \end{center}
+% \end{figure}
 
-\begin{figure}[t]
-\begin{center}
- \includegraphics[height=1.7in]{figures/example-TMVA-BDT.pdf}
- \includegraphics[height=1.7in]{figures/example-TMVA-ROC.pdf}
-\caption{Left: an example of the distributions $p_b(\hat s|\nu)$ and $p_s(\hat s|\nu)$ when the classifier $s$ is a boosted-decision tree (BDT). Right: the corresponding ROC curve (right) for this and other classifiers. (Figures taken from TMVA manual.)}
-\label{fig:tmva}
-\end{center}
-\end{figure}
+% These steps feed into a subsequent statistical test based on the observed data
+% ${D=(x_1, \dots, x_n)}$. For each event, the classifier is evaluated and one
+% performs inference on a parameter $\mu$ related to the presence of the signal
+% contribution. In particular, one forms the statistical model.
+% % \footnote{Sometimes
+% % there is an additional Poisson term when expected number of signal and
+% % background events is known, which is referred to as an extended likelihood or
+% % marked Poisson model.}
+% \begin{equation}\label{eq:typicalML}
+% p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu \hat{p}_s( \hat s(x_e) \, |\,  \nu)  + (1-\mu)\, \hat{p}_b( \hat s(x_e) \,|\, \nu) \,\right] \; .
+% \end{equation}
 
-These steps feed into a subsequent statistical test based on the observed data
-${D=(x_1, \dots, x_n)}$. For each event, the classifier is evaluated and one
-performs inference on a parameter $\mu$ related to the presence of the signal
-contribution. In particular, one forms the statistical model.
-% \footnote{Sometimes
-% there is an additional Poisson term when expected number of signal and
-% background events is known, which is referred to as an extended likelihood or
-% marked Poisson model.}
-\begin{equation}\label{eq:typicalML}
-p( D \,|\, \mu, \nu) = \prod_{e=1}^n \, \left[\, \mu \hat{p}_s( \hat s(x_e) \, |\,  \nu)  + (1-\mu)\, \hat{p}_b( \hat s(x_e) \,|\, \nu) \,\right] \; .
-\end{equation}
-
-\subsubsection{Comments on typical usage of machine learning in HEP}
+% \subsubsection{Comments on typical usage of machine learning in HEP}
 
 Nuisance parameters are an after thought in the typical usage of machine
-learning in HEP. In fact, most discussions would related to the training and
-optimizing the classifier only consider $p_b(x)$ and $p_s(x)$ with $\nu=\nu_0$
+learning in high energy physics. In fact, most discussions related to the training and
+optimizing the classifier only consider $p_b(\mathbf{x})$ and $p_s(\mathbf{x})$, with $\nu=\nu_0$
 being implicit. However, as experimentalists we know that we must account for
 various forms of systematic uncertainty, parameterized by nuisance parameters
-$\nu$. In practice, we take the classifier as fixed and then propagate
-uncertainty through the classifier as in Eq.~\ref{eq:typicalML}. Building the
-distribution $p(\hat s|\nu)$ for values of $\nu$ other than the nominal $\nu_0$
-used to train the classifier can be thought of as a calibration necessary for
-classical statistical inference; however, this classifier is clearly not optimal
-for $\nu \ne \nu_0$.
-
-\subsubsection{A more powerful  approach}
-
-The standard use of machine learning in HEP can be improved by training a
-parameterized classifier corresponding to the generalized likelihood ratio test
-\begin{equation}
-\lambda(\mu) = \frac{p(D|\mu, \hat{\hat{\nu}})}{p(D|\hat \mu, {\hat{\nu}})} \;,
-\end{equation}
-following the approach outlined in Section~\ref{S:GLR}.
-
-There is an interesting distinction between this approach and the standard use
-in which the classifier is trained for a fixed $\nu_0$. In the standard use one
-trains a classifier for signal vs. background, which is equivalent (in an ideal
-setting) to training a classifier for  null (background-only) vs. alternate
-(signal-plus-background) since the resulting regression functions are one-to-one
-with each other. In contrast, in the case of the generalized likelihood ratio
-test
-\begin{equation}\label{eq:hep_improved}
- \frac{p(x| 0, \hat{\hat{ \nu}})}{p(x|\hat \mu, \hat\nu)} =  \frac{p_b(x| \hat{\hat{ \nu}})}{ \hat \mu p_s( x_e \, |\,  \hat\nu)  + (1- \hat \mu )\, p_b( x_e \,|\, \hat \nu)} \; ,
-\end{equation}
-the background components don't cancel and there is an additional term $p_b(x|
-\hat{\hat{ \nu}})/p_b(x| {\hat{ \nu}})$. In practice, with classifiers of finite
-capacity, there will be some trade-off between taking into account this
-additional term and the more challenging learning problem when $\mu$ is very
-small.
+$\nu$. In practice, we take the classifier $\hat s$ as fixed and then propagate
+uncertainty by estimating $\hat{p}_s(\hat s(\mathbf{x}) | \nu)$. Building such
+distributions for values of $\nu$ other than the nominal $\nu_0$
+used at training can be thought of as a calibration necessary for
+classical statistical inference. However, this classifier is clearly not optimal
+for $\nu \ne \nu_0$. For the this reason, it is expected that the integrated parameterized approach proposed in this work
+would yield more accurate estimates of the generalized likelihood ratio.
 
 
-\subsubsection{Measuring particle properties}
-
-\glnote{Rework this section, add a concrete example and compare with other
-likelihood-free inference algorithms.}
+% \subsubsection{A more powerful  approach}
+%
+% The standard use of machine learning in HEP can be improved by training a
+% parameterized classifier corresponding to the generalized likelihood ratio test
+% \begin{equation}
+% \lambda(\mu) = \frac{p(D|\mu, \hat{\hat{\nu}})}{p(D|\hat \mu, {\hat{\nu}})} \;,
+% \end{equation}
+% following the approach outlined in Section~\ref{S:GLR}.
+%
+% There is an interesting distinction between this approach and the standard use
+% in which the classifier is trained for a fixed $\nu_0$. In the standard use one
+% trains a classifier for signal vs. background, which is equivalent (in an ideal
+% setting) to training a classifier for  null (background-only) vs. alternate
+% (signal-plus-background) since the resulting regression functions are one-to-one
+% with each other. In contrast, in the case of the generalized likelihood ratio
+% test
+% \begin{equation}\label{eq:hep_improved}
+%  \frac{p(x| 0, \hat{\hat{ \nu}})}{p(x|\hat \mu, \hat\nu)} =  \frac{p_b(x| \hat{\hat{ \nu}})}{ \hat \mu p_s( x_e \, |\,  \hat\nu)  + (1- \hat \mu )\, p_b( x_e \,|\, \hat \nu)} \; ,
+% \end{equation}
+% the background components don't cancel and there is an additional term $p_b(x|
+% \hat{\hat{ \nu}})/p_b(x| {\hat{ \nu}})$. In practice, with classifiers of finite
+% capacity, there will be some trade-off between taking into account this
+% additional term and the more challenging learning problem when $\mu$ is very
+% small.
 
 While the original motivation for this work was to improve the treatment of
 systematic uncertainties in new particle searches by parameterizing the
 classifier in terms of the nuisance parameters $\nu$, the same approach can be
-used for parameter inference. In the case of new particle searches the parameter
+used for parameter inference. In the case of new particle searches, the parameter
 of interest is the mixture coefficient for the signal component $p_s(x|\nu)$.
-When measuring particle properties the distribution of the features also depend
+When measuring particle properties, the distribution of the features also depend
 on parameters such as a particle's mass and quantum numbers. This is easily
-accommodated by extending $p_s(x|\nu) \to p_s(x|\theta)$, where $\theta$
+accommodated by extending $p_s(\mathbf{x}|\nu) \to p_s(\mathbf{x}|\theta)$, where $\theta$
 includes both parameters of interest and nuisance parameters.
-
 This formalism represents a significant step forward in the usage of machine
-learning in HEP, where classifiers have always been used between two static
+learning in high energy physics, where classifiers have always been used between two static
 classes of events and not parameterized explicitly in terms of the physical
-quantities we wish to measure. The work of  ~\citep{Whiteson:2006ws} is similar
+quantities we wish to measure.
+The work of \cite{Whiteson:2006ws} is similar,
 as the stochastic optimization was directly trying to minimize the measurement
 uncertainty of a particle's mass; however, the resulting classifier was fixed.
 This approach also offers the advantage that it explicitly reformulates the
@@ -957,8 +954,8 @@ detector response is naturally handled by the Monte Carlo sampling used in the
 simulation of the detector; however, that integral is intractable for the matrix
 element method. Even with drastic simplifications of the detector response, the
 matrix element method can take several minutes of CPU time to calculate the
-likelihood ratio $q(x)$ for a single event. The work here can be seen as aiming
-at the same conceptual target, but utilizing machine learning to overcome the
+likelihood ratio for a single event. The work here can be seen as aiming
+at the same conceptual target, but relying on machine learning to overcome the
 complexity of the detector simulation. It also offers enormous speed increase
 for evaluating the likelihood at the cost of an initial training stage. In
 practice, the matrix element method has only been used for searches and
@@ -966,15 +963,15 @@ measurement of a single physical parameter (sometimes with a single nuisance
 parameter as in~\citep{Aaltonen:2010yz}).
 
 Contemporary examples where the technique presented here could have major impact
-on HEP include the measurement of coefficients to quantum mechanical operators
+include the measurement of coefficients to quantum mechanical operators
 describing the decay of the Higgs boson~\citep{Chen:2014pia} and, if we are so
 lucky, measurement of the mass of supersymmetric particles in cascade
 decays~\citep{Allanach:2000kt}.  Both of these examples involve data sets with
-many events, each with a feature vector $x$ that has on the order of 10
+many events, each with a feature vector $\mathbf{x}$ that has on the order of 10
 components, and a parameter vector $\theta$ with 5-10 parameters of interest and
 possibly many more nuisance parameters. The state of the art for the operator
 coefficients of the Higgs decay uses the so-called matrix element likelihood
-analysis (MELA) in which the equivalent of $s(x; \theta_0, \theta_1)$ is
+analysis (MELA) in which the equivalent of $s(\mathbf{x}; \theta_0, \theta_1)$ is
 approximated by neglecting detector effects~\citep{Gao:2010qx,Bolognesi:2012mm}.
 
 
