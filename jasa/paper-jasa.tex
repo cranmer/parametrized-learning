@@ -194,8 +194,7 @@ an interpolation algorithm is used to approximate the parameterized
 model~\citep{Cranmer:2012sba}. In particular, to improve the statistical power
 of these tests, hundreds of these searches have already been using supervised
 learning to train discriminative classifiers that take advantage of a high
-dimensional feature vector $\mathbf{x}$. \glnote{We should then elaborate on how the
-proposed method could help these searches.}
+dimensional feature vector $\mathbf{x}$.
 
 % While classification accuracy can lead to optimal approaches for simple
 % hypothesis tests~\citep{Dempster1965}, that is no longer true in the context of
@@ -573,6 +572,17 @@ face of nuisance parameters associated to the simulator.
 \section{Generalized likelihood ratio tests}
 \label{sec:generalized-likelihood-ratio}
 
+Thus far we have shown that the target likelihood ratio
+$r(\mathbf{x};\theta_0,\theta_1)=\frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)}$
+with high dimensional features $\mathbf{x}$ can be reproduced via the univariate
+densities $p(s(\mathbf{x})|\theta_0)$ and $p(s(\mathbf{x})|\theta_1)$ if the
+reduction $s(\mathbf{x})$ is monotonic with $r(\mathbf{x};\theta_0,\theta_1)$.
+We now generalize from the ratio of two simple hypotheses specified by
+$\theta_0$ and $\theta_1$ to the case of composite hypothesis testing where
+$\theta$ are continuous model parameters.
+
+\subsection{Composite hypothesis testing}
+
 % Thus far we have shown that the target likelihood ratio
 % $p(x|\theta_0)/p(x|\theta_1)$ with high dimensional features $x$ can be
 % reproduced via the univariate densities $p(s|\theta_0)/p(s|\theta_1)$ if the
@@ -583,14 +593,7 @@ face of nuisance parameters associated to the simulator.
 % classifier and estimating the density to Section~\ref{S:classifier} and continue
 % in the likelihood-free setting with idealized classifiers and their densities.
 
-Thus far we have shown that the target likelihood ratio
-$r(\mathbf{x};\theta_0,\theta_1)=\frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)}$
-with high dimensional features $\mathbf{x}$ can be reproduced via the univariate
-densities $p(s(\mathbf{x})|\theta_0)$ and $p(s(\mathbf{x})|\theta_1)$ if the
-reduction $s(\mathbf{x})$ is monotonic with $r(\mathbf{x};\theta_0,\theta_1)$.
-We now generalize from the ratio of two simple hypotheses specified by
-$\theta_0$ and $\theta_1$ to the case of composite hypothesis testing where
-$\theta$ are continuous model parameters.
+
 %
 % In the case of a fixed classifier $s(x)$ it is possible to compute $s_e=s(x_e)$
 % for the observed data and never refer back to the original features $x_e$. In
@@ -658,47 +661,60 @@ and denominator of Eqn.~\ref{eqn:generalized-lr}, the generalized likelihood
 ratio can be estimated as outlined in Section~\ref{sec:approx}
 for simple hypothesis testing.
 
-\subsection{Parameterized classifier}
+% For completeness, the proposed method is summarized in
+% Algorithm~\ref{alg:training}, while further details for training and calibrating
+% efficiently a family $s(\mathbf{x};\theta_0,\theta_1)$ of classifiers are
+% discussed in sections \ref{sec:param-clf} and \ref{sec:param-calibration}.
+
+
+\subsection{Parameterized classification}
+\label{sec:param-clf}
 
 In order to provide parameter inference in the likelihood-free setting as
-described above, we must train a family $s(\mathbf{x};\theta_0,\theta_1)$ of classifiers parameterized by
-$\theta_0$ and $\theta_1$, the parameters associated to the null and alternate
-hypotheses, respectively. While this could be done independently for all
-$\theta_0$ and $\theta_1$, using the procedure outlined in
-Section~\ref{sec:likelihood-ratio-tests}, it is desirable and convenient to have a
-smooth evolution of the classification score as a function of the parameters.
-For this reason, we anticipate a single learning stage based on training data with input
-$(\mathbf{x}, \theta_0, \theta_1)_i$ and target $y_i$, as outlined in Algorithm~\ref{alg:training}. Somewhat unusually, the
+described above, we must train a family $s(\mathbf{x};\theta_0,\theta_1)$ of
+classifiers parameterized by $\theta_0$ and $\theta_1$, the parameters
+associated to the null and alternate hypotheses, respectively. While this could
+be done independently for all $\theta_0$ and $\theta_1$, using the procedure
+outlined in Section~\ref{sec:likelihood-ratio-tests}, it is desirable and
+convenient to have a smooth evolution of the classification score as a function
+of the parameters. For this reason, we anticipate a single learning stage based
+on training data with input $(\mathbf{x}, \theta_0, \theta_1)_i$ and target
+$y_i$, as outlined in Algorithm~\ref{alg:training}.
+Somewhat unusually, the
 unknown values of the parameters are taken as input to the classifier; their
 values will be specified via the enveloping (generalized) likelihood ratio of
-Eqn.~\ref{eqn:generalized-lr}.
-While the function
-$p(\mathbf{x}|\theta_1)/(p(\mathbf{x}|\theta_0)+p(\mathbf{x}|\theta_1))$ will
-minimize the expected squared error loss based on training data produced
-according to Algorithm~\ref{alg:training}, it is not clear how training data
-from $\theta'_0 \ne \theta_0$ and $\theta'_1 \ne \theta_1$ will influence a real
-world classifier with finite capacity. This is left as an area for future work.
+Eqn.~\ref{eqn:generalized-lr}.  In this way, the parameterized classifier
+now models the distribution of the output $y$ conditional to $(\mathbf{x}, \theta_0, \theta_1)$,
+for any $\mathbf{x}$ and any combination of parameter values $\theta_0, \theta_1$.
+
+While the optimal decision function \ref{eqn:best-s-clf} is expected to be
+learned for the parameter values $\theta_0$ and $\theta_1$ selected in
+Algorithm~\ref{alg:training}, it is not clear whether the optimal decision
+function can be expected for data generated from  $\theta'_0$ and $\theta'_1$
+never jointly encountered at learning. Similarly, it is not clear how the
+limited capacity of the classifier may impact the performance the resulting
+parameterized decision function. These issues are left as an area for future
+work, but preliminary exploration by \cite{Baldi:2016fzo} show that
+Algorithm~\ref{alg:training} is an effective practical approach.
 
 \begin{algorithm}[t]
-\caption{Training of a parameterized classifier.}\label{alg:training}
-\glnote{Outline the full generalized likelihood ratio estimation pipeline instead}
-    \begin{algorithmic}
-        \State ${\cal L := \{ \}}$
-        \For{ $\theta_0$ in $\Theta_0$ }
-        	\For{ $\theta_1$ in $\Theta_1$ }
-        		\State generate $\mathbf{x} \sim p(\mathbf{x}|\theta_0)$
-        		\State append $\{ (\mathbf{x}, \theta_0, \theta_1, u=0) \}$ to ${\cal L}$
-        		\State generate $\mathbf{x} \sim p(\mathbf{x}|\theta_1)$
-        		\State append $\{ (\mathbf{x}, \theta_0, \theta_1, u=1) \}$ to ${\cal L}$
-        	\EndFor
-        \EndFor
-        \State Learn $s(\mathbf{x}; \theta_0, \theta_1)$ from ${\cal L}$
-    \end{algorithmic}
+\caption{Learning a parametrized classifier.}\label{alg:training}
+\begin{algorithmic}
+    \State ${\cal L := \{ \}}$;
+    \While{ $\text{size}({\cal L}) < N $ }
+        \State Select or draw $\theta_0$, $\theta_1$ from $\Theta_0$, $\Theta_1$;
+	    \State Draw $\mathbf{x} \sim p(\mathbf{x}|\theta_0)$;
+		\State ${\cal L} := {\cal L} \cup \{ ((\mathbf{x}, \theta_0, \theta_1), y=0) \}$;
+		\State Draw $\mathbf{x} \sim p(\mathbf{x}|\theta_1)$;
+		\State ${\cal L} := {\cal L} \cup \{ ((\mathbf{x}, \theta_0, \theta_1), y=1) \}$;
+    \EndWhile
+    \State Learn a single classifier $s(\mathbf{x}; \theta_0, \theta_1)$ from ${\cal L}$.
+\end{algorithmic}
 \end{algorithm}
 
 
-
 \subsection{Parameterized calibration}
+\label{sec:param-calibration}
 
 Once the classifier is trained, we can use the generative model together with a
 univariate density estimation technique (e.g. histograms or kernel density
