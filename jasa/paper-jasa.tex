@@ -433,7 +433,7 @@ Combining equations \ref{eqn:hormander} and \ref{eqn:mapping}, the density ratio
 p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
 &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(u) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
 &= m^{-1}(s(\mathbf{x})) \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
-&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}.
+&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}. \label{eqn:factorization}
 \end{align}
 Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_1)$, finally yielding
 \begin{align}
@@ -496,8 +496,8 @@ learning models whose output value $\hat{s}(\mathbf{x})$ also smoothly varies
 around $\mathbf{x}$, such as neural networks. For small training sets, tree-based
 methods are not expected to work so well for this use case, since they usually
 model $\hat{s}(\mathbf{x})$ as a non-strictly monotonic composition of step functions.
-In particular, in such cases where $s(\mathbf{x})$ is not monotonic with $r(\mathbf{x})$, Jacobian
-factors in Eqn.~\ref{eqn:jacob} do not cancel, resulting in a biased
+In particular, in such cases where $s(\mathbf{x})$ is not monotonic with $r(\mathbf{x})$,
+the induced probability does not factorize as in Eqn.~\ref{eqn:factorization}, resulting in a biased 
 approximation of the density ratio.
 
 Given a reduction map $s$, our results show that a statistic equivalent to the
