@@ -86,8 +86,8 @@ approximate the generalized likelihood ratio statistic when only a generative mo
 available. In particular, the proposed method offers a machine learning-based
 approach to statistical inference that is complementary to likelihood-free
 Bayesian inference algorithms, such as Approximate Bayesian Computation, as it does
-not require the definition of a prior over model parameters. \glnote{Also
-mention conclusions on experimental results, as required by JASA guidelines.}
+not require the definition of a prior over model parameters. Experimental results
+on artificial problems illustrate the potential of the proposed method.
 
 \end{abstract}
 
@@ -222,7 +222,17 @@ dimensional feature vector $\mathbf{x}$.
 % dimensionality reduction map to aid in the estimation of the likelihood
 % function.
 
-The rest of this paper is organized as follows. In Section... \glnote{todo}
+The rest of the paper is organized as follows. In
+Section~\ref{sec:likelihood-ratio-tests}, we first introduce the likelihood
+ratio test statistic in the setting of simple hypothesis testing, and then
+outline how it can be computed exactly using calibrated classifiers.
+In Section~\ref{sec:generalized-likelihood-ratio}, we generalize the proposed
+approach to the case of composite hypothesis testing and discuss directions for
+approximating the statistic efficiently. We then illustrate the proposed
+method in Section~\ref{sec:examples} and outline how it could improve
+statistical analysis within the field of high energy physics. Related work
+and conclusions are finally presented in sections~\ref{sec:related} and \ref{sec:conclusions}.
+
 
 
 % Likelihood ratio tests =======================================================
@@ -497,7 +507,7 @@ around $\mathbf{x}$, such as neural networks. For small training sets, tree-base
 methods are not expected to work so well for this use case, since they usually
 model $\hat{s}(\mathbf{x})$ as a non-strictly monotonic composition of step functions.
 In particular, in such cases where $s(\mathbf{x})$ is not monotonic with $r(\mathbf{x})$,
-the induced probability does not factorize as in Eqn.~\ref{eqn:factorization}, resulting in a biased 
+the induced probability does not factorize as in Eqn.~\ref{eqn:factorization}, resulting in a biased
 approximation of the density ratio.
 
 Given a reduction map $s$, our results show that a statistic equivalent to the
@@ -817,6 +827,7 @@ calibration.
 
 
 \section{Examples and applications}
+\label{sec:examples}
 
 \subsection{Toy example}
 
