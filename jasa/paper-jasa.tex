@@ -1133,7 +1133,7 @@ or the practical issues associated to running the simulator.
 \section{Probabilistic classification for building $s$}
 \label{app:clf-for-s}
 
-In this appendix, we show that the probabilistic classification framework
+In this appendix, we show for completeness that the probabilistic classification framework
 yields a reduction $s$ which satisfies conditions of Theorem~\ref{thm:ratio-equivalence}.
 
 \begin{proposition} \label{thm:best-classifier}
@@ -1184,5 +1184,12 @@ Theorem~\ref{thm:ratio-equivalence} since $s^*(\mathbf{x}) =
 m(\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)})$,
 for $m(r(\mathbf{x})) = \frac{1}{1 + r(\mathbf{x})}$, is monotonic with
 $\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$.
+
+Proposition~\ref{thm:best-classifier} holds for the squared error loss, but it
+can be similarly shown that classifiers minimizing the exponential loss, the
+binomial log-likelihood (or cross-entropy) or the squared hinge loss are also
+monotonic with the density ratio~\citep{friedman2000additive,lin2002support}.
+However, a classifier with discrete outputs and minimizing the zero-one loss
+does not satisfy conditions of the theorem.
 
 \end{document}
