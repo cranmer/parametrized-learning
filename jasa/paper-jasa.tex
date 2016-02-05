@@ -181,7 +181,7 @@ Hadron Collider (LHC). The simulator that is sampling from $p(\mathbf{x}|\theta)
 based on quantum field theory, a detailed simulation of the particle detector,
 and data processing algorithms that transform raw sensor data into the feature
 vector $\mathbf{x}$~\citep{Sjostrand:2006za,Agostinelli:2002hh}. The ATLAS and CMS
-experiments have published  hundreds papers where the final result was
+experiments have published  hundreds of papers where the final result was
 formulated as a hypothesis test or confidence interval using a generalized
 likelihood ratio test~\citep{Cowan:2010js}, including most notably the discovery
 of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa} and subsequent
@@ -525,7 +525,7 @@ the (simpler) informative content of $r(\mathbf{x})$ is preserved.
 One strength of the proposed approach is that it factorizes the approximation of
 the per-sample reduction ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from the
 calibration procedure ($\hat p(\hat s(\mathbf{x})| \theta) \approx
-p(\hat{s}(\mathbf{x})|\theta)$). Thus, even if the classifier does a poor at
+p(\hat{s}(\mathbf{x})|\theta)$). Thus, even if the classifier does a poor job at
 learning the optimal decision function~\ref{eqn:best-s-clf} and therefore at
 reproducing the level sets of the per-sample likelihood ratio, the density of
 $\hat{s}$ can still be well calibrated. In that case, one might loose power, but
@@ -791,7 +791,7 @@ this overarching optimization problem as an area of future work.
 % The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
 In the special case of (simple or composite) hypothesis testing between
-models defined as mixtures of several components, i.e. when $p(\mathbf{x}|\theta$ can be written as
+models defined as mixtures of several components, i.e. when $p(\mathbf{x}|\theta)$ can be written as
 \begin{equation}
 p(\mathbf{x}|\theta)=\sum_c w_c(\theta) p_c(\mathbf{x}| \theta),
 \end{equation}
