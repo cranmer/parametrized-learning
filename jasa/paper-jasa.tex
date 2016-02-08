@@ -23,6 +23,8 @@
 \usepackage{color}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -775,6 +777,7 @@ this overarching optimization problem as an area of future work.
 
 
 \subsection{Mixture models}
+\label{sec:mixture}
 
 % In this section we generalize the capacity focusing technique of training
 % classifiers to discriminate between components of a mixture model. First, we
@@ -831,8 +834,63 @@ calibration.
 
 \subsection{Toy example}
 
-\glnote{todo}
-\glnote{+ diagnostics}
+As a simple but illustrative example, let us first consider the approximation of
+the likelihood log-ratio $\log \left( r(\mathbf{x};\theta_0,\theta_1) \right)$ between the mixtures
+$p(\mathbf{x}|\theta_0)$ and $p(\mathbf{x}|\theta_1)$ illustrated in
+Figure~\ref{fig:1} and defined as
+\begin{align}
+p(\mathbf{x}|\theta_0) &= (\frac{1}{2} - g) p_{c_0}(\mathbf{x}) + (\frac{1}{2} - g) p_{c_1}(\mathbf{x}) + g p_{c_2}(\mathbf{x}), \\
+p(\mathbf{x}|\theta_1) &= \frac{1}{2} p_{c_0}(\mathbf{x}) + \frac{1}{2} p_{c_1}(\mathbf{x}),
+\end{align}
+where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.5625)$, $p_{c_1} := {\cal N}(\mu=0, \sigma^2=4)$,
+$p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$ and where $g$ is a parameter of $p(\mathbf{x}|\theta_0)$
+set to $0.05$.
+
+Using the method outlined in Section~\ref{sec:approx},
+figures~\ref{fig:2}, \ref{fig:3} and \ref{fig:4} show the approximated
+ratio when using respectively a linear model, a neural network or a random
+forest. The blue curve corresponds to the true target log-ratio, the green curve is
+the direct approximation $\log \left( \frac{\hat s(\mathbf{x})}{1 - \hat s(\mathbf{x})} \right)$
+without calibration, while the red curve is the approximation $\log \frac{\hat p(\hat
+s(\mathbf{x}) | \theta_0)}{\hat p(\hat s(\mathbf{x}) | \theta_1)}$ as calibrated
+using kernel density estimation for a fixed bandwidth set to $0.2$. Finally, the
+cyan curve shows the approximated ratio when decomposing the mixtures, as
+described in Section~\ref{sec:mixture}.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/fig1.pdf}
+        \caption{$p(\mathbf{x}|\theta_0)$ and $p(\mathbf{x}|\theta_1)$}
+        \label{fig:1}
+    \end{subfigure}
+    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+      %(or a blank line to force the subfigure onto a new line)
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/fig2-a.pdf}
+        \caption{Linear model}
+        \label{fig:2}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/fig2-b.pdf}
+        \caption{Neural network}
+        \label{fig:3}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/fig2-c.pdf}
+        \caption{Random forest}
+        \label{fig:4}
+    \end{subfigure}
+    \caption{Approximation of the log-likelihood ratio $\log r(\mathbf{x};\theta_0,\theta_1) = \log \frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)}$ with calibrated classifiers. \glnote{I need to regenerate these figures using cross-validation for training and calibrating!}}\label{fig:animals}
+
+\end{figure}
+
+\glnote{Diagnostics.}
+
+\glnote{Extend to illustrate a generalized likelihood ratio test with
+parameterized classifier / calibration by assuming that the true value of $g$ is unknown.}
 
 \subsection{High energy physics}
 
