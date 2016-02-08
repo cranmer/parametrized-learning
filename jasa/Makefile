@@ -9,7 +9,6 @@ full: learning.bib paper-jasa.tex
 	bibtex paper-jasa
 	pdflatex -shell-escape paper-jasa
 	pdflatex -shell-escape paper-jasa
-	rm -f *.log *.out *.aux *.bbl *.blg
 
 clean:
 	rm -f *.log *.out *.aux *.bbl *.blg *.data paper-jasa.pdf
