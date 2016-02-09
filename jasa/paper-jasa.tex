@@ -710,7 +710,7 @@ work, but preliminary exploration by \cite{Baldi:2016fzo} show that
 Algorithm~\ref{alg:training} is an effective practical approach.
 
 \begin{algorithm}[t]
-\caption{Learning a parametrized classifier.}\label{alg:training}
+\caption{Learning a parameterized classifier.}\label{alg:training}
 \begin{algorithmic}
     \State ${\cal L := \{ \}}$;
     \While{ $\text{size}({\cal L}) < N $ }
@@ -847,7 +847,7 @@ $p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$ and where $g$ is a parameter of $p(\
 set to $0.05$.
 
 Using the method outlined in Section~\ref{sec:approx},
-figures~\ref{fig:2}, \ref{fig:3} and \ref{fig:4} show the approximated
+figures~\ref{fig:2a}, \ref{fig:2b} and \ref{fig:2c} show the approximated
 ratio when using respectively a linear model, a 2-layer neural network or a random
 forest. The blue curve corresponds to the true target log-ratio, the green curve is
 the direct approximation $\log \left( \frac{\hat s(\mathbf{x})}{1 - \hat s(\mathbf{x})} \right)$
@@ -856,6 +856,8 @@ s(\mathbf{x}) | \theta_0)}{\hat p(\hat s(\mathbf{x}) | \theta_1)}$ as calibrated
 using histograms. Finally, the
 cyan curve shows the approximated ratio when decomposing the mixtures, as
 described in Section~\ref{sec:mixture}.
+Hyper-parameters of the classifiers are all tuned on a finite grid of values
+in order to minimize the mean squared error, as estimated by 3-fold cross-validation.
 
 \begin{figure}
     \centering
@@ -869,7 +871,7 @@ described in Section~\ref{sec:mixture}.
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/fig2-a.pdf}
         \caption{Linear model}
-        \label{fig:2}
+        \label{fig:2a}
     \end{subfigure}
 
     \vspace{1em}
@@ -877,22 +879,87 @@ described in Section~\ref{sec:mixture}.
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/fig2-b.pdf}
         \caption{Neural network}
-        \label{fig:3}
+        \label{fig:2b}
     \end{subfigure}
     ~
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/fig2-c.pdf}
         \caption{Random forest}
-        \label{fig:4}
+        \label{fig:2c}
     \end{subfigure}
-    \caption{Approximation of the log-likelihood ratio $\log r(\mathbf{x};\theta_0,\theta_1) = \log \frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)}$ with calibrated classifiers.}
-
+    \caption{Approximation of the log-likelihood ratio
+             $\log r(\mathbf{x};\theta_0,\theta_1) = \log \frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)}$
+             with calibrated classifiers.}
 \end{figure}
 
-\glnote{Diagnostics.}
+The first fact to highlight is that, in the finite sample setting, uncalibrated
+direct approximations $\log \left( \frac{\hat s(\mathbf{x})}{1 - \hat
+s(\mathbf{x})} \right)$, as shown in green, do not yield very accurate estimates
+of the ratio, even when using universal approximators such as a neural network
+or a random forest. This observation is at the origin of this work, and led us
+to show that the ratio $r(\mathbf{x})$ can still be computed exactly by forming
+the equivalent statistic
+$\frac{p(s(\mathbf{x})|\theta_0)}{p(s(\mathbf{x})|\theta_1)}$, provided the
+transformation $s(\mathbf{x})$ is monotonic with $r(\mathbf{x})$. Indeed, when
+constructing $\frac{\hat p(\hat s(\mathbf{x})|\theta_0)}{\hat p(\hat
+s(\mathbf{x})|\theta_1)}$ as we propose, estimates appear much closer to the
+true ratio than their direct counterparts, as illustrated in red. The
+approximated ratios show to be accurate \glnote{Would be nice to be quantitative
+here.} for all three classifiers, in particular in regions with enough density
+(i.e., from $\mathbf{x}=-3$ to $\mathbf{x}=2$) and where the capacity of the
+classifier is focused. By contrast, in regions where the densities are low
+(i.e., at the boundaries) the approximated ratio show to have high variance
+since the underlying classifier cannot make very accurate predictions, because
+of the few training samples it is trained on in these parts of the input space.
+Accordingly, when leveraging the fact that densities are mixtures and decomposing their
+ratio, the capacity of the underlying classifiers can be focused on easier
+supervised learning tasks, resulting as expected in even more accurate approximations, as
+shown in cyan for all three classifiers.
 
-\glnote{Extend to illustrate a generalized likelihood ratio test with
-parameterized classifier / calibration by assuming that the true value of $g$ is unknown.}
+As shown in the figures, qualitatively different results are obtained depending
+the classification algorithm embedded within the approximation of the ratio. In
+this case, the neural network-based approximation appears to work best, due to
+the capacity of the classifier to model a decision function $s(\mathbf{x})$
+continuous and almost monotonic with the ratio. By contrast, the random forest
+yields a decision function which is piece-wise constant, therefore non-continuous
+and not strictly monotonic with the ratio in the finite sample regime, which
+appears to result in more variance in the approximated ratio. Finally, the
+linear model produces a decision function that is continuous but only piece-wise
+monotonic with the ratio. Due to the symmetry of the ratio around
+$\mathbf{x}=1$, this still results in an accurate approximation, but poorer
+results should be expected on more complex problems. Similarly, calibrating
+$\hat s(\mathbf{x})$ to construct $\hat p(\hat s(\mathbf{x}))$ is also key to
+obtain accurate results. While standard histograms with fixed bins have been
+used here for illustrative purposes, we anticipate that the embedded density
+estimation algorithm should be carefully chosen and tuned, on a case by case
+basis.
+
+Let us now consider the composite hypothesis testing setting, by comparing
+$H_0: g = 0$ versus the alternative $H_1: g > 0$. That is, we want to evaluate
+\begin{equation}
+\Lambda({\cal D}; \Theta_0 = \{0\}, \Theta=(0, \frac{1}{2}]) =  \frac{ p({\cal D} | g = 0) }{ \sup_{\theta \in \Theta} p({\cal D} | g=\theta)} \; .
+\end{equation}
+Following the approach outlined in Section~\ref{sec:generalized-likelihood-ratio},
+computing the generalized likelihood ratio statistic requires finding
+the maximum likelihood estimator for the denominator, which can be carried out using
+approximated likelihood ratios. Reusing the decomposed neural network-based
+approximation (or equivalently, using a parameterized classifier) and minimizing the mean negative log-ratio of some observed data
+generated for $g=0.05$,
+we successfully find as estimator $\hat g=0.049$, as shown in Figure~\ref{fig:3}.
+From there, the generalized likelihood ratio can be approximated as in the simple
+hypothesis setting.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/fig3.pdf}
+    \caption{Using approximated likelihood ratios for parameter inference.}
+    \label{fig:3}
+\end{figure}
+
+\glnote{Smoothly interpolate between histogram bins, in order to get a smooth ratio as well. Worth mentioning in the paper!}
+\glnote{Discuss diagnostics?}
+\glnote{Better highlight advantages of the method?}
+\glnote{Conduct more thorough and convincing experiments?}
 
 \subsection{High energy physics}
 
