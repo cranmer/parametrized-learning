@@ -844,7 +844,8 @@ p(\mathbf{x}|\theta_1) &= \frac{1}{2} p_{c_0}(\mathbf{x}) + \frac{1}{2} p_{c_1}(
 \end{align}
 where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.5625)$, $p_{c_1} := {\cal N}(\mu=0, \sigma^2=4)$,
 $p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$ and where $g$ is a parameter of $p(\mathbf{x}|\theta_0)$
-set to $0.05$.
+set to $0.05$. Samples drawn from $p(\mathbf{x}|\theta_0)$ are shown in the
+figure and will be used later for inference.
 
 Using the method outlined in Section~\ref{sec:approx},
 figures~\ref{fig:2a}, \ref{fig:2b} and \ref{fig:2c} show the approximated
@@ -944,7 +945,7 @@ computing the generalized likelihood ratio statistic requires finding
 the maximum likelihood estimator for the denominator, which can be carried out using
 approximated likelihood ratios. Reusing the decomposed neural network-based
 approximation (or equivalently, using a parameterized classifier) and minimizing the mean negative log-ratio of some observed data
-generated for $g=0.05$,
+generated for $g=0.05$ (as illustrated in Figure~\ref{fig:1}),
 we successfully find as estimator $\hat g=0.049$, as shown in Figure~\ref{fig:3}.
 From there, the generalized likelihood ratio can be approximated as in the simple
 hypothesis setting.
@@ -956,7 +957,7 @@ hypothesis setting.
     \label{fig:3}
 \end{figure}
 
-\glnote{Smoothly interpolate between histogram bins, in order to get a smooth ratio as well. Worth mentioning in the paper!}
+\glnote{Smoothly interpolate between histogram bins, in order to get a smooth ratio as well?}
 \glnote{Discuss diagnostics?}
 \glnote{Better highlight advantages of the method?}
 \glnote{Conduct more thorough and convincing experiments?}
