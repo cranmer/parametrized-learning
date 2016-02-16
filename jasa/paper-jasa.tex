@@ -491,6 +491,9 @@ Theorem~\ref{thm:ratio-equivalence} shows that in case we learn a probabilistic
 classifier $s(\mathbf{x})$ which is imperfect up to a monotonic transformation
 of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modeling
 $p_{\mathbf{U}}(u=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
+For this reason, the proposed method is expected to be more robust than
+directly using $\frac{1 - s(\mathbf{x})}{s(\mathbf{x})}$ as an approximate of
+$r(\mathbf{x})$.
 
 
 \subsection{Learning and calibrating $s$}
@@ -508,7 +511,7 @@ learning models whose output value $\hat{s}(\mathbf{x})$ also smoothly varies
 around $\mathbf{x}$, such as neural networks. For small training sets, tree-based
 methods are not expected to work so well for this use case, since they usually
 model $\hat{s}(\mathbf{x})$ as a non-strictly monotonic composition of step functions.
-In particular, in such cases where $s(\mathbf{x})$ is not monotonic with $r(\mathbf{x})$,
+In particular, in such cases where $\hat s(\mathbf{x})$ is not monotonic with $r(\mathbf{x})$,
 the induced probability does not factorize as in Eqn.~\ref{eqn:factorization}, resulting in a biased
 approximation of the density ratio.
 
@@ -849,9 +852,9 @@ figure and will be used later for inference.
 
 Using the method outlined in Section~\ref{sec:approx},
 figures~\ref{fig:2a}, \ref{fig:2b} and \ref{fig:2c} show the approximated
-ratio when using respectively a linear model, a 2-layer neural network or a random
+ratio when using respectively a linear model, a 2-layer neural network and a random
 forest. The blue curve corresponds to the true target log-ratio, the green curve is
-the direct approximation $\log \left( \frac{\hat s(\mathbf{x})}{1 - \hat s(\mathbf{x})} \right)$
+the direct approximation $\log \left( \frac{1 - \hat s(\mathbf{x})}{\hat s(\mathbf{x})} \right)$
 without calibration, while the red curve is the approximation $\log \frac{\hat p(\hat
 s(\mathbf{x}) | \theta_0)}{\hat p(\hat s(\mathbf{x}) | \theta_1)}$ as calibrated
 using histograms. Finally, the
@@ -894,8 +897,8 @@ in order to minimize the mean squared error, as estimated by 3-fold cross-valida
 \end{figure}
 
 The first fact to highlight is that, in the finite sample setting, uncalibrated
-direct approximations $\log \left( \frac{\hat s(\mathbf{x})}{1 - \hat
-s(\mathbf{x})} \right)$, as shown in green, do not yield very accurate estimates
+direct approximations $\log \left( \frac{1 - \hat
+s(\mathbf{x})}{\hat s(\mathbf{x})} \right)$, as shown in green, do not yield very accurate estimates
 of the ratio, even when using universal approximators such as a neural network
 or a random forest. This observation is at the origin of this work, and led us
 to show that the ratio $r(\mathbf{x})$ can still be computed exactly by forming
@@ -905,8 +908,7 @@ transformation $s(\mathbf{x})$ is monotonic with $r(\mathbf{x})$. Indeed, when
 constructing $\frac{\hat p(\hat s(\mathbf{x})|\theta_0)}{\hat p(\hat
 s(\mathbf{x})|\theta_1)}$ as we propose, estimates appear much closer to the
 true ratio than their direct counterparts, as illustrated in red. The
-approximated ratios show to be accurate \glnote{Would be nice to be quantitative
-here.} for all three classifiers, in particular in regions with enough density
+approximated ratios show to be accurate for all three classifiers, in particular in regions with enough density
 (i.e., from $\mathbf{x}=-3$ to $\mathbf{x}=2$) and where the capacity of the
 classifier is focused. By contrast, in regions where the densities are low
 (i.e., at the boundaries) the approximated ratio show to have high variance
@@ -918,22 +920,22 @@ supervised learning tasks, resulting as expected in even more accurate approxima
 shown in cyan for all three classifiers.
 
 As shown in the figures, qualitatively different results are obtained depending
-the classification algorithm embedded within the approximation of the ratio. In
-this case, the neural network-based approximation appears to work best, due to
-the capacity of the classifier to model a decision function $s(\mathbf{x})$
-continuous and almost monotonic with the ratio. By contrast, the random forest
-yields a decision function which is piece-wise constant, therefore non-continuous
-and not strictly monotonic with the ratio in the finite sample regime, which
-appears to result in more variance in the approximated ratio. Finally, the
-linear model produces a decision function that is continuous but only piece-wise
-monotonic with the ratio. Due to the symmetry of the ratio around
-$\mathbf{x}=1$, this still results in an accurate approximation, but poorer
-results should be expected on more complex problems. Similarly, calibrating
-$\hat s(\mathbf{x})$ to construct $\hat p(\hat s(\mathbf{x}))$ is also key to
-obtain accurate results. While standard histograms with fixed bins have been
-used here for illustrative purposes, we anticipate that the embedded density
-estimation algorithm should be carefully chosen and tuned, on a case by case
-basis.
+the classification algorithm embedded within the approximation of the ratio. The
+neural network-based approximation appears to work well, due to the capacity of
+the classifier to model a smooth decision function $s(\mathbf{x})$
+almost monotonic with the ratio. The random forest yields a decision function
+which is piece-wise constant, therefore non-continuous and not strictly
+monotonic with the ratio in the finite sample regime. On this problem, the
+random forest still approximates the ratio correctly, but more variance can be
+observed. Finally, the linear model produces a decision function that is
+smooth and continuous but only piece-wise monotonic with the ratio. Due to the symmetry of
+the ratio around $\mathbf{x}=1$, this still results in an accurate
+approximation, but poorer results should be expected on more complex problems.
+Similarly, calibrating $\hat s(\mathbf{x})$ to construct $\hat p(\hat
+s(\mathbf{x}))$ is also key to obtain accurate results. While standard
+histograms with fixed bins have been used here for illustrative purposes, we
+anticipate that the embedded density estimation algorithm should be carefully
+chosen and tuned, on a case by case basis.
 
 Let us now consider the composite hypothesis testing setting, by comparing
 $H_0: g = 0$ versus the alternative $H_1: g > 0$. That is, we want to evaluate
@@ -946,7 +948,7 @@ the maximum likelihood estimator for the denominator, which can be carried out u
 approximated likelihood ratios. Reusing the decomposed neural network-based
 approximation (or equivalently, using a parameterized classifier) and minimizing the mean negative log-ratio of some observed data
 generated for $g=0.05$ (as illustrated in Figure~\ref{fig:1}),
-we successfully find as estimator $\hat g=0.049$, as shown in Figure~\ref{fig:3}.
+we successfully find as estimator $\hat g=0.048$, as shown in Figure~\ref{fig:3}.
 From there, the generalized likelihood ratio can be approximated as in the simple
 hypothesis setting.
 
@@ -957,10 +959,9 @@ hypothesis setting.
     \label{fig:3}
 \end{figure}
 
-\glnote{Smoothly interpolate between histogram bins, in order to get a smooth ratio as well?}
-\glnote{Discuss diagnostics?}
-\glnote{Better highlight advantages of the method?}
-\glnote{Conduct more thorough and convincing experiments?}
+\subsection{Advanced example}
+
+\glnote{todo}
 
 \subsection{High energy physics}
 
@@ -1252,6 +1253,20 @@ calibration stage is performing this calibration continuously in $\theta$.
 Different strategies to this calibration are anticipated depending on the
 dimensionality of $\theta$, the complexity of the resulting likelihood function,
 or the practical issues associated to running the simulator.
+
+\section*{Acknowledgements} KC would like to thank Daniel Whiteson for
+encouragement throughout the project and Alex Ihler for challenging discussions
+that  led to a reformulation of the initial idea. KC would also like to thank
+Shimon Whiteson, Babak Shahbaba for advice in the presentation, Radford Neal for
+discussion of his earlier work, Yann LeCun, Philip Stark, and Pierre Baldi for
+their feedback on the project early in its conception, Bal\'azs K\'egl for
+feedback to the draft,  and Yuri
+Shirman for reassuring cross checks of the Theorem.  KC is supported by the US
+National Science Foundation grants PHY-0854724 and PHY-0955626.  KC is grateful
+to UC-Irvine for their hospitality while this research was carried out and the
+Moore and Sloan foundations for their generous support of the data science
+environment at NYU.
+\glnote{Update the acknowlegdments? What do we need to mention regarding my financial support?}
 
 \bibliographystyle{apalike}
 \bibliography{learning.bib}
