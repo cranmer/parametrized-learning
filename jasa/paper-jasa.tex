@@ -835,7 +835,7 @@ calibration.
 \section{Examples and applications}
 \label{sec:examples}
 
-\subsection{Toy example}
+\subsection{Mixtures of 1D normals}
 
 As a simple but illustrative example, let us first consider the approximation of
 the likelihood log-ratio $\log \left( r(\mathbf{x};\theta_0,\theta_1) \right)$ between the mixtures
@@ -946,16 +946,18 @@ Following the approach outlined in Section~\ref{sec:generalized-likelihood-ratio
 computing the generalized likelihood ratio statistic requires finding
 the maximum likelihood estimator for the denominator, which can be carried out using
 approximated likelihood ratios. Reusing the decomposed neural network-based
-approximation (or equivalently, using a parameterized classifier) and minimizing the mean negative log-ratio of some observed data
-generated for $g=0.05$ (as illustrated in Figure~\ref{fig:1}),
-we successfully find as estimator $\hat g=0.048$, as shown in Figure~\ref{fig:3}.
+approximation and minimizing the mean negative log-ratio of some observed data
+generated for $g=0.05$,
+Figure~\ref{fig:3} shows the empirical distribution of $\hat g$ when repeating the generation and optimization process.
+The figure clearly suggests that the proposed inference procedure yields in this case
+an unbiased estimator ($\mathbb{E} [\hat g] = 0.0502$, as empirically estimated over $200$ trials).
 From there, the generalized likelihood ratio can be approximated as in the simple
 hypothesis setting.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{figures/fig3.pdf}
-    \caption{Using approximated likelihood ratios for parameter inference.}
+    \caption{Using approximated likelihood ratios for parameter inference yields an unbiased maximum likelihood estimator $\hat g$.}
     \label{fig:3}
 \end{figure}
 
