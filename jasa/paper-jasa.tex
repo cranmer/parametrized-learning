@@ -798,7 +798,7 @@ this overarching optimization problem as an area of future work.
 % The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
 In the special case of (simple or composite) hypothesis testing between
-models defined as mixtures of several components, i.e. when $p(\mathbf{x}|\theta)$ can be written as
+models defined as known mixtures of several components, i.e. when $p(\mathbf{x}|\theta)$ can be written as
 \begin{equation}
 p(\mathbf{x}|\theta)=\sum_c w_c(\theta) p_c(\mathbf{x}| \theta),
 \end{equation}
@@ -816,7 +816,7 @@ Theorem~\ref{thm:ratio-equivalence} to relate the high-dimensional likelihood
 ratio into an equivalent calibrated likelihood ratio based on the univariate
 density of the corresponding classifier.
 
-In applications where mixture models are commonly used this decomposition allows
+In applications where mixture models are commonly used, this decomposition allows
 one to construct better likelihood ratio estimates since it forces classifiers
 $s_{c,c'}$ to focus on simpler sub-problems, for which higher accuracy is
 expected.
@@ -1008,7 +1008,8 @@ As previously, we make use of Eqn.~\ref{eq:mle_withs} for parameter inference
 with approximated likelihood ratios and fix the alternate to $\theta_1:=(A=0,
 B=0)$. Following recommendations from Section~\ref{sec:param-clf} to reduce
 computational requirements, we train a single parameterized classifier
-$s(\mathbf{x};\theta:=(A,B),\theta_1)$ (i.e., a neural network with 2 hidden layers of 40 nodes) and whose output is calibrated on-the-fly
+$s(\mathbf{x};\theta:=(A,B),\theta_1)$; in this case, a 2-layer neural network.
+Since the generative model is not expensive, the classifier output is calibrated on-the-fly
 with isotonic regression for every candidate parameter pair $\theta:=(A,B)$.
 Minimizing the mean negative log of the constructed objective with Bayesian
 optimization~\citep{brochu2010tutorial} eventually leads to the estimated
