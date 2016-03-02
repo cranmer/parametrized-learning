@@ -401,7 +401,7 @@ classifier decision function $s$ parameterized in terms of $(\theta_0, \theta_1)
 
 \begin{theorem}
     \label{thm:ratio-equivalence}
-    Let $\mathbf{X}$ be a random vector vector with values in ${\cal X} \subseteq \mathbb{R}^p$ and parameterized probability
+    Let $\mathbf{X}$ be a random vector with values in ${\cal X} \subseteq \mathbb{R}^p$ and parameterized probability
     density $p_{\mathbf{X}}(\mathbf{x} = (x_1, ..., x_p)|\theta)$ and let
     $s : \mathbb{R}^p \mapsto \mathbb{R}$ be a function monotonic with the density ratio
     $r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$,
@@ -477,7 +477,7 @@ function
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mathbf{x} | \theta_0) + p_{\mathbf{X}}(\mathbf{x} | \theta_1)}.
 \end{equation}
 modeled by a classifier trained to distinguish samples $\mathbf{x} \sim p_{\theta_0}$
-from samples $\mathbf{x} \sim p_{\theta_1}$ satisfies conditions of
+from samples $\mathbf{x} \sim p_{\theta_1}$ satisfies the conditions of
 Theorem~\ref{thm:ratio-equivalence} (see Appendix~\ref{app:clf-for-s} for further details).
 In other words, supervised learning yields a sufficient
 procedure for Theorem~\ref{thm:ratio-equivalence} to hold, guaranteeing that any
@@ -487,13 +487,13 @@ Theorem~\ref{thm:ratio-equivalence} holds for any monotonic function $m$ of the
 density ratio, i.e., not for $m(r(\mathbf{x})) = \frac{1}{1 +
 r(\mathbf{x})}$ only.
 Equivalently,
-Theorem~\ref{thm:ratio-equivalence} shows that in case we learn a probabilistic
+Theorem~\ref{thm:ratio-equivalence} shows that in the case that we learn a probabilistic
 classifier $s(\mathbf{x})$ which is imperfect up to a monotonic transformation
 of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modeling
 $p_{\mathbf{U}}(u=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
 For this reason, the proposed method is expected to be more robust than
 directly using $\frac{1 - s(\mathbf{x})}{s(\mathbf{x})}$ as an approximate of
-$r(\mathbf{x})$.
+$r(\mathbf{x})$ (which indeed converges towards $r(x)$ when $s(x)$ tends to $s^*(x)$).
 
 
 \subsection{Learning and calibrating $s$}
@@ -511,9 +511,11 @@ learning models whose output value $\hat{s}(\mathbf{x})$ also smoothly varies
 around $\mathbf{x}$, such as neural networks. For small training sets, tree-based
 methods are not expected to work so well for this use case, since they usually
 model $\hat{s}(\mathbf{x})$ as a non-strictly monotonic composition of step functions.
-In particular, in such cases where $\hat s(\mathbf{x})$ is not monotonic with $r(\mathbf{x})$,
+In such cases where $\hat s(\mathbf{x})$ is not monotonic with $r(\mathbf{x})$,
 the induced probability does not factorize as in Eqn.~\ref{eqn:factorization}, resulting in a biased
 approximation of the density ratio.
+Provided enough training data, accurate results could however still be achieved,
+given the universal approximator capacity of tree-based models.
 
 Given a reduction map $s$, our results show that a statistic equivalent to the
 likelihood ratio can be constructed, provided $p(s(\mathbf{x})|\theta)$ can be
@@ -990,7 +992,7 @@ were used for generating this data.
 \begin{figure}
     \centering
     \includegraphics[width=1.0\textwidth]{figures/fig4.pdf}
-    \caption{Observed 5-dimensional data ${\cal D}$ for nominal values $A=1$ and $B=-1$.}
+    \caption{Observed 5-dimensional data ${\cal D}$ for nominal values $(A=1, B=-1)$.}
     \label{fig:4}
 \end{figure}
 
@@ -1008,8 +1010,8 @@ were used for generating this data.
         \label{fig:5b}
     \end{subfigure}
     \caption{Inference from parameterized approximated likelihood ratios.
-             (\ref{fig:5a}) True mean negative log-ratio for the observed data ${\cal D}$. The red dot corresponds to the nominal values $A=1, B=-1$, while the green dot is the maximum likelihood estimator $\hat A=1.006, \hat B=-1.012$.
-             (\ref{fig:5a}) Estimated mean negative log-ratio, as approximated from the constructed objective by the gaussian process within the Bayesian optimization process. The blue dot is the estimated maximum likelihood estimator $\hat A=0.956, \hat B=-0.869$ while the white dots correspond to the points sampled during optimization.}
+             (\ref{fig:5a}) True mean negative log-ratio for the observed data ${\cal D}$. The red dot corresponds to the nominal values $(A=1, B=-1)$, while the green dot is the maximum likelihood estimator $(\hat A=1.006, \hat B=-1.012)$.
+             (\ref{fig:5b}) Estimated mean negative log-ratio, as approximated from the constructed objective by the gaussian process within the Bayesian optimization procedure. The blue dot is the estimated maximum likelihood estimator $(\hat A=0.956, \hat B=-0.869)$ while the white dots correspond to the points sampled during optimization.}
     \label{fig:5}
 \end{figure}
 
@@ -1023,7 +1025,7 @@ with isotonic regression for every candidate parameter pair $\theta:=(A,B)$.
 Minimizing the mean negative log of the constructed ratio with Bayesian
 optimization~\citep{brochu2010tutorial} eventually leads to the estimated
 posterior mean shown in Figure~\ref{fig:5b}, which is close to the true objective illustrated in Figure~\ref{fig:5a}. After $50$ iterations,
-the estimated minimizer is found at $(\hat A=0.956, \hat B=-0.869$). 
+the estimated minimizer is found at $(\hat A=0.956, \hat B=-0.869$).
 Again, repeated experiments (omitted here) confirm that
 the proposed procedure yields an unbiased maximum likelihood estimator.
 
