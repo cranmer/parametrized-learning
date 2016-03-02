@@ -996,11 +996,20 @@ were used for generating this data.
 
 \begin{figure}
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/fig5.pdf}
-    \caption{Parameter inference from parameterized approximated likelihood ratios.
-             The constructed objective is minimized with Bayesian optimization.
-             Red dots correspond to sampled candidate pairs $(A,B)$.
-             The blue dot corresponds to the minimum found after $50$ iterations. Nominal values are $A=1$ and $B=-1$.}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[height=12.5em]{figures/fig5a.pdf}
+        \caption{True mean negative log-ratio}
+        \label{fig:5a}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[height=12.5em]{figures/fig5b.pdf}
+        \caption{Estimated mean negative log-ratio}
+        \label{fig:5b}
+    \end{subfigure}
+    \caption{Inference from parameterized approximated likelihood ratios.
+             (\ref{fig:5a}) True mean negative log-ratio for the observed data ${\cal D}$. The red dot corresponds to the nominal values $A=1, B=-1$, while the green dot is the maximum likelihood estimator $\hat A=1.006, \hat B=-1.012$.
+             (\ref{fig:5a}) Estimated mean negative log-ratio, as approximated from the constructed objective by the gaussian process within the Bayesian optimization process. The blue dot is the estimated maximum likelihood estimator $\hat A=0.956, \hat B=-0.869$ while the white dots correspond to the points sampled during optimization.}
     \label{fig:5}
 \end{figure}
 
@@ -1011,10 +1020,11 @@ computational requirements, we train a single parameterized classifier
 $s(\mathbf{x};\theta:=(A,B),\theta_1)$; in this case, a 2-layer neural network.
 Since the generative model is not expensive, the classifier output is calibrated on-the-fly
 with isotonic regression for every candidate parameter pair $\theta:=(A,B)$.
-Minimizing the mean negative log of the constructed objective with Bayesian
+Minimizing the mean negative log of the constructed ratio with Bayesian
 optimization~\citep{brochu2010tutorial} eventually leads to the estimated
-posterior mean and variance shown in Figure~\ref{fig:5}. The objective is minimized after $50$ iterations
-at $(\hat A=1.00,\hat B=-1.15)$. Again, repeated experiments (omitted here) confirm that
+posterior mean shown in Figure~\ref{fig:5b}, which is close to the true objective illustrated in Figure~\ref{fig:5a}. After $50$ iterations,
+the estimated minimizer is found at $(\hat A=0.956, \hat B=-0.869$). 
+Again, repeated experiments (omitted here) confirm that
 the proposed procedure yields an unbiased maximum likelihood estimator.
 
 
