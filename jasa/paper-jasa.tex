@@ -991,8 +991,8 @@ For the sake of the illustration, we will assume 5-dimensional observed samples 
 from the following process $p_0$:
     \begin{enumerate}
         \item $\mathbf{z} := (z_0, z_1, z_2, z_3, z_4)$, such that
-            $z_0 \sim {\cal N}(\mu=A, \sigma=1)$,
-            $z_1 \sim {\cal N}(\mu=B, \sigma=3)$,
+            $z_0 \sim {\cal N}(\mu=\alpha, \sigma=1)$,
+            $z_1 \sim {\cal N}(\mu=\beta, \sigma=3)$,
             $z_2 \sim {\text{Mixture}}({\cal N}(\mu=-2, \sigma=1), {\cal N}(\mu=2, \sigma=0.5))$,
             $z_3 \sim {\text{Exponential}(\lambda=3)}$ and
             $z_4 \sim {\text{Exponential}(\lambda=0.5)}$;
@@ -1001,13 +1001,13 @@ from the following process $p_0$:
         of $\mathbf{z}$ into the observed space.
     \end{enumerate}
 Given observations ${\cal D}$ represented in Figure~\ref{fig:4},
-our goal is to infer the nominal values $A=1$ and $B=-1$ that
+our goal is to infer the nominal values $\alpha=1$ and $\beta=-1$ that
 were used for generating this data.
 
 \begin{figure}
     \centering
     \includegraphics[width=1.0\textwidth]{figures/fig4.pdf}
-    \caption{Observed 5-dimensional data ${\cal D}$ for nominal values $(A=1, B=-1)$.}
+    \caption{Observed 5-dimensional data ${\cal D}$ for nominal values $(\alpha=1, \beta=-1)$.}
     \label{fig:4}
 \end{figure}
 
@@ -1025,24 +1025,31 @@ were used for generating this data.
         \label{fig:5b}
     \end{subfigure}
     \caption{Inference from parameterized approximated likelihood ratios.
-             (\ref{fig:5a}) True mean negative log-ratio for the observed data ${\cal D}$. The red dot corresponds to the nominal values $(A=1, B=-1)$, while the green dot is the maximum likelihood estimator $(\hat A=1.006, \hat B=-1.012)$.
-             (\ref{fig:5b}) Estimated mean negative log-ratio, as approximated from the constructed objective by the Gaussian process within the Bayesian optimization procedure. The blue dot is the estimated maximum likelihood estimator $(\hat A=0.956, \hat B=-0.869)$ while the white dots correspond to the points sampled during optimization.}
+             (\ref{fig:5a}) True mean negative log-ratio for the observed data ${\cal D}$. The red dot corresponds
+             to the nominal values $(\alpha=1, \beta=-1)$, while the green dot is the maximum likelihood estimator
+             $(\hat \alpha=1.006, \hat \beta=-1.012)$.
+             (\ref{fig:5b}) Estimated mean negative log-ratio, as approximated from the constructed objective by
+             the Gaussian process within the Bayesian optimization procedure. The blue dot is the estimated maximum
+             likelihood estimator $(\hat \alpha=0.956, \hat \beta=-0.869)$ while the white dots correspond to
+             the points sampled during optimization.}
     \label{fig:5}
 \end{figure}
 
 As previously, we make use of Eqn.~\ref{eq:mle_withs} for parameter inference
-with approximated likelihood ratios and fix the alternate to $\theta_1:=(A=0,
-B=0)$. Following recommendations from Section~\ref{sec:param-clf} to reduce
-computational requirements, we train a single parameterized classifier
-$s(\mathbf{x};\theta:=(A,B),\theta_1)$; in this case, a 2-layer neural network.
-Since the generative model is not expensive, the classifier output is calibrated on-the-fly
-with isotonic regression for every candidate parameter pair $\theta:=(A,B)$.
+with approximated likelihood ratios and fix the alternate to
+$\theta_1:=(\alpha=0, \beta=0)$. Following recommendations from
+Section~\ref{sec:param-clf} to reduce computational requirements, we train a
+single parameterized classifier $s(\mathbf{x};\theta:=(\alpha,\beta),\theta_1)$;
+in this case, a 2-layer neural network. Since the generative model is not
+expensive, the classifier output is calibrated on-the-fly with isotonic
+regression for every candidate parameter pair $\theta:=(\alpha,\beta)$.
 Minimizing the mean negative log of the constructed ratio with Bayesian
 optimization~\citep{brochu2010tutorial} eventually leads to the estimated
-posterior mean shown in Figure~\ref{fig:5b}, which is close to the true objective illustrated in Figure~\ref{fig:5a}. After $50$ iterations,
-the estimated minimizer is found at $(\hat A=0.956, \hat B=-0.869$).
-Again, repeated experiments (omitted here) confirm that
-the proposed procedure yields an unbiased maximum likelihood estimator.
+posterior mean shown in Figure~\ref{fig:5b}, which is close to the true
+objective illustrated in Figure~\ref{fig:5a}. After $50$ iterations, the
+estimated minimizer is found at $(\hat \alpha=0.956, \hat \beta=-0.869$). Again,
+repeated experiments (omitted here) confirm that the proposed procedure yields
+an unbiased maximum likelihood estimator.
 
 
 \subsection{High energy physics}
