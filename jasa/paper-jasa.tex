@@ -51,7 +51,7 @@
   \title{\bf Approximating Likelihood Ratios with Calibrated Discriminative Classifiers}
   \author{Kyle Cranmer$^1$, Juan Pavez$^2$ and Gilles Louppe$^1$\hspace{.2cm}\\
           $^1$New York University\\
-          $^2$Federico Santa María University}
+          $^2$Federico Santa Mar\'ia University}
   \maketitle
 } \fi
 
@@ -903,27 +903,26 @@ described in Section~\ref{sec:mixture}.
 \end{figure}
 
 The first fact to highlight is that, in the finite sample setting, uncalibrated
-direct approximations $\log \left( \frac{1 - \hat
-s(\mathbf{x})}{\hat s(\mathbf{x})} \right)$, as shown in green, may not always yield very accurate estimates
-of the ratio, even when using universal approximators such as a neural network
-or a random forest. This observation is at the origin of this work, and led us
-to show that the ratio $r(\mathbf{x})$ can still be computed exactly by forming
-the equivalent statistic
+direct approximations $\log \left( \frac{1 - \hat s(\mathbf{x})}{\hat
+s(\mathbf{x})} \right)$, as shown in green, may not always yield very accurate
+estimates of the ratio, even when using universal approximators such as a neural
+network or a random forest. This observation is at the origin of this work, and
+led us to show that the ratio $r(\mathbf{x})$ can still be computed exactly by
+forming the equivalent statistic
 $\frac{p(s(\mathbf{x})|\theta_0)}{p(s(\mathbf{x})|\theta_1)}$, provided the
 transformation $s(\mathbf{x})$ is monotonic with $r(\mathbf{x})$. Indeed, when
 constructing $\frac{\hat p(\hat s(\mathbf{x})|\theta_0)}{\hat p(\hat
 s(\mathbf{x})|\theta_1)}$ as we propose, estimates appear much closer to the
 true ratio than their direct counterparts, as illustrated in red. The
-approximated ratios show to be more accurate for all three classifiers, in particular in regions with enough density
-and where the capacity of the
-classifier is focused. By contrast, in regions where the densities are low
-(i.e., at the boundaries) the approximated ratio show to less acurate
-since the underlying classifier cannot make precise predictions, because
-of the few training samples it is trained on in these parts of the input space.
-When leveraging the fact that densities are mixtures and decomposing their
-ratio, the capacity of the underlying classifiers can be focused on easier
-supervised learning tasks, resulting as expected in even more accurate approximations, as
-shown in cyan.
+approximated ratios show to be more accurate for all three classifiers, even
+when the direct approximation was not very good in the first place, e.g. as for the
+linear model. In regions where the densities are low (i.e., at the
+boundaries) the approximated ratio show to be less acurate since the underlying
+classifier cannot make precise predictions, because of the few training samples
+it is trained on in these parts of the input space. When leveraging the fact
+that densities are mixtures and decomposing their ratio, the capacity of the
+underlying classifiers can be focused on easier supervised learning tasks,
+resulting as expected in even more accurate approximations, as shown in cyan.
 
 As shown in the figures, qualitatively different results are obtained depending
 the classification algorithm embedded within the approximation of the ratio. The
@@ -959,7 +958,7 @@ chosen and tuned, on a case by case basis.
         \label{fig:2b}
     \end{subfigure}
 
-    \caption{Using approximated likelihood ratios for parameter inference yields an unbiased maximum likelihood estimator $\hat \gamma$.}
+    \caption{Using approximated likelihood ratios for parameter inference yields an unbiased maximum likelihood estimator $\hat \gamma$, as empirically estimated 1000 times over resampled observed data.}
     \label{fig:2}
 \end{figure}
 
@@ -974,16 +973,15 @@ likelihood ratio statistic requires finding the maximum likelihood estimator
 (MLE) for the denominator, which can be carried out using approximated
 likelihood ratios. Reusing the decomposed neural network-based approximation and
 minimizing the mean negative log-ratio of some observed data generated for
-$\gamma=0.05$, Figure~\ref{fig:2a} shows the empirical distribution of the resulting MLEs
-over resampled observed data,
+$\gamma=0.05$, Figure~\ref{fig:2a} shows the empirical distribution of the resulting MLEs,
 compared to the distribution of the true MLEs. The figure clearly suggests that
 the proposed inference procedure yields in this case an unbiased estimator
 ($\mathbb{E} [\hat \gamma] = 0.0501$, as empirically estimated over $1000$
 trials). Note that had the underlying ratio not been accurate enough because of
 poor training or poor calibration, the two distributions would not be exactly
-overlapping, indicating estimator bias.  Figure \ref{fig:2b} also confirms
+overlapping, indicating estimator bias. As a second check, Figure \ref{fig:2b} also confirms
 that the generalized likelihood ratio statistic obtained with our method is $\chi^2$ distributed,
-as should be the true  generalized likelihood ratio statistic.
+as should be the true statistic.
 
 \subsection{Parameterized inference from multidimensional data}
 
