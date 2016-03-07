@@ -850,7 +850,7 @@ the likelihood log-ratio $\log \left( r(\mathbf{x};\theta_0,\theta_1) \right)$ b
 $p(\mathbf{x}|\theta_0)$ and $p(\mathbf{x}|\theta_1)$ illustrated in
 Figure~\ref{fig:1a} and defined as
 \begin{align}
-p(\mathbf{x}|\theta_0) &= (\frac{1}{2} - \gamma) p_{c_0}(\mathbf{x}) + (\frac{1}{2} - \gamma) p_{c_1}(\mathbf{x}) + \gamma p_{c_2}(\mathbf{x}), \\
+p(\mathbf{x}|\theta_0) &= (\frac{1}{2} - \frac{\gamma}{2}) p_{c_0}(\mathbf{x}) + (\frac{1}{2} - \frac{\gamma}{2}) p_{c_1}(\mathbf{x}) + \gamma p_{c_2}(\mathbf{x}), \\
 p(\mathbf{x}|\theta_1) &= \frac{1}{2} p_{c_0}(\mathbf{x}) + \frac{1}{2} p_{c_1}(\mathbf{x}),
 \end{align}
 where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.5625)$, $p_{c_1} := {\cal N}(\mu=0, \sigma^2=4)$,
@@ -940,7 +940,11 @@ While not directly apparent, calibrating $\hat s(\mathbf{x})$ to construct $\hat
 s(\mathbf{x}))$ is key to obtain accurate results. Standard
 histograms with fixed bins have been used here for illustrative purposes, but we
 anticipate that the embedded density estimation algorithm should be carefully
-chosen and tuned, on a case by case basis.
+chosen and tuned, on a case by case basis. Overall, this first example confirms
+that even if the classifier does a poor joob a modeling the optimal decision
+function, good approximations of the likelihood ratio can still be obtained
+with proposed method, by calibrating $s(\mathbf{x})$ and/or by decomposing
+the mixture when possible.
 
 \begin{figure}
     \centering
@@ -963,16 +967,16 @@ chosen and tuned, on a case by case basis.
 \end{figure}
 
 Let us now consider the composite hypothesis testing setting, by comparing
-$H_0: \gamma = 0$ versus the alternative $H_1: \gamma > 0$. That is, we want to evaluate
+$H_0: \gamma = 0.05$ versus the alternative $H_1: \gamma \neq 0.05$. That is, we want to evaluate
 \begin{equation}
-\Lambda({\cal D}; \Theta_0 = \{0\}, \Theta=(0, \frac{1}{2}]) =  \frac{ p({\cal D} | \gamma = 0) }{ \sup_{\theta \in \Theta} p({\cal D} | \gamma=\theta)} \; .
+\Lambda({\cal D}; \Theta_0 = \{0.05\}, \Theta=[0, 1]) =  \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\theta \in \Theta} p({\cal D} | \gamma=\theta)} \; .
 \end{equation}
 Following the approach outlined in
 Section~\ref{sec:generalized-likelihood-ratio}, computing the generalized
 likelihood ratio statistic requires finding the maximum likelihood estimator
 (MLE) for the denominator, which can be carried out using approximated
-likelihood ratios. Reusing the decomposed neural network-based approximation and
-minimizing the mean negative log-ratio of some observed data generated for
+likelihood ratios. Reusing the decomposed neural network-based approximation from Figure~\ref{fig:1c} and
+minimizing the mean negative log-ratio of observed data generated for
 $\gamma=0.05$, Figure~\ref{fig:2a} shows the empirical distribution of the resulting MLEs,
 compared to the distribution of the true MLEs. The figure clearly suggests that
 the proposed inference procedure yields in this case an unbiased estimator
@@ -981,7 +985,7 @@ trials). Note that had the underlying ratio not been accurate enough because of
 poor training or poor calibration, the two distributions would not be exactly
 overlapping, indicating estimator bias. As a second check, Figure \ref{fig:2b} also confirms
 that the generalized likelihood ratio statistic obtained with our method is $\chi^2$ distributed,
-as should be the true statistic.
+as should be the true statistic when the null is true.
 
 \subsection{Parameterized inference from multidimensional data}
 
