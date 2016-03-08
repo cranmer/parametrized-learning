@@ -846,16 +846,14 @@ code is available online\footnote{\url{https://github.com/diana-hep/carl}}.
 \subsection{Likelihood ratios of mixtures of normals}
 
 As a simple and illustrative example, let us first consider the approximation of
-the likelihood log-ratio $\log \left( r(\mathbf{x};\theta_0,\theta_1) \right)$ between the 1D mixtures
-$p(\mathbf{x}|\theta_0)$ and $p(\mathbf{x}|\theta_1)$ illustrated in
+the likelihood log-ratio $\log \left( r(\mathbf{x};\gamma=0.05,\gamma=0) \right)$ between the 1D mixtures
+$p(\mathbf{x}|\gamma=0.05)$ and $p(\mathbf{x}|\gamma=0)$ illustrated in
 Figure~\ref{fig:1a} and defined as
 \begin{align}
-p(\mathbf{x}|\theta_0) &= (\frac{1}{2} - \frac{\gamma}{2}) p_{c_0}(\mathbf{x}) + (\frac{1}{2} - \frac{\gamma}{2}) p_{c_1}(\mathbf{x}) + \gamma p_{c_2}(\mathbf{x}), \\
-p(\mathbf{x}|\theta_1) &= \frac{1}{2} p_{c_0}(\mathbf{x}) + \frac{1}{2} p_{c_1}(\mathbf{x}),
+p(\mathbf{x}|\gamma) &= (\frac{1}{2} - \frac{\gamma}{2}) p_{c_0}(\mathbf{x}) + (\frac{1}{2} - \frac{\gamma}{2}) p_{c_1}(\mathbf{x}) + \gamma p_{c_2}(\mathbf{x}),
 \end{align}
 where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.5625)$, $p_{c_1} := {\cal N}(\mu=0, \sigma^2=4)$,
-$p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$ and where $\gamma$ is a parameter of $p(\mathbf{x}|\theta_0)$
-set to $0.05$. Samples drawn from $p(\mathbf{x}|\theta_0)$ are shown in the
+$p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$. Samples drawn for the nominal value $\gamma=0.05$ are shown in the
 figure and will be used later for inference.
 
 Using the method outlined in Section~\ref{sec:approx},
@@ -864,7 +862,7 @@ ratio when using respectively a linear model, a 2-layer neural network and a ran
 forest. The blue curve corresponds to the true target log-ratio, the green curve is
 the direct approximation $\log \left( \frac{1 - \hat s(\mathbf{x})}{\hat s(\mathbf{x})} \right)$
 without calibration, while the red curve is the approximation $\log \frac{\hat p(\hat
-s(\mathbf{x}) | \theta_0)}{\hat p(\hat s(\mathbf{x}) | \theta_1)}$ as calibrated
+s(\mathbf{x}) | \gamma=0.05)}{\hat p(\hat s(\mathbf{x}) | \gamma=0)}$ as calibrated
 using histograms. Finally, the
 cyan curve shows the approximated ratio when both decomposing the mixtures and calibrating the underlying classifiers, as
 described in Section~\ref{sec:mixture}.
@@ -873,7 +871,7 @@ described in Section~\ref{sec:mixture}.
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/fig1a.pdf}
-        \caption{$p(\mathbf{x}|\theta_0)$ and $p(\mathbf{x}|\theta_1)$}
+        \caption{$p(\mathbf{x}|\gamma=0.05)$ and $p(\mathbf{x}|\gamma=0)$}
         \label{fig:1a}
     \end{subfigure}
     ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
@@ -898,7 +896,7 @@ described in Section~\ref{sec:mixture}.
         \label{fig:1d}
     \end{subfigure}
     \caption{Approximation of the log-likelihood ratio
-             $\log r(\mathbf{x};\theta_0,\theta_1) = \log \frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)}$
+             $\log r(\mathbf{x};\gamma=0.05,\gamma=0) = \log \frac{p(\mathbf{x}|\gamma=0.05)}{p(\mathbf{x}|\gamma=0)}$
              with calibrated classifiers.}
 \end{figure}
 
@@ -909,10 +907,10 @@ estimates of the ratio, even when using universal approximators such as a neural
 network or a random forest. This observation is at the origin of this work, and
 led us to show that the ratio $r(\mathbf{x})$ can still be computed exactly by
 forming the equivalent statistic
-$\frac{p(s(\mathbf{x})|\theta_0)}{p(s(\mathbf{x})|\theta_1)}$, provided the
+$\frac{p(s(\mathbf{x})|\gamma=0.05)}{p(s(\mathbf{x})|\gamma=0)}$, provided the
 transformation $s(\mathbf{x})$ is monotonic with $r(\mathbf{x})$. Indeed, when
-constructing $\frac{\hat p(\hat s(\mathbf{x})|\theta_0)}{\hat p(\hat
-s(\mathbf{x})|\theta_1)}$ as we propose, estimates appear much closer to the
+constructing $\frac{\hat p(\hat s(\mathbf{x})|\gamma=0.05)}{\hat p(\hat
+s(\mathbf{x})|\gamma=0)}$ as we propose, estimates appear much closer to the
 true ratio than their direct counterparts, as illustrated in red. The
 approximated ratios show to be more accurate for all three classifiers, even
 when the direct approximation was not very good in the first place, e.g. as for the
@@ -941,9 +939,9 @@ s(\mathbf{x}))$ is key to obtain accurate results. Standard
 histograms with fixed bins have been used here for illustrative purposes, but we
 anticipate that the embedded density estimation algorithm should be carefully
 chosen and tuned, on a case by case basis. Overall, this first example confirms
-that even if the classifier does a poor joob a modeling the optimal decision
+that even if the classifier does a poor joob at modeling the optimal decision
 function, good approximations of the likelihood ratio can still be obtained
-with proposed method, by calibrating $s(\mathbf{x})$ and/or by decomposing
+with the proposed method, by calibrating $s(\mathbf{x})$ and/or by decomposing
 the mixture when possible.
 
 \begin{figure}
@@ -958,7 +956,7 @@ the mixture when possible.
       %(or a blank line to force the subfigure onto a new line)
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/fig2b.pdf}
-        \caption{$-2 \log \frac{p({\cal D}|\gamma=0.05)}{\sup_{\theta \in \Theta} p({\cal D} | \gamma=\theta)}$}
+        \caption{$-2 \log \frac{p({\cal D}|\gamma=0.05)}{\sup_{\gamma \in \Theta} p({\cal D} | \gamma)}$}
         \label{fig:2b}
     \end{subfigure}
 
@@ -966,26 +964,30 @@ the mixture when possible.
     \label{fig:2}
 \end{figure}
 
-Let us now consider the composite hypothesis testing setting, by comparing
+Given observed data from Figure~\ref{fig:1a}, let us now consider the composite hypothesis testing setting, by comparing
 $H_0: \gamma = 0.05$ versus the alternative $H_1: \gamma \neq 0.05$. That is, we want to evaluate
 \begin{equation}
-\Lambda({\cal D}; \Theta_0 = \{0.05\}, \Theta=[0, 1]) =  \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\theta \in \Theta} p({\cal D} | \gamma=\theta)} \; .
+\Lambda({\cal D}; \Theta_0 = \{0.05\}, \Theta=[0, 1]) =  \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \; .
 \end{equation}
-Following the approach outlined in
-Section~\ref{sec:generalized-likelihood-ratio}, computing the generalized
-likelihood ratio statistic requires finding the maximum likelihood estimator
-(MLE) for the denominator, which can be carried out using approximated
-likelihood ratios. Reusing the decomposed neural network-based approximation from Figure~\ref{fig:1c} and
-minimizing the mean negative log-ratio of observed data generated for
-$\gamma=0.05$, Figure~\ref{fig:2a} shows the empirical distribution of the resulting MLEs,
-compared to the distribution of the true MLEs. The figure clearly suggests that
+By exploiting the fact that
+\begin{equation}
+\log \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} = \log \frac{ p({\cal D} | \gamma = 0.05) }{ p({\cal D} | \gamma = 0 ) } - \log \frac{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma) }{  p({\cal D} | \gamma = 0 ) },
+\end{equation}
+the generalized likelihood ratio statistic can be computed by evaluating
+both terms reusing the decomposed neural network-based approximation from Figure~\ref{fig:1c}.
+In particular, the maximum likelihood estimator (MLE) in the second term
+can be found as outlined in
+Section~\ref{sec:generalized-likelihood-ratio}.
+Figure~\ref{fig:2a} shows the empirical distribution of the resulting MLEs,
+compared to the distribution of the true MLEs. It clearly suggests that
 the proposed inference procedure yields in this case an unbiased estimator
 ($\mathbb{E} [\hat \gamma] = 0.0501$, as empirically estimated over $1000$
 trials). Note that had the underlying ratio not been accurate enough because of
 poor training or poor calibration, the two distributions would not be exactly
-overlapping, indicating estimator bias. As a second check, Figure \ref{fig:2b} also confirms
-that the generalized likelihood ratio statistic obtained with our method is $\chi^2$ distributed,
+overlapping, indicating bias. Figure \ref{fig:2b} also confirms
+that $-2 \log \Lambda$, as approximated with our method, is asymptotically $\chi^2_1$ distributed,
 as should be the true statistic when the null is true.
+
 
 \subsection{Parameterized inference from multidimensional data}
 
