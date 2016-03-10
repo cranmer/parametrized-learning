@@ -79,18 +79,17 @@
 % approximate Bayesian computation.
 
 In many fields of science, generalized likelihood ratio tests are established tools for
-statistical inference. In practice, these tests are often complicated by the fact
-that computer simulators are used as a generative model for the data, which does
-not provide a way to evaluate the likelihood function. In this paper, we
-demonstrate that likelihood ratios are invariant under dimensionality reductions $\mathbb{R}^p \mapsto \mathbb{R}$,
-provided the transformation is itself monotonic with the likelihood ratio. As a direct
-consequence, we show that discriminative classifiers can be used to
+statistical inference. 
+ At the same time, it has become increasingly common that a simulator (or
+generative model) is used to describe complex processes that tie parameters
+$\theta$ of an underlying theory and measurement apparatus to high-dimensional
+observations $\mathbf{x}\in \mathbb{R}^p$. However, simulator often do not provide a way to evaluate 
+the likelihood function for a given observation $\mathbf{x}$, which motivates a new class of likelihood-free
+inference algorithms. 
+In this paper, we show that likelihood ratios are invariant under a specific class of dimensionality reduction maps $\mathbb{R}^p \mapsto \mathbb{R}$.  As a direct consequence, we show that discriminative classifiers can be used to
 approximate the generalized likelihood ratio statistic when only a generative model for the data is
-available. In particular, the proposed method offers a machine learning-based
-approach to statistical inference that is complementary to likelihood-free
-Bayesian inference algorithms, such as Approximate Bayesian Computation, as it does
-not require the definition of a prior over model parameters. Experimental results
-on artificial problems illustrate the potential of the proposed method.
+available. This leads to a new machine learning-based approach to likelihood-free inference that is complementary to Approximate Bayesian Computation, and which does not require a prior on the model parameters. Experimental results
+on artificial problems with known exact likelihoods illustrate the potential of the proposed method.
 
 \end{abstract}
 
@@ -191,13 +190,17 @@ of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa} and subsequent
 measurement of its properties. The bulk of the likelihood ratio tests at the LHC
 are based on the distribution of a single event-level feature that discriminates
 between a hypothesized process of interest (labeled \textit{signal}) and various
-other processes (labeled \textit{background}). Typically, data generated from the
+other processes (labeled \textit{background}). 
+Typically, data generated from the
 simulator are used to approximate the density at various parameter points, and
 an interpolation algorithm is used to approximate the parameterized
-model~\citep{Cranmer:2012sba}. In particular, to improve the statistical power
+model~\citep{Cranmer:2012sba}. In order to improve the statistical power
 of these tests, hundreds of these searches have already been using supervised
-learning to train discriminative classifiers that take advantage of a high
-dimensional feature vector $\mathbf{x}$.
+learning to train classifiers to discriminate between two two discrete hypotheses based
+on a high dimensional feature vector $\mathbf{x}$. The results of this paper outline
+how to extend the use of discriminative classifiers for composite hypotheses (parametrized by $\theta$) 
+in a way
+that fits naturally into the established likelihood based inference techniques.
 
 % While classification accuracy can lead to optimal approaches for simple
 % hypothesis tests~\citep{Dempster1965}, that is no longer true in the context of
@@ -234,7 +237,7 @@ approach to the case of composite hypothesis testing and discuss directions for
 approximating the statistic efficiently. We then illustrate the proposed
 method in Section~\ref{sec:examples} and outline how it could improve
 statistical analysis within the field of high energy physics. Related work
-and conclusions are finally presented in sections~\ref{sec:related} and \ref{sec:conclusions}.
+and conclusions are finally presented in Sections~\ref{sec:related} and \ref{sec:conclusions}.
 
 
 
@@ -405,7 +408,7 @@ classifier decision function $s$ parameterized in terms of $(\theta_0, \theta_1)
     Let $\mathbf{X}$ be a random vector with values in ${\cal X} \subseteq \mathbb{R}^p$ and parameterized probability
     density $p_{\mathbf{X}}(\mathbf{x} = (x_1, ..., x_p)|\theta)$ and let
     $s : \mathbb{R}^p \mapsto \mathbb{R}$ be a function monotonic with the density ratio
-    $r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$,
+    $r(\mathbf{x};\theta_0,\theta_1)$,
     for given parameters $\theta_0$ and $\theta_1$. In these conditions,
     \begin{equation}
         r(\mathbf{x};\theta_0,\theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} = \frac{p_\mathbf{U}(u=s(\mathbf{x})|\theta_0)}{p_\mathbf{U}(u=s(\mathbf{x})|\theta_1)},
@@ -433,15 +436,15 @@ p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) = \int_{\{\mathbf{x}^\prime \in \mathbb
 where $|\nabla s(\mathbf{x}^\prime)| = \sqrt{\sum_{i=1}^p |\frac{\partial}{\partial x_i} s(\mathbf{x}^\prime)|^2}$
 and where $dS_{\mathbf{x}^\prime}$ is the Euclidean surface measure on $\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}$.
 Also, since $s(\mathbf{x})$ is monotonic with
-$\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$,
-it exists an invertible function $m:\mathbb{R}^+ \mapsto \mathbb{R}$ such
-that $s(\mathbf{x}) = m(\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)})$.
+$r(\mathbf{X}; \theta_0, \theta_1)$,
+there exists an invertible function $m:\mathbb{R}^+ \mapsto \mathbb{R}$ such
+that $s(\mathbf{x}) = m(r(\mathbf{X}; \theta_0, \theta_1))$.
 In particular, we have
 \begin{align}
 \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} &= m^{-1}(s(\mathbf{x})) \nonumber \\
 p_\mathbf{X}(\mathbf{x}|\theta_0) &= m^{-1}(s(\mathbf{x})) p_\mathbf{X}(\mathbf{x}|\theta_1) \label{eqn:mapping}
 \end{align}
-Combining equations \ref{eqn:hormander} and \ref{eqn:mapping}, the density ratio $\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$ can be pulled out of the integral, resulting in
+Combining equations \ref{eqn:hormander} and \ref{eqn:mapping}, the density ratio $r(\mathbf{X}; \theta_0, \theta_1)$ can be pulled out of the integral, resulting in
 \begin{align}
 p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
 &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(u) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
@@ -485,15 +488,15 @@ procedure for Theorem~\ref{thm:ratio-equivalence} to hold, guaranteeing that any
 {\it universally strongly consistent} algorithm can be used for learning $s^*$.
 Note however, that it is not a necessary procedure since
 Theorem~\ref{thm:ratio-equivalence} holds for any monotonic function $m$ of the
-density ratio, i.e., not for $m(r(\mathbf{x})) = \frac{1}{1 +
-r(\mathbf{x})}$ only.
+density ratio,  not only for $m(r(\mathbf{x})) = (1 +
+r(\mathbf{x}))^{-1}$.
 Equivalently,
 Theorem~\ref{thm:ratio-equivalence} shows that in the case that we learn a probabilistic
 classifier $s(\mathbf{x})$ which is imperfect up to a monotonic transformation
 of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modeling
 $p_{\mathbf{U}}(u=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
 For this reason, the proposed method is expected to be more robust than
-directly using $\frac{1 - s(\mathbf{x})}{s(\mathbf{x})}$ as an approximate of
+directly using ${(1 - s(\mathbf{x}))}/{s(\mathbf{x})}$ as an approximate of
 $r(\mathbf{x})$ (which indeed converges towards $r(x)$ when $s(x)$ tends to $s^*(x)$).
 
 
@@ -591,7 +594,7 @@ face of nuisance parameters associated to the simulator.
 \label{sec:generalized-likelihood-ratio}
 
 Thus far we have shown that the target likelihood ratio
-$r(\mathbf{x};\theta_0,\theta_1)=\frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)}$
+$r(\mathbf{x};\theta_0,\theta_1)$
 with high dimensional features $\mathbf{x}$ can be reproduced via the univariate
 densities $p(s(\mathbf{x})|\theta_0)$ and $p(s(\mathbf{x})|\theta_1)$ if the
 reduction $s(\mathbf{x})$ is monotonic with $r(\mathbf{x};\theta_0,\theta_1)$.
@@ -719,15 +722,15 @@ Algorithm~\ref{alg:training} is an effective practical approach.
 \begin{algorithm}[t]
 \caption{Learning a parameterized classifier.}\label{alg:training}
 \begin{algorithmic}
-    \State ${\cal L := \{ \}}$;
+    \State ${\cal T := \{ \}}$;
     \While{ $\text{size}({\cal L}) < N $ }
         \State Select or draw $\theta_0$, $\theta_1$ from $\Theta_0$, $\Theta_1$;
 	    \State Draw $\mathbf{x} \sim p(\mathbf{x}|\theta_0)$;
-		\State ${\cal L} := {\cal L} \cup \{ ((\mathbf{x}, \theta_0, \theta_1), y=0) \}$;
+		\State ${\cal T} := {\cal T} \cup \{ ((\mathbf{x}, \theta_0, \theta_1), y=0) \}$;
 		\State Draw $\mathbf{x} \sim p(\mathbf{x}|\theta_1)$;
-		\State ${\cal L} := {\cal L} \cup \{ ((\mathbf{x}, \theta_0, \theta_1), y=1) \}$;
+		\State ${\cal T} := {\cal T} \cup \{ ((\mathbf{x}, \theta_0, \theta_1), y=1) \}$;
     \EndWhile
-    \State Learn a single classifier $s(\mathbf{x}; \theta_0, \theta_1)$ from ${\cal L}$.
+    \State Learn a single classifier $s(\mathbf{x}; \theta_0, \theta_1)$ from ${\cal T}$.
 \end{algorithmic}
 \end{algorithm}
 
@@ -846,11 +849,11 @@ code is available online\footnote{\url{https://github.com/diana-hep/carl}}.
 \subsection{Likelihood ratios of mixtures of normals}
 
 As a simple and illustrative example, let us first consider the approximation of
-the likelihood log-ratio $\log \left( r(\mathbf{x};\gamma=0.05,\gamma=0) \right)$ between the 1D mixtures
+the log-likelihood ratio $\log \left( r(\mathbf{x};\gamma=0.05,\gamma=0) \right)$ between the 1D mixtures
 $p(\mathbf{x}|\gamma=0.05)$ and $p(\mathbf{x}|\gamma=0)$ illustrated in
 Figure~\ref{fig:1a} and defined as
 \begin{align}
-p(\mathbf{x}|\gamma) &= (\frac{1}{2} - \frac{\gamma}{2}) p_{c_0}(\mathbf{x}) + (\frac{1}{2} - \frac{\gamma}{2}) p_{c_1}(\mathbf{x}) + \gamma p_{c_2}(\mathbf{x}),
+p(\mathbf{x}|\gamma) &= (1-\gamma)\frac{p_{c_0}(\mathbf{x}) +  p_{c_1}(\mathbf{x})}{2}   + \gamma \, p_{c_2}(\mathbf{x}),
 \end{align}
 where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.5625)$, $p_{c_1} := {\cal N}(\mu=0, \sigma^2=4)$,
 $p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$. Samples drawn for the nominal value $\gamma=0.05$ are shown in the
@@ -1035,13 +1038,13 @@ from the following process $p_0$:
         \caption{ }
         \label{fig:5c}
     \end{subfigure}
-    \caption{Inference from parameterized approximated likelihood ratios. The red dot corresponds
-    to the nominal values $(\alpha=1, \beta=-1)$, the green dot is the maximum likelihood estimator
-    $(\hat \alpha=0.896, \hat \beta=-0.984)$ while the blue dot is the estimated maximum likelihood estimator $(\hat \alpha=0.893, \hat \beta=-1.135)$.
+    \caption{Inference from exact and approximate likelihood ratios. The red dot corresponds
+    to the true values $(\alpha=1, \beta=-1)$ used to generate $\mathcal{D}$, the green dot is the MLE
+    $(\hat \alpha=0.896, \hat \beta=-0.984)$ from the exact likelihood, while the blue dot is the MLE $(\hat \alpha=0.893, \hat \beta=-1.135)$ from the approximate likelihood.
     1, 2 and 3-$\sigma$ contours are shown in white.
-             (\ref{fig:5a}) Exact values of the objective for the observed data ${\cal D}$.
-             (\ref{fig:5b}) Sampled values of the approximated objective for a $15 \times 15$ fixed grid.
-             (\ref{fig:5c}) Posterior mean of the approximated objective, as estimated by the Gaussian process within the Bayesian optimization procedure. White dots show the sampled candidates during the optimization process.}
+             (\ref{fig:5a}) The exact log-likelihood for the observed data ${\cal D}$.
+             (\ref{fig:5b}) The approximate log-likelihood  evaluated on a coarse $15 \times 15$ fixed grid.
+             (\ref{fig:5c}) A Gaussian Process surrogate of the approximate log-likelihood ratio estimated from a Bayesian optimization procedure. White dots show the  parameter points sampled during the optimization process.}
     \label{fig:5}
 \end{figure}
 

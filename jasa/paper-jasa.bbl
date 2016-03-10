@@ -1,0 +1,200 @@
+\begin{thebibliography}{}
+
+\bibitem[Aaltonen et~al., 2010]{Aaltonen:2010yz}
+Aaltonen, T. et~al. (2010).
+\newblock {Top Quark Mass Measurement in the Lepton + Jets Channel Using a
+  Matrix Element Method and \textit{in situ} Jet Energy Calibration}.
+\newblock {\em Phys.Rev.Lett.}, 105:252001.
+
+\bibitem[Agostinelli et~al., 2003]{Agostinelli:2002hh}
+Agostinelli, S. et~al. (2003).
+\newblock {GEANT4: A Simulation toolkit}.
+\newblock {\em Nucl.Instrum.Meth.}, A506:250--303.
+
+\bibitem[Allanach et~al., 2000]{Allanach:2000kt}
+Allanach, B., Lester, C., Parker, M.~A., and Webber, B. (2000).
+\newblock {Measuring sparticle masses in nonuniversal string inspired models at
+  the LHC}.
+\newblock {\em JHEP}, 0009:004.
+
+\bibitem[Baak et~al., 2015]{baak2015interpolation}
+Baak, M., Gadatsch, S., Harrington, R., and Verkerke, W. (2015).
+\newblock Interpolation between multi-dimensional histograms using a new
+  non-linear moment morphing method.
+\newblock {\em Nuclear Instruments and Methods in Physics Research Section A:
+  Accelerators, Spectrometers, Detectors and Associated Equipment}, 771:39--48.
+
+\bibitem[Baldi et~al., 2016]{Baldi:2016fzo}
+Baldi, P., Cranmer, K., Faucett, T., Sadowski, P., and Whiteson, D. (2016).
+\newblock {Parameterized Machine Learning for High-Energy Physics}.
+
+\bibitem[Bickel et~al., 2009]{bickel2009discriminative}
+Bickel, S., Br{\"u}ckner, M., and Scheffer, T. (2009).
+\newblock Discriminative learning under covariate shift.
+\newblock {\em The Journal of Machine Learning Research}, 10:2137--2155.
+
+\bibitem[Bolognesi et~al., 2012]{Bolognesi:2012mm}
+Bolognesi, S., Gao, Y., Gritsan, A.~V., Melnikov, K., Schulze, M., et~al.
+  (2012).
+\newblock {On the spin and parity of a single-produced resonance at the LHC}.
+\newblock {\em Phys.Rev.}, D86:095031.
+
+\bibitem[Brochu et~al., 2010]{brochu2010tutorial}
+Brochu, E., Cora, V.~M., and De~Freitas, N. (2010).
+\newblock A tutorial on bayesian optimization of expensive cost functions, with
+  application to active user modeling and hierarchical reinforcement learning.
+\newblock {\em arXiv preprint arXiv:1012.2599}.
+
+\bibitem[Chen et~al., 2015]{Chen:2014pia}
+Chen, Y., Di~Marco, E., Lykken, J., Spiropulu, M., Vega-Morales, R., et~al.
+  (2015).
+\newblock {8D likelihood effective Higgs couplings extraction framework in $h
+  \to 4\ell$}.
+\newblock {\em JHEP}, 1501:125.
+
+\bibitem[Cowan et~al., 2010]{Cowan:2010js}
+Cowan, G., Cranmer, K., Gross, E., and Vitells, O. (2010).
+\newblock {Asymptotic formulae for likelihood-based tests of new physics}.
+\newblock {\em Eur.Phys.J.}, C71:1554.
+
+\bibitem[Cranmer et~al., 2012]{Cranmer:2012sba}
+Cranmer, K., Lewis, G., Moneta, L., Shibata, A., and Verkerke, W. (2012).
+\newblock {HistFactory: A tool for creating statistical models for use with
+  RooFit and RooStats}.
+
+\bibitem[Friedman et~al., 2000]{friedman2000additive}
+Friedman, J., Hastie, T., Tibshirani, R., et~al. (2000).
+\newblock Additive logistic regression: a statistical view of boosting (with
+  discussion and a rejoinder by the authors).
+\newblock {\em The annals of statistics}, 28(2):337--407.
+
+\bibitem[Gao et~al., 2010]{Gao:2010qx}
+Gao, Y., Gritsan, A.~V., Guo, Z., Melnikov, K., Schulze, M., et~al. (2010).
+\newblock {Spin determination of single-produced resonances at hadron
+  colliders}.
+\newblock {\em Phys.Rev.}, D81:075022.
+
+\bibitem[Gretton et~al., 2009]{gretton2009covariate}
+Gretton, A., Smola, A., Huang, J., Schmittfull, M., Borgwardt, K., and
+  Sch{\"o}lkopf, B. (2009).
+\newblock Covariate shift by kernel mean matching.
+\newblock {\em Dataset shift in machine learning}, 3(4):5.
+
+\bibitem[Hido et~al., 2011]{hido2011statistical}
+Hido, S., Tsuboi, Y., Kashima, H., Sugiyama, M., and Kanamori, T. (2011).
+\newblock Statistical outlier detection using direct density ratio estimation.
+\newblock {\em Knowledge and information systems}, 26(2):309--336.
+
+\bibitem[H\"{o}rmander, 1990]{Hrmander1990}
+H\"{o}rmander, L. (1990).
+\newblock {\em The Analysis of Linear Partial Differential Operators I}.
+\newblock Springer Science, Business Media.
+
+\bibitem[Ihler et~al., 2004]{Ihler2004}
+Ihler, A., Fisher, J., and Willsky, A. (2004).
+\newblock {Nonparametric Hypothesis Tests for Statistical Dependency}.
+\newblock {\em IEEE Transactions on Signal Processing}, 52(8):2234--2249.
+
+\bibitem[Lin, 2002]{lin2002support}
+Lin, Y. (2002).
+\newblock Support vector machines and the bayes rule in classification.
+\newblock {\em Data Mining and Knowledge Discovery}, 6(3):259--275.
+
+\bibitem[Neal, 2007]{Neal:2007zz}
+Neal, R.~M. (2007).
+\newblock {Computing likelihood functions for high-energy physics experiments
+  when distributions are defined by simulators with nuisance parameters}.
+\newblock In {\em Proceedings of PhyStat2007, CERN-2008-001}, pages 111--118.
+
+\bibitem[Nguyen et~al., 2010]{nguyen2010estimating}
+Nguyen, X., Wainwright, M.~J., Jordan, M., et~al. (2010).
+\newblock Estimating divergence functionals and the likelihood ratio by convex
+  risk minimization.
+\newblock {\em Information Theory, IEEE Transactions on}, 56(11):5847--5861.
+
+\bibitem[Read, 1999]{read1999linear}
+Read, A. (1999).
+\newblock Linear interpolation of histograms.
+\newblock {\em Nuclear Instruments and Methods in Physics Research Section A:
+  Accelerators, Spectrometers, Detectors and Associated Equipment},
+  425(1):357--360.
+
+\bibitem[Scott and Nowak, 2005]{ClaytonScott}
+Scott, C. and Nowak, R. (2005).
+\newblock A neyman-pearson approach to statistical learning.
+\newblock {\em IEEE Trans. Inform. Theory}, 51:3806--3819.
+
+\bibitem[Shimodaira, 2000]{shimodaira2000improving}
+Shimodaira, H. (2000).
+\newblock Improving predictive inference under covariate shift by weighting the
+  log-likelihood function.
+\newblock {\em Journal of statistical planning and inference}, 90(2):227--244.
+
+\bibitem[Sjostrand et~al., 2006]{Sjostrand:2006za}
+Sjostrand, T., Mrenna, S., and Skands, P.~Z. (2006).
+\newblock {PYTHIA 6.4 Physics and Manual}.
+\newblock {\em JHEP}, 0605:026.
+
+\bibitem[Sugiyama and Kawanabe, 2012]{sugiyama2012machine}
+Sugiyama, M. and Kawanabe, M. (2012).
+\newblock {\em Machine learning in non-stationary environments: Introduction to
+  covariate shift adaptation}.
+\newblock MIT Press.
+
+\bibitem[Sugiyama et~al., 2007]{sugiyama2007covariate}
+Sugiyama, M., Krauledat, M., and M{\"u}ller, K.-R. (2007).
+\newblock Covariate shift adaptation by importance weighted cross validation.
+\newblock {\em The Journal of Machine Learning Research}, 8:985--1005.
+
+\bibitem[Sugiyama and M{\"u}ller, 2005]{sugiyama2005input}
+Sugiyama, M. and M{\"u}ller, K.-R. (2005).
+\newblock Input-dependent estimation of generalization error under covariate
+  shift.
+\newblock {\em Statistics \& Decisions}, 23(4/2005):249--279.
+
+\bibitem[Sugiyama et~al., 2012]{sugiyama2012density}
+Sugiyama, M., Suzuki, T., and Kanamori, T. (2012).
+\newblock {\em Density ratio estimation in machine learning}.
+\newblock Cambridge University Press.
+
+\bibitem[{The ATLAS Collaboration}, 2012]{Aad:2012tfa}
+{The ATLAS Collaboration} (2012).
+\newblock {Observation of a new particle in the search for the Standard Model
+  Higgs boson with the ATLAS detector at the LHC}.
+\newblock {\em Phys.Lett.}, B716:1--29.
+
+\bibitem[{The CMS Collaboration}, 2012]{Chatrchyan:2012ufa}
+{The CMS Collaboration} (2012).
+\newblock {Observation of a new boson at a mass of 125 GeV with the CMS
+  experiment at the LHC}.
+\newblock {\em Phys.Lett.}, B716:30--61.
+
+\bibitem[Vapnik, 1998]{vapnik1998statistical}
+Vapnik, V. (1998).
+\newblock {\em Statistical learning theory}, volume~1.
+\newblock Wiley New York.
+
+\bibitem[Vapnik et~al., 2013]{vapnik2013constructive}
+Vapnik, V., Braga, I., and Izmailov, R. (2013).
+\newblock Constructive setting of the density ratio estimation problem and its
+  rigorous solution.
+\newblock {\em arXiv preprint arXiv:1306.0407}.
+
+\bibitem[Volobouev, 2011]{Volobouev:2011vb}
+Volobouev, I. (2011).
+\newblock {Matrix Element Method in HEP: Transfer Functions, Efficiencies, and
+  Likelihood Normalization}.
+
+\bibitem[Whiteson and Whiteson, 2007]{Whiteson:2006ws}
+Whiteson, S. and Whiteson, D. (2007).
+\newblock {Stochastic optimization for collision selection in high energy
+  physics}.
+\newblock {\em Association for the Advancement of Artificial Intelligence},
+  292.
+
+\bibitem[{Xin Tong}, 2013]{JMLR:v14:tong13a}
+{Xin Tong} (2013).
+\newblock {A Plug-in Approach to Neyman-Pearson Classification}.
+\newblock {\em Journal of Machine Learning Research}, 14:3011--3040.
+
+\end{thebibliography}
