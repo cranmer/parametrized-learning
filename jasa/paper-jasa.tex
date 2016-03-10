@@ -915,7 +915,7 @@ true ratio than their direct counterparts, as illustrated in red. The
 approximated ratios show to be more accurate for all three classifiers, even
 when the direct approximation was not very good in the first place, e.g. as for the
 linear model. In regions where the densities are low (i.e., at the
-boundaries) the approximated ratio show to be less acurate since the underlying
+boundaries) the approximated ratio show to be less accurate since the underlying
 classifier cannot make precise predictions, because of the few training samples
 it is trained on in these parts of the input space. When leveraging the fact
 that densities are mixtures and decomposing their ratio, the capacity of the
@@ -939,7 +939,7 @@ s(\mathbf{x}))$ is key to obtain accurate results. Standard
 histograms with fixed bins have been used here for illustrative purposes, but we
 anticipate that the embedded density estimation algorithm should be carefully
 chosen and tuned, on a case by case basis. Overall, this first example confirms
-that even if the classifier does a poor joob at modeling the optimal decision
+that even if the classifier does a poor job at modeling the optimal decision
 function, good approximations of the likelihood ratio can still be obtained
 with the proposed method, by calibrating $s(\mathbf{x})$ and/or by decomposing
 the mixture when possible.
@@ -960,7 +960,8 @@ the mixture when possible.
         \label{fig:2b}
     \end{subfigure}
 
-    \caption{Using approximated likelihood ratios for parameter inference yields an unbiased maximum likelihood estimator $\hat \gamma$, as empirically estimated 1000 times over resampled observed data.}
+    \caption{Using approximated likelihood ratios for parameter inference yields an unbiased maximum likelihood estimator
+            $\hat \gamma$, as empirically estimated 1000 times over re-sampled observed data.}
     \label{fig:2}
 \end{figure}
 
@@ -984,7 +985,8 @@ the proposed inference procedure yields in this case an unbiased estimator
 ($\mathbb{E} [\hat \gamma] = 0.0501$, as empirically estimated over $1000$
 trials). Note that had the underlying ratio not been accurate enough because of
 poor training or poor calibration, the two distributions would not be exactly
-overlapping, indicating bias. Figure \ref{fig:2b} also confirms
+overlapping, indicating bias. From this, the initial $\Lambda$ test statistic can finally
+be evaluated to determine in this case that the null should not be rejected.  Figure \ref{fig:2b} also confirms
 that $-2 \log \Lambda$, as approximated with our method, is asymptotically $\chi^2_1$ distributed,
 as should be the true statistic when the null is true.
 
@@ -1006,56 +1008,74 @@ from the following process $p_0$:
         semi-positive definite $5 \times 5$ matrix defining a fixed projection
         of $\mathbf{z}$ into the observed space.
     \end{enumerate}
-Given observations ${\cal D}$ represented in Figure~\ref{fig:4},
-our goal is to infer the nominal values $\alpha=1$ and $\beta=-1$ that
-were used for generating this data.
 
 \begin{figure}
     \centering
     \includegraphics[width=1.0\textwidth]{figures/fig4.pdf}
-    \caption{Observed 5-dimensional data ${\cal D}$ for nominal values $(\alpha=1, \beta=-1)$.}
+    \caption{Observed 5-dimensional data ${\cal D}$ for nominal values $(\alpha=1, \beta=-1)$. The size of ${\cal D}$ is set to $500$.}
     \label{fig:4}
 \end{figure}
 
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-        \includegraphics[height=12.5em]{figures/fig5a.pdf}
-        \caption{True mean negative log-ratio}
+    \begin{subfigure}[t]{0.31\textwidth}
+        \includegraphics[width=\textwidth]{figures/fig5a.pdf}
+        \caption{  }
         \label{fig:5a}
     \end{subfigure}
     ~
-    \begin{subfigure}[b]{0.45\textwidth}
-        \includegraphics[height=12.5em]{figures/fig5b.pdf}
-        \caption{Estimated mean negative log-ratio}
+    \begin{subfigure}[t]{0.31\textwidth}
+        \includegraphics[width=\textwidth]{figures/fig5b.pdf}
+        \caption{ }
         \label{fig:5b}
     \end{subfigure}
-    \caption{Inference from parameterized approximated likelihood ratios.
-             (\ref{fig:5a}) True mean negative log-ratio for the observed data ${\cal D}$. The red dot corresponds
-             to the nominal values $(\alpha=1, \beta=-1)$, while the green dot is the maximum likelihood estimator
-             $(\hat \alpha=1.006, \hat \beta=-1.012)$.
-             (\ref{fig:5b}) Estimated mean negative log-ratio, as approximated from the constructed objective by
-             the Gaussian process within the Bayesian optimization procedure. The blue dot is the estimated maximum
-             likelihood estimator $(\hat \alpha=0.956, \hat \beta=-0.869)$ while the white dots correspond to
-             the points sampled during optimization.}
+    ~
+    \begin{subfigure}[t]{0.31\textwidth}
+        \includegraphics[width=\textwidth]{figures/fig5c.pdf}
+        \caption{ }
+        \label{fig:5c}
+    \end{subfigure}
+    \caption{Inference from parameterized approximated likelihood ratios. The red dot corresponds
+    to the nominal values $(\alpha=1, \beta=-1)$, the green dot is the maximum likelihood estimator
+    $(\hat \alpha=0.896, \hat \beta=-0.984)$ while the blue dot is the estimated maximum likelihood estimator $(\hat \alpha=0.893, \hat \beta=-1.135)$.
+    1, 2 and 3-$\sigma$ contours are shown in white.
+             (\ref{fig:5a}) Exact values of the objective for the observed data ${\cal D}$.
+             (\ref{fig:5b}) Sampled values of the approximated objective for a $15 \times 15$ fixed grid.
+             (\ref{fig:5c}) Posterior mean of the approximated objective, as estimated by the Gaussian process within the Bayesian optimization procedure. White dots show the sampled candidates during the optimization process.}
     \label{fig:5}
 \end{figure}
 
-As previously, we make use of Eqn.~\ref{eq:mle_withs} for parameter inference
-with approximated likelihood ratios and fix the alternate to
-$\theta_1:=(\alpha=0, \beta=0)$. Following recommendations from
-Section~\ref{sec:param-clf} to reduce computational requirements, we train a
-single parameterized classifier $s(\mathbf{x};\theta:=(\alpha,\beta),\theta_1)$;
-in this case, a 2-layer neural network. Since the generative model is not
-expensive, the classifier output is calibrated on-the-fly with isotonic
-regression for every candidate parameter pair $\theta:=(\alpha,\beta)$.
-Minimizing the mean negative log of the constructed ratio with Bayesian
-optimization~\citep{brochu2010tutorial} eventually leads to the estimated
-posterior mean shown in Figure~\ref{fig:5b}, which is close to the true
-objective illustrated in Figure~\ref{fig:5a}. After $50$ iterations, the
-estimated minimizer is found at $(\hat \alpha=0.956, \hat \beta=-0.869$). Again,
-repeated experiments (omitted here) confirm that the proposed procedure yields
-an unbiased maximum likelihood estimator.
+Given observations ${\cal D}$ represented in Figure~\ref{fig:4},
+our goal is to infer the nominal values $\alpha=1$ and $\beta=-1$ that
+were used for generating this data.
+We use the objective function
+\begin{equation}\label{eqn:obj-ex2}
+    -2 \log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }
+\end{equation}
+that we approximate by exploiting the fact that
+\begin{equation}\label{eqn:obj-ex2-expanded}
+\log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) } = \log \frac{p({\cal D} | \alpha, \beta)}{ p({\cal D} | \alpha=0, \beta=0) } - \log \frac{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }{ p({\cal D} | \alpha=0, \beta=0)}.
+\end{equation}
+Following recommendations from Section~\ref{sec:param-clf} to reduce
+computational requirements, both terms in the right hand side of Eqn.~\ref{eqn:obj-ex2-expanded} are evaluated using a single
+parameterized approximated  likelihood ratio, in this case based on a parameterized
+2-layer neural network where the alternate is fixed to $\alpha=0, \beta=0$.
+Since the generative model is not expensive, the classifier output is calibrated
+on-the-fly with histograms for  every candidate parameter pair $(\alpha,\beta)$.
+Minimizing the constructed approximation of the objective with
+Bayesian optimization~\citep{brochu2010tutorial} eventually leads to the
+estimated posterior mean shown in Figure~\ref{fig:5c}, which is close to the
+true objective illustrated in Figure~\ref{fig:5a}. After $50$ iterations, the
+estimated minimizer is found at $(\hat \alpha=0.893, \hat \beta=-1.135$). For
+comparison, Figure~\ref{fig:5b} shows the objective value as directly
+approximated by the proposed method for a fixed grid of values. Since $\hat s(\mathbf{x;\alpha,\beta})$ is calibrated on-the-fly,
+roughness in the contours can be observed, in particular due to non-smooth changes in the resulting histograms as $\alpha$ and $\beta$ vary.
+As discussed in Section~\ref{sec:param-calibration}, parameterized calibration
+is a solution to this issue, but is left for now as an area for future work.
+Overall, this example further illustrates and confirms the ability
+of the proposed method for inference, even in the case of multi-dimensional data where
+direct approximations $p(\mathbf{x}|\theta_0)$ and $p(\mathbf{x}|\theta_1)$
+are often difficult to construct.
 
 
 \subsection{High energy physics}
