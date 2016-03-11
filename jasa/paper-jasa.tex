@@ -855,7 +855,7 @@ Figure~\ref{fig:1a} and defined as
 \begin{align}
 p(\mathbf{x}|\gamma) &= (1-\gamma)\frac{p_{c_0}(\mathbf{x}) +  p_{c_1}(\mathbf{x})}{2}   + \gamma \, p_{c_2}(\mathbf{x}),
 \end{align}
-where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.5625)$, $p_{c_1} := {\cal N}(\mu=0, \sigma^2=4)$,
+where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.25^2)$, $p_{c_1} := {\cal N}(\mu=0, \sigma^2=4)$,
 $p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$. Samples drawn for the nominal value $\gamma=0.05$ are shown in the
 figure and will be used later for inference.
 
@@ -898,6 +898,7 @@ described in Section~\ref{sec:mixture}.
         \caption{Random forest}
         \label{fig:1d}
     \end{subfigure}
+
     \caption{Approximation of the log-likelihood ratio
              $\log r(\mathbf{x};\gamma=0.05,\gamma=0) = \log \frac{p(\mathbf{x}|\gamma=0.05)}{p(\mathbf{x}|\gamma=0)}$
              with calibrated classifiers.}
@@ -910,9 +911,9 @@ estimates of the ratio, even when using universal approximators such as a neural
 network or a random forest. This observation is at the origin of this work, and
 led us to show that the ratio $r(\mathbf{x})$ can still be computed exactly by
 forming the equivalent statistic
-$\frac{p(s(\mathbf{x})|\gamma=0.05)}{p(s(\mathbf{x})|\gamma=0)}$, provided the
+$\sfrac{p(s(\mathbf{x})|\gamma=0.05)}{p(s(\mathbf{x})|\gamma=0)}$, provided the
 transformation $s(\mathbf{x})$ is monotonic with $r(\mathbf{x})$. Indeed, when
-constructing $\frac{\hat p(\hat s(\mathbf{x})|\gamma=0.05)}{\hat p(\hat
+constructing $\sfrac{\hat p(\hat s(\mathbf{x})|\gamma=0.05)}{\hat p(\hat
 s(\mathbf{x})|\gamma=0)}$ as we propose, estimates appear much closer to the
 true ratio than their direct counterparts, as illustrated in red. The
 approximated ratios show to be more accurate for all three classifiers, even
@@ -1040,7 +1041,7 @@ from the following process $p_0$:
     \end{subfigure}
     \caption{Inference from exact and approximate likelihood ratios. The red dot corresponds
     to the true values $(\alpha=1, \beta=-1)$ used to generate $\mathcal{D}$, the green dot is the MLE
-    $(\hat \alpha=0.896, \hat \beta=-0.984)$ from the exact likelihood, while the blue dot is the MLE $(\hat \alpha=0.893, \hat \beta=-1.135)$ from the approximate likelihood.
+    $(\hat \alpha=1.012, \hat \beta=-0.9221)$  from the exact likelihood, while the blue dot is the MLE $(\hat \alpha=1.008, \hat \beta=-1.004)$ from the approximate likelihood.
     1, 2 and 3-$\sigma$ contours are shown in white.
              (\ref{fig:5a}) The exact log-likelihood for the observed data ${\cal D}$.
              (\ref{fig:5b}) The approximate log-likelihood  evaluated on a coarse $15 \times 15$ fixed grid.
@@ -1069,7 +1070,7 @@ Minimizing the constructed approximation of the objective with
 Bayesian optimization~\citep{brochu2010tutorial} eventually leads to the
 estimated posterior mean shown in Figure~\ref{fig:5c}, which is close to the
 true objective illustrated in Figure~\ref{fig:5a}. After $50$ iterations, the
-estimated minimizer is found at $(\hat \alpha=0.893, \hat \beta=-1.135$). For
+estimated minimizer is found at $(\hat \alpha=1.008, \hat \beta=-1.004)$. For
 comparison, Figure~\ref{fig:5b} shows the objective value as directly
 approximated by the proposed method for a fixed grid of values. Since $\hat s(\mathbf{x;\alpha,\beta})$ is calibrated on-the-fly,
 roughness in the contours can be observed, in particular due to non-smooth changes in the resulting histograms as $\alpha$ and $\beta$ vary.
@@ -1106,7 +1107,7 @@ $y=1$ for samples drawn from the signal component. Importantly, the $y=1$ label
 corresponds to the signal only hypothesis, and not to the alternate
 signal-plus-background hypothesis. The resulting classifier approximates the
 regression function
-$\frac{p_s(\mathbf{x}|\nu_0)}{p_s(\mathbf{x}|\nu_0)+p_b(\mathbf{x}|\nu_0)}$, which is
+$\sfrac{p_s(\mathbf{x}|\nu_0)}{p_s(\mathbf{x}|\nu_0)+p_b(\mathbf{x}|\nu_0)}$, which is
 one to one with the likelihood ratio of the null to the alternate
 $\frac{p(\mathbf{x}|\mu=0,\nu_0)}{p(\mathbf{x}|\mu,\nu_0)}$ for all $\mu$ and therefore
 satisfies conditions of Theorem~\ref{thm:ratio-equivalence}. Associating the
@@ -1319,8 +1320,7 @@ fundamental problems, including transfer learning~\citep{sugiyama2012machine},
 probabilistic classification and regression~\citep{vapnik1998statistical},
 outlier detection~\citep{hido2011statistical}, and many others. For learning
 under covariate shift, \cite{shimodaira2000improving} and \cite{sugiyama2005input} estimate
-the density ratio $r(\mathbf{x};\theta_0,\theta_1) =
-\frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)}$ from straightforward
+the density ratio $r(\mathbf{x};\theta_0,\theta_1)$ from straightforward
 approximations $\hat{p}(\mathbf{x}|\theta_0)$ and $\hat{p}(\mathbf{x}|\theta_1)$
 separately obtained using kernel density estimation. Despite its theoretical
 consistency, this approach is known to be ineffective in
