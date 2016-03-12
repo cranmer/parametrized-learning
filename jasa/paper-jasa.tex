@@ -879,11 +879,17 @@ described in Section~\ref{sec:mixture}.
     \end{subfigure}
     ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
       %(or a blank line to force the subfigure onto a new line)
+%    \begin{subfigure}[b]{0.45\textwidth}
+%        \includegraphics[width=\textwidth]{figures/fig1b.pdf}
+%        \caption{Linear model}
+%        \label{fig:1b}
+%    \end{subfigure}
     \begin{subfigure}[b]{0.45\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig1b.pdf}
-        \caption{Linear model}
-        \label{fig:1b}
+        \includegraphics[width=\textwidth]{figures/p_sij.png}
+        \caption{Pairwise classifier score distributions}
+        \label{fig:p_sij}
     \end{subfigure}
+    
 
     \vspace{1em}
 
@@ -899,6 +905,27 @@ described in Section~\ref{sec:mixture}.
         \label{fig:1d}
     \end{subfigure}
 
+%    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+%      %(or a blank line to force the subfigure onto a new line)
+%    \begin{subfigure}[b]{0.3\textwidth}
+%        \includegraphics[width=\textwidth]{figures/fig_ratio_dist.png}
+%        \caption{Likelihood ratio distributions}
+%        \label{fig:decomposed_ratio}
+%    \end{subfigure}
+    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+      %(or a blank line to force the subfigure onto a new line)
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/fig_ratio_dist.png}
+        \caption{Likelihood ratio distributions}
+        \label{fig:decomposed_ratio}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/likelihood.png}
+        \caption{log-likelihood curve }
+        \label{fig:likelihood}
+    \end{subfigure}
+    
     \caption{Approximation of the log-likelihood ratio
              $\log r(\mathbf{x};\gamma=0.05,\gamma=0) = \log \frac{p(\mathbf{x}|\gamma=0.05)}{p(\mathbf{x}|\gamma=0)}$
              with calibrated classifiers.}
@@ -947,6 +974,37 @@ that even if the classifier does a poor job at modeling the optimal decision
 function, good approximations of the likelihood ratio can still be obtained
 with the proposed method, by calibrating $s(\mathbf{x})$ and/or by decomposing
 the mixture when possible.
+%
+%
+%\begin{figure}
+%    \centering
+%    \begin{subfigure}[b]{0.3\textwidth}
+%        \includegraphics[width=\textwidth]{figures/p_sij.png}
+%        \caption{Pairwise classifier score distributions}
+%        \label{fig:p_sij}
+%    \end{subfigure}
+%    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+%      %(or a blank line to force the subfigure onto a new line)
+%    \begin{subfigure}[b]{0.3\textwidth}
+%        \includegraphics[width=\textwidth]{figures/fig_ratio_dist.png}
+%        \caption{Likelihood ratio distributions}
+%        \label{fig:decomposed_ratio}
+%    \end{subfigure}
+%    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+%      %(or a blank line to force the subfigure onto a new line)
+%    \begin{subfigure}[b]{0.3\textwidth}
+%        \includegraphics[width=\textwidth]{figures/likelihood.png}
+%        \caption{log-likelihood curve }
+%        \label{fig:likelihood}
+%    \end{subfigure}
+%
+%    \caption{Approximation of the log-likelihood ratio
+%             $\log r(\mathbf{x};\gamma=0.05,\gamma=0) = \log \frac{p(\mathbf{x}|\gamma=0.05)}{p(\mathbf{x}|\gamma=0)}$
+%             with calibrated classifiers.}
+%\end{figure}
+%
+%%%%%%%%%%%%%
+
 
 \begin{figure}
     \centering
