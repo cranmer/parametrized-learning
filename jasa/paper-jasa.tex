@@ -642,8 +642,11 @@ $\theta \in \Theta_1$ (such that $\Theta_0 \cap \Theta_1 = \emptyset$ and $\Thet
 generalized likelihood ratio test, also known as the profile likelihood ratio
 test, is commonly used
 \begin{equation}\label{eqn:generalized-lr}
-\Lambda({\cal D}; \Theta_0, \Theta) =  \frac{ \sup_{\theta \in \Theta_0} p({\cal D} | \theta)}{ \sup_{\theta \in \Theta} p({\cal D} | \theta)} \; .
+\Lambda(\Theta_0) =  \frac{ \sup_{\theta \in \Theta_0} p({\cal D} | \theta)}{ \sup_{\theta \in \Theta} p({\cal D} | \theta)} \; .
 \end{equation}
+%\begin{equation}\label{eqn:generalized-lr}
+%\Lambda({\cal D}; \Theta_0, \Theta) =  \frac{ \sup_{\theta \in \Theta_0} p({\cal D} | \theta)}{ \sup_{\theta \in \Theta} p({\cal D} | \theta)} \; .
+%\end{equation}
 This generalized likelihood ratio can be used both for hypothesis tests in the
 presence of nuisance parameters or to create confidence intervals with or
 without nuisance parameters.  Often, the parameter vector is broken into two
@@ -1030,8 +1033,11 @@ the mixture when possible.
 Given observed data from Figure~\ref{fig:1a}, let us now consider the composite hypothesis testing setting, by comparing
 $H_0: \gamma = 0.05$ versus the alternative $H_1: \gamma \neq 0.05$. That is, we want to evaluate
 \begin{equation}
-\Lambda({\cal D}; \Theta_0 = \{0.05\}, \Theta=[0, 1]) =  \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \; .
+\Lambda( \gamma = 0.05) =  \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \; .
 \end{equation}
+%\begin{equation}
+%\Lambda({\cal D}; \Theta_0 = \{0.05\}, \Theta=[0, 1]) =  \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \; .
+%\end{equation}
 By exploiting the fact that
 \begin{equation}
 \log \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} = \log \frac{ p({\cal D} | \gamma = 0.05) }{ p({\cal D} | \gamma = 0 ) } - \log \frac{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma) }{  p({\cal D} | \gamma = 0 ) },
@@ -1112,9 +1118,9 @@ our goal is to infer the nominal values $\alpha=1$ and $\beta=-1$ that
 were used for generating this data.
 We use the objective function
 \begin{equation}\label{eqn:obj-ex2}
-    -2 \log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }
+    -2 \log \Lambda(\alpha, \beta ) = -2 \log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }
 \end{equation}
-that we approximate by exploiting the fact that
+that we calculate by exploiting the fact that
 \begin{equation}\label{eqn:obj-ex2-expanded}
 \log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) } = \log \frac{p({\cal D} | \alpha, \beta)}{ p({\cal D} | \alpha=0, \beta=0) } - \log \frac{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }{ p({\cal D} | \alpha=0, \beta=0)}.
 \end{equation}
