@@ -867,17 +867,16 @@ figures~\ref{fig:1b}, \ref{fig:1c} and \ref{fig:1d} show the approximated
 ratio when using respectively a linear model, a 2-layer neural network and a random
 forest. The blue curve corresponds to the true target log-ratio, the green curve is
 the direct approximation $\log \left( \frac{1 - \hat s(\mathbf{x})}{\hat s(\mathbf{x})} \right)$
-without calibration, while the red curve is the approximation $\log \frac{\hat p(\hat
-s(\mathbf{x}) | \gamma=0.05)}{\hat p(\hat s(\mathbf{x}) | \gamma=0)}$ as calibrated
+without calibration, while the red curve is the approximation $\log \Lambda( \gamma=0.05)$ as calibrated
 using histograms. Finally, the
 cyan curve shows the approximated ratio when both decomposing the mixtures and calibrating the underlying classifiers, as
 described in Section~\ref{sec:mixture}.
 
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig1a.pdf}
-        \caption{$p(\mathbf{x}|\gamma=0.05)$ and $p(\mathbf{x}|\gamma=0)$}
+        \caption{$p(\mathbf{x}|\gamma)$  for $\gamma=0.05$ and $\gamma=0$}
         \label{fig:1a}
     \end{subfigure}
     ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
@@ -887,22 +886,22 @@ described in Section~\ref{sec:mixture}.
 %        \caption{Linear model}
 %        \label{fig:1b}
 %    \end{subfigure}
-    \begin{subfigure}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/p_sij.png}
-        \caption{Pairwise classifier score distributions}
+        \caption{$p(s_{ij}(\mathbf{x}) |\gamma)$ for $\gamma=0.05$ and $\gamma=0$}
         \label{fig:p_sij}
     \end{subfigure}
     
 
     \vspace{1em}
 
-    \begin{subfigure}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig1c.pdf}
         \caption{Neural network}
         \label{fig:1c}
     \end{subfigure}
     ~
-    \begin{subfigure}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig1d.pdf}
         \caption{Random forest}
         \label{fig:1d}
@@ -917,13 +916,13 @@ described in Section~\ref{sec:mixture}.
 %    \end{subfigure}
     ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
       %(or a blank line to force the subfigure onto a new line)
-    \begin{subfigure}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig_ratio_dist.png}
-        \caption{Likelihood ratio distributions}
+        \caption{$p( \log r(s(\mathbf{x})) \, | \,\gamma = 0.05)$ }
         \label{fig:decomposed_ratio}
     \end{subfigure}
     ~
-    \begin{subfigure}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/likelihood.png}
         \caption{log-likelihood curve }
         \label{fig:likelihood}
@@ -931,7 +930,7 @@ described in Section~\ref{sec:mixture}.
     
     \caption{Approximation of the log-likelihood ratio
              $\log r(\mathbf{x};\gamma=0.05,\gamma=0) = \log \frac{p(\mathbf{x}|\gamma=0.05)}{p(\mathbf{x}|\gamma=0)}$
-             with calibrated classifiers.}
+             with calibrated classifiers. Words Words Words Words Words Words Words Words Words Words Words Words Words Words}
 \end{figure}
 
 The first fact to highlight is that, in the finite sample setting, uncalibrated
