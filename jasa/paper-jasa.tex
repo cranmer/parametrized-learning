@@ -500,7 +500,7 @@ directly using ${(1 - s(\mathbf{x}))}/{s(\mathbf{x})}$ as an approximate of
 $r(\mathbf{x})$ (which indeed converges towards $r(x)$ when $s(x)$ tends to $s^*(x)$).
 
 
-\subsection{Learning and calibrating $s$}
+\subsection{Learning and calibrating $s$}\label{s:learning_calibration}
 
 In order for the proposed approach to be useful in the likelihood-free setting,
 we need to be able to approximate both $s(\mathbf{x})$ and
@@ -516,8 +516,8 @@ around $\mathbf{x}$, such as neural networks. For small training sets, tree-base
 methods are not expected to work so well for this use case, since they usually
 model $\hat{s}(\mathbf{x})$ as a non-strictly monotonic composition of step functions.
 In such cases where $\hat s(\mathbf{x})$ is not monotonic with $r(\mathbf{x})$,
-the induced probability does not factorize as in Eqn.~\ref{eqn:factorization}, resulting in a biased
-approximation of the density ratio.
+the induced probability does not factorize as in Eqn.~\ref{eqn:factorization}, 
+leading to artifacts in the resulting approximation of the density ratio.
 Provided enough training data, accurate results can however still be achieved,
 given the universal approximator capacity of tree-based models.
 
@@ -525,18 +525,35 @@ Given a reduction map $s$, our results show that a statistic equivalent to the
 likelihood ratio can be constructed, provided $p(s(\mathbf{x})|\theta)$ can be
 evaluated. Again, we do not have a direct and exact way for evaluating this
 density, but an approximation $\hat p(\hat s(\mathbf{x})| \theta)$ can be built
-instead, e.g. using density estimation or calibration algorithms, such as
-histograms, KDE or isotonic regression, and as applied on $\{\hat
-s(\mathbf{x}_i)\}$, for samples $\{\mathbf{x}_i\}$  drawn from the generative
+instead, e.g. using density estimation algorithms, such as
+histograms or kernel density estimation applied to $\{\hat
+s(\mathbf{x}_i)\}$, where the $\{\mathbf{x}_i\}$  are drawn from the generative
 model. Most notably, learning such an approximation of $p(s(\mathbf{x})|\theta)$
 is a much simpler problem than learning $p(\mathbf{x}|\theta)$, since the
 reduction $s$ projects $\mathbf{x}$ into a one-dimensional space in which only
 the (simpler) informative content of $r(\mathbf{x})$ is preserved.
 
+An alternative approach for calibration is to approximate the density ratio 
+$r(\hat{s}(\mathbf{x}))$ directly. 
+%There are various strategies. 
+For instance, isotonic regression, which is commonly used to transform the classifier score  $\hat{s}(\mathbf{x})$ into $\hat{s}_\textrm{iso}(\mathbf{x})$ that more accurately reflect  the posterior probability $s^*(\mathbf{x})$
+of Eq.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\mathbf{x}) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
+\textbf{Gilles, should we add more about direct density ratio estimation (currently in 5. Related Work) here?}
+
+%An alternative approach for calibration is to approximate the density ratio 
+%$r(\hat{s}(\mathbf{x}); \theta_0, \theta_1)$ directly. 
+%%There are various strategies. 
+%For instance, isotonic regression, which is commonly used to transform the classifier score  $\hat{s}(\mathbf{x})$ into $\hat{s}_\textrm{iso}(\mathbf{x})$ that more accurately reflect  the posterior probability $s^*(\mathbf{x})$
+%of Eq.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}; \theta_0, \theta_1) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\mathbf{x}; \theta_0, \theta_1) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
+%\textbf{Gilles, should we add more about direct density ratio estimation (currently in 5. Related Work) here?}
+
+%. , which for balanced training samples has the form 
+%$\hat{p}(\theta_1 | \hat{s}(\mathbf{x})) \approx p(\hat{s}(\mathbf{x}) | \theta_0) / (p(\hat{s}(\mathbf{x}) | \theta_1) + p(\hat{s}(\mathbf{x}) | \theta_1)) = 1/(1+r(\hat{s}(\mathbf{x}); \theta_0, \theta_1)))$.
+
 One strength of the proposed approach is that it factorizes the approximation of
-the per-sample reduction ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from the
+the dimensionality reduction ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from the
 calibration procedure ($\hat p(\hat s(\mathbf{x})| \theta) \approx
-p(\hat{s}(\mathbf{x})|\theta)$). Thus, even if the classifier does a poor job at
+p(\hat{s}(\mathbf{x})|\theta)$ or $\hat{r}(\hat{s}(\mathbf{x})) \approx r(\hat{s}(\mathbf{x}))$). Thus, even if the classifier does a poor job at
 learning the optimal decision function~\ref{eqn:best-s-clf} and therefore at
 reproducing the level sets of the per-sample likelihood ratio, the density of
 $\hat{s}$ can still be well calibrated. In that case, one might loose power, but
@@ -716,7 +733,7 @@ While the optimal decision function \ref{eqn:best-s-clf} is expected to be
 learned for the parameter values $\theta_0$ and $\theta_1$ selected in
 Algorithm~\ref{alg:training}, it is not clear whether the optimal decision
 function can be expected for data generated from  $\theta'_0$ and $\theta'_1$
-never jointly encountered at learning. Similarly, it is not clear how the
+never jointly encountered during learning. Similarly, it is not clear how the
 limited capacity of the classifier may impact the performance the resulting
 parameterized decision function. These issues are left as an area for future
 work, but preliminary exploration by \cite{Baldi:2016fzo} show that
@@ -741,26 +758,32 @@ Algorithm~\ref{alg:training} is an effective practical approach.
 \subsection{Parameterized calibration}
 \label{sec:param-calibration}
 
-Once the classifier is trained, we can use the generative model together with a
-univariate density estimation technique (e.g. histograms or kernel density
-estimation) to approximate $p(s|\theta)$ for specific parameter
-points. For a single parameter point $\theta$, this is a tractable univariate density
+
+
+Once the parametrized classifier $\hat{s}(\mathbf{x}; \theta_0, \theta_1)$ is trained, 
+we can use the generative model together with one of the calibration strategies 
+discussed in Sec.~\ref{s:learning_calibration} for particular values of $\theta_0$ and $\theta_1$. 
+%For instance, 
+%together with a
+%univariate density estimation technique (e.g. histograms or kernel density
+%estimation) to approximate $p(s|\theta)$ for specific parameter
+%points. 
+For a single parameter point $\theta$, this is a tractable univariate density
 estimation problem. The challenge comes from the need to calibrate this density
 for all values of $\theta$. A straightforward approach would be to run the
 generative model on demand for any particular value of $\theta$. In the context
 of a likelihood fit this would mean that the optimization algorithm that is
 trying to maximize the likelihood with respect to $\theta$ needs access to the
-generative model $p(\mathbf{x}|\theta)$. This can be  impractical when the generative
-model is computationally expensive or has high-latency (for instance some human
-intervention is required to reconfigure the generative model).
+generative model $p(\mathbf{x}|\theta)$.  This is the strategy used for the examples presented in Sec.~\ref{sec:examples}. 
 
-In high energy physics, with a
-fixed classifier, it has become common  to interpolate the distribution between
-discrete values of $\theta$ in order to produce a continuous parameterization for
+Calibrating the density on-demand can be  impractical when the generative
+model is computationally expensive or has high-latency (for instance some human
+intervention is required to reconfigure the generative model). In high energy physics, where 
+it is common to calibrate the distribution of a fixed classifier. There the strategy is to interpolate 
+the distribution between discrete values of $\theta$ in order to produce a continuous parameterization for
 $p(s | \theta)$~\citep{read1999linear,Cranmer:2012sba,baak2015interpolation}.
-One can easily imagine a number of approaches to embedding the classifier and
-estimating the density $p(s|\theta)$ and the relative merits of those
-approaches will depend critically on the dimensionality of $\theta$ and the
+One can easily imagine a number of approaches to parametrized calibration and the 
+relative merits of those approaches will depend critically on the dimensionality of $\theta$ and the
 computational cost of the generative model. We leave a more general strategy for
 this overarching optimization problem as an area of future work.
 
@@ -812,7 +835,7 @@ models defined as known mixtures of several components, i.e. when $p(\mathbf{x}|
 p(\mathbf{x}|\theta)=\sum_c w_c(\theta) p_c(\mathbf{x}| \theta),
 \end{equation}
 the target likelihood ratio can be formulated in terms of pairwise
-classification problems. We indeed have
+classification problems. Specifically, we can write
 \begin{align}
 \frac{p(\mathbf{x}|\theta_0)}{p(\mathbf{x}|\theta_1)} &= \frac{\sum_c w_c(\theta_0) p_c(\mathbf{x}| \theta_0)}{\sum_{c'} w_{c'}(\theta_1) p_{c'}(\mathbf{x}| \theta_1)} \nonumber \\
 &= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(\mathbf{x}| \theta_1)}{  p_c(\mathbf{x}| \theta_0)}  \right]^{-1} \nonumber \\
@@ -826,18 +849,18 @@ ratio into an equivalent calibrated likelihood ratio based on the univariate
 density of the corresponding classifier.
 
 In applications where mixture models are commonly used, this decomposition allows
-one to construct better likelihood ratio estimates since it forces classifiers
+one to construct better likelihood ratio estimates since it allows the classifiers
 $s_{c,c'}$ to focus on simpler sub-problems, for which higher accuracy is
 expected.
 
 Finally, as a technical point, in the situation where the only free parameters
 of the  model are the mixture coefficients $w_c$, the distributions
 $p_{c}(s_{c,c'}(\mathbf{x};\theta_0, \theta_1)| \theta)$ are independent of
-$\theta$. For this reason, sub-ratios $\frac{
+$\theta$. For this reason, sub-ratios $r_{c, c'}(\mathbf{x}; \theta_0, \theta_1) = \frac{
 p_{c'}(s_{c,c'}(\mathbf{x};\theta_0, \theta_1)|\theta_1)}{
 p_c(s_{c,c'}(\mathbf{x};\theta_0, \theta_1)|\theta_0)}$ simplify to $\frac{
-p_{c'}(s_{c,c'}(\mathbf{x}))}{ p_c(s_{c,c'}(\mathbf{x}))}$, and can all be
-pre-computed without having to resort to parameterized classification and
+p_{c'}(s_{c,c'}(\mathbf{x}))}{ p_c(s_{c,c'}(\mathbf{x}))}$, which can be
+pre-computed without the need of parameterized classification or
 calibration.
 
 
@@ -846,31 +869,35 @@ calibration.
 \label{sec:examples}
 
 In this section, we illustrate the proposed method on two representative
-examples and then discuss its application to high energy physics. For reproducibility and extended details, the source
-code is available online\footnote{\url{https://github.com/diana-hep/carl}}.
+examples where the exact likelihood is known and then discuss its application to high energy physics. The code used to produce the results and extended details for these examples is available in Ref.~\citep{carl}.%\footnote{\url{https://github.com/diana-hep/carl}}.
 
 \subsection{Likelihood ratios of mixtures of normals}
 
 As a simple and illustrative example, let us first consider the approximation of
 the log-likelihood ratio $\log \left( r(\mathbf{x};\gamma=0.05,\gamma=0) \right)$ between the 1D mixtures
-$p(\mathbf{x}|\gamma=0.05)$ and $p(\mathbf{x}|\gamma=0)$ illustrated in
-Figure~\ref{fig:1a} and defined as
+$p(\mathbf{x}|\gamma=0.05)$ and $p(\mathbf{x}|\gamma=0)$ defined as
 \begin{align}
 p(\mathbf{x}|\gamma) &= (1-\gamma)\frac{p_{c_0}(\mathbf{x}) +  p_{c_1}(\mathbf{x})}{2}   + \gamma \, p_{c_2}(\mathbf{x}),
 \end{align}
 where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.25^2)$, $p_{c_1} := {\cal N}(\mu=0, \sigma^2=4)$,
-$p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$. Samples drawn for the nominal value $\gamma=0.05$ are shown in the
-figure and will be used later for inference.
+$p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$. Samples drawn for the nominal value $\gamma=0.05$ are shown in
+Figure~\ref{fig:1a} and used later for inference.
 
-Using the method outlined in Section~\ref{sec:approx},
-figures~\ref{fig:1b}, \ref{fig:1c} and \ref{fig:1d} show the approximated
-ratio when using respectively a linear model, a 2-layer neural network and a random
-forest. The blue curve corresponds to the true target log-ratio, the green curve is
-the direct approximation $\log \left( \frac{1 - \hat s(\mathbf{x})}{\hat s(\mathbf{x})} \right)$
-without calibration, while the red curve is the approximation $\log \Lambda( \gamma=0.05)$ as calibrated
+Figure~\ref{fig:p_sij} shows the intermediate stages for the decomposition described in Section~\ref{sec:mixture}.
+The blue and green curves show $p_{c'}(\hat{s}_{c,c'}(\mathbf{x}))$,  the distributions for the score for the sub-classifiers for the three pair-wise comparisons of the mixture components. The red curves in Fig.~\ref{fig:p_sij} show the approximation of the density ratio obtained from those distributions.
+
+%Using the method outlined in Section~\ref{sec:approx},
+
+Figures~\ref{fig:1c} and \ref{fig:1d} show the approximate $\log \left( \hat{r}(\mathbf{x}) \right)$ as a function of $\mathbf{x}$ using a 
+2-layer neural network and a random forest for the classifier $\hat{s}(\mathbf{x})$.
+%ratio when using respectively a linear model, a 2-layer neural network and a random
+%forest. 
+The blue curves corresponds to the exact log-ratio. The green curve shows 
+$\log \left( (1-\hat s(\mathbf{x}))/\hat s(\mathbf{x}) \right)$
+without calibration. The red curve is the approximation $\log \hat{r}(\mathbf{x})$ calibrated
 using histograms. Finally, the
-cyan curve shows the approximated ratio when both decomposing the mixtures and calibrating the underlying classifiers, as
-described in Section~\ref{sec:mixture}.
+cyan curve shows the approximated log-likelihood ratio when decomposing the mixture, as
+described in Section~\ref{sec:mixture},  and calibrating the underlying classifiers with histograms.
 
 \begin{figure}
     \centering
@@ -887,8 +914,8 @@ described in Section~\ref{sec:mixture}.
 %        \label{fig:1b}
 %    \end{subfigure}
     \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig-p_sij-b.pdf}
-        \caption{$p(s_{c,c^\prime}(\mathbf{x}) |\gamma)$ for $\gamma=0.05$ and $\gamma=0$}
+        \includegraphics[width=\textwidth]{figures/fig-p_sij.pdf}
+        \caption{$\hat{p}_c(\hat{s}_{c,c^\prime}(\mathbf{x}) )$ and $1/(1+\hat{r}(\hat{s}_{c,c^\prime}(\mathbf{x}))$}
         \label{fig:p_sij}
     \end{subfigure}
 
@@ -897,13 +924,13 @@ described in Section~\ref{sec:mixture}.
 
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig1c.pdf}
-        \caption{Neural network}
+        \caption{$\log \hat r(\mathbf{x})$ using neural network}
         \label{fig:1c}
     \end{subfigure}
     ~
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig1d.pdf}
-        \caption{Random forest}
+        \caption{$\log \hat r(\mathbf{x})$ using random forest}
         \label{fig:1d}
     \end{subfigure}
 
@@ -918,7 +945,7 @@ described in Section~\ref{sec:mixture}.
       %(or a blank line to force the subfigure onto a new line)
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig-ratio-dist.pdf}
-        \caption{$p( \log r(s(\mathbf{x})) \, | \,\gamma = 0.05)$ }
+        \caption{$p( \log \hat r(\mathbf{x})) \, | \,\gamma = 0.05)$ }
         \label{fig:decomposed_ratio}
     \end{subfigure}
     ~
@@ -929,13 +956,12 @@ described in Section~\ref{sec:mixture}.
     \end{subfigure}
 
     \caption{Approximation of the log-likelihood ratio
-             $\log r(\mathbf{x};\gamma=0.05,\gamma=0) = \log \frac{p(\mathbf{x}|\gamma=0.05)}{p(\mathbf{x}|\gamma=0)}$
-             with calibrated classifiers. Words Words Words Words Words Words Words Words Words Words Words Words Words Words}
+             $\log r(\mathbf{x};\gamma=0.05,\gamma=0)$
+             with calibrated classifiers. }
 \end{figure}
 
 The first fact to highlight is that, in the finite sample setting, uncalibrated
-direct approximations $\log \left( \frac{1 - \hat s(\mathbf{x})}{\hat
-s(\mathbf{x})} \right)$, as shown in green, may not always yield very accurate
+direct approximations $\log \left( \hat{r}(\mathbf{x}) \right)$, as shown in green, may not always yield very accurate
 estimates of the ratio, even when using universal approximators such as a neural
 network or a random forest. This observation is at the origin of this work, and
 led us to show that the ratio $r(\mathbf{x})$ can still be computed exactly by
@@ -944,15 +970,17 @@ $\sfrac{p(s(\mathbf{x})|\gamma=0.05)}{p(s(\mathbf{x})|\gamma=0)}$, provided the
 transformation $s(\mathbf{x})$ is monotonic with $r(\mathbf{x})$. Indeed, when
 constructing $\sfrac{\hat p(\hat s(\mathbf{x})|\gamma=0.05)}{\hat p(\hat
 s(\mathbf{x})|\gamma=0)}$ as we propose, estimates appear much closer to the
-true ratio than their direct counterparts, as illustrated in red. The
-approximated ratios show to be more accurate for all three classifiers, even
-when the direct approximation was not very good in the first place, e.g. as for the
-linear model. In regions where the densities are low (i.e., at the
-boundaries) the approximated ratio show to be less accurate since the underlying
-classifier cannot make precise predictions, because of the few training samples
-it is trained on in these parts of the input space. When leveraging the fact
+true ratio than their direct counterparts, as illustrated in red. 
+%The
+%approximated ratios show to be more accurate for all three classifiers, even
+%when the direct approximation was not very good in the first place, e.g. as for the
+%linear model. 
+In regions where the densities are low (i.e., at the
+boundaries) the approximated ratio is less accurate since the underlying
+classifier cannot make precise predictions due to the lack training samples
+ in these parts of the input space. When leveraging the fact
 that densities are mixtures and decomposing their ratio, the capacity of the
-underlying classifiers can be focused on easier supervised learning tasks,
+underlying classifiers can be more effectively focused on easier supervised learning tasks,
 resulting as expected in even more accurate approximations, as shown in cyan.
 
 As shown in the figures, qualitatively different results are obtained depending
@@ -963,10 +991,11 @@ very close to the optimal decision function. The random forest yields a decision
 which is piece-wise constant, therefore non-continuous and not strictly
 monotonic with the ratio in the finite sample regime. On this problem, the
 random forest still approximates the ratio correctly, but more variance can be
-observed. Finally, the linear model produces a decision function that is
-smooth and continuous but only piece-wise monotonic with the ratio. Due to the symmetry of
-the ratio around $\mathbf{x}=1$, this still results in an accurate
-approximation, but poorer results should be expected on more complex problems.
+observed. 
+%Finally, the linear model produces a decision function that is
+%smooth and continuous but only piece-wise monotonic with the ratio. Due to the symmetry of
+%the ratio around $\mathbf{x}=1$, this still results in an accurate
+%approximation, but poorer results should be expected on more complex problems.
 While not directly apparent, calibrating $\hat s(\mathbf{x})$ to construct $\hat p(\hat
 s(\mathbf{x}))$ is key to obtain accurate results. Standard
 histograms with fixed bins have been used here for illustrative purposes, but we

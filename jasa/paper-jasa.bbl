@@ -62,6 +62,11 @@ Cranmer, K., Lewis, G., Moneta, L., Shibata, A., and Verkerke, W. (2012).
 \newblock {HistFactory: A tool for creating statistical models for use with
   RooFit and RooStats}.
 
+\bibitem[Cranmer et~al., 2016]{carl}
+Cranmer, K., Pavez, J., and Louppe, G. (2016).
+\newblock carl: a toolkit for likelihood free inference.
+\newblock \url{https://github.com/diana-hep/carl}.
+
 \bibitem[Friedman et~al., 2000]{friedman2000additive}
 Friedman, J., Hastie, T., Tibshirani, R., et~al. (2000).
 \newblock Additive logistic regression: a statistical view of boosting (with
