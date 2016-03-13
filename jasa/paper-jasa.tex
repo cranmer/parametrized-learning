@@ -79,13 +79,13 @@
 % approximate Bayesian computation.
 
 In many fields of science, generalized likelihood ratio tests are established tools for
-statistical inference. 
+statistical inference.
  At the same time, it has become increasingly common that a simulator (or
 generative model) is used to describe complex processes that tie parameters
 $\theta$ of an underlying theory and measurement apparatus to high-dimensional
-observations $\mathbf{x}\in \mathbb{R}^p$. However, simulator often do not provide a way to evaluate 
+observations $\mathbf{x}\in \mathbb{R}^p$. However, simulator often do not provide a way to evaluate
 the likelihood function for a given observation $\mathbf{x}$, which motivates a new class of likelihood-free
-inference algorithms. 
+inference algorithms.
 In this paper, we show that likelihood ratios are invariant under a specific class of dimensionality reduction maps $\mathbb{R}^p \mapsto \mathbb{R}$.  As a direct consequence, we show that discriminative classifiers can be used to
 approximate the generalized likelihood ratio statistic when only a generative model for the data is
 available. This leads to a new machine learning-based approach to likelihood-free inference that is complementary to Approximate Bayesian Computation, and which does not require a prior on the model parameters. Experimental results
@@ -190,7 +190,7 @@ of the Higgs boson~\citep{Aad:2012tfa,Chatrchyan:2012ufa} and subsequent
 measurement of its properties. The bulk of the likelihood ratio tests at the LHC
 are based on the distribution of a single event-level feature that discriminates
 between a hypothesized process of interest (labeled \textit{signal}) and various
-other processes (labeled \textit{background}). 
+other processes (labeled \textit{background}).
 Typically, data generated from the
 simulator are used to approximate the density at various parameter points, and
 an interpolation algorithm is used to approximate the parameterized
@@ -198,7 +198,7 @@ model~\citep{Cranmer:2012sba}. In order to improve the statistical power
 of these tests, hundreds of these searches have already been using supervised
 learning to train classifiers to discriminate between two two discrete hypotheses based
 on a high dimensional feature vector $\mathbf{x}$. The results of this paper outline
-how to extend the use of discriminative classifiers for composite hypotheses (parametrized by $\theta$) 
+how to extend the use of discriminative classifiers for composite hypotheses (parametrized by $\theta$)
 in a way
 that fits naturally into the established likelihood based inference techniques.
 
@@ -887,11 +887,11 @@ described in Section~\ref{sec:mixture}.
 %        \label{fig:1b}
 %    \end{subfigure}
     \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/p_sij.png}
-        \caption{$p(s_{ij}(\mathbf{x}) |\gamma)$ for $\gamma=0.05$ and $\gamma=0$}
+        \includegraphics[width=\textwidth]{figures/fig-p_sij-b.pdf}
+        \caption{$p(s_{c,c^\prime}(\mathbf{x}) |\gamma)$ for $\gamma=0.05$ and $\gamma=0$}
         \label{fig:p_sij}
     \end{subfigure}
-    
+
 
     \vspace{1em}
 
@@ -917,17 +917,17 @@ described in Section~\ref{sec:mixture}.
     ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
       %(or a blank line to force the subfigure onto a new line)
     \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig_ratio_dist.png}
+        \includegraphics[width=\textwidth]{figures/fig-ratio-dist.pdf}
         \caption{$p( \log r(s(\mathbf{x})) \, | \,\gamma = 0.05)$ }
         \label{fig:decomposed_ratio}
     \end{subfigure}
     ~
     \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/likelihood.png}
+        \includegraphics[width=\textwidth]{figures/fig-likelihood.pdf}
         \caption{log-likelihood curve }
         \label{fig:likelihood}
     \end{subfigure}
-    
+
     \caption{Approximation of the log-likelihood ratio
              $\log r(\mathbf{x};\gamma=0.05,\gamma=0) = \log \frac{p(\mathbf{x}|\gamma=0.05)}{p(\mathbf{x}|\gamma=0)}$
              with calibrated classifiers. Words Words Words Words Words Words Words Words Words Words Words Words Words Words}
