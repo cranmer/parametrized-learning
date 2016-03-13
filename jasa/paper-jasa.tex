@@ -890,14 +890,18 @@ The blue and green curves show $p_{c'}(\hat{s}_{c,c'}(\mathbf{x}))$,  the distri
 
 Figures~\ref{fig:1c} and \ref{fig:1d} show the approximate $\log \left( \hat{r}(\mathbf{x}) \right)$ as a function of $\mathbf{x}$ using a 
 2-layer neural network and a random forest for the classifier $\hat{s}(\mathbf{x})$.
+The neural network provides a smoother approximation, while the random has some artifacts due to the fact that the
+decision function is piece-wise constant.
 %ratio when using respectively a linear model, a 2-layer neural network and a random
 %forest. 
-The blue curves corresponds to the exact log-ratio. The green curve shows 
+The blue curves show the exact log-ratio, the green curves show 
 $\log \left( (1-\hat s(\mathbf{x}))/\hat s(\mathbf{x}) \right)$
-without calibration. The red curve is the approximation $\log \hat{r}(\mathbf{x})$ calibrated
-using histograms. Finally, the
-cyan curve shows the approximated log-likelihood ratio when decomposing the mixture, as
-described in Section~\ref{sec:mixture},  and calibrating the underlying classifiers with histograms.
+without calibration, while the red curve is the improved approximation $\log \hat{r}(\mathbf{x})$ calibrated
+using histograms. Finally, the cyan curve shows the approximated log-likelihood ratio when decomposing the mixture, as
+seen in Fig.~\ref{fig:p_sij}.  By leveraging the fact that densities are mixtures, the capacity 
+of the underlying classifiers can be more effectively focused on easier classification tasks,
+resulting as expected in even more accurate approximations.
+
 
 \begin{figure}
     \centering
@@ -960,42 +964,48 @@ described in Section~\ref{sec:mixture},  and calibrating the underlying classifi
              with calibrated classifiers. }
 \end{figure}
 
-The first fact to highlight is that, in the finite sample setting, uncalibrated
-direct approximations $\log \left( \hat{r}(\mathbf{x}) \right)$, as shown in green, may not always yield very accurate
-estimates of the ratio, even when using universal approximators such as a neural
-network or a random forest. This observation is at the origin of this work, and
-led us to show that the ratio $r(\mathbf{x})$ can still be computed exactly by
-forming the equivalent statistic
-$\sfrac{p(s(\mathbf{x})|\gamma=0.05)}{p(s(\mathbf{x})|\gamma=0)}$, provided the
-transformation $s(\mathbf{x})$ is monotonic with $r(\mathbf{x})$. Indeed, when
-constructing $\sfrac{\hat p(\hat s(\mathbf{x})|\gamma=0.05)}{\hat p(\hat
-s(\mathbf{x})|\gamma=0)}$ as we propose, estimates appear much closer to the
-true ratio than their direct counterparts, as illustrated in red. 
-%The
-%approximated ratios show to be more accurate for all three classifiers, even
-%when the direct approximation was not very good in the first place, e.g. as for the
-%linear model. 
-In regions where the densities are low (i.e., at the
-boundaries) the approximated ratio is less accurate since the underlying
-classifier cannot make precise predictions due to the lack training samples
- in these parts of the input space. When leveraging the fact
-that densities are mixtures and decomposing their ratio, the capacity of the
-underlying classifiers can be more effectively focused on easier supervised learning tasks,
-resulting as expected in even more accurate approximations, as shown in cyan.
+%The first feature to highlight is that, in the finite sample setting, uncalibrated
+%direct approximations $\log \left(  (1-\hat s(\mathbf{x}))/\hat s(\mathbf{x})  \right)$, as shown in green, may not yield a very accurate
+%estimate of the ratio, even when using universal approximators such as a neural
+%network or a random forest. 
+%%This observation is at the origin of this work, and
+%%led us to show that the ratio $r(\mathbf{x})$ can still be computed exactly by
+%%forming the equivalent statistic
+%%$\sfrac{p(s(\mathbf{x})|\gamma=0.05)}{p(s(\mathbf{x})|\gamma=0)}$, provided the
+%%transformation $s(\mathbf{x})$ is monotonic with $r(\mathbf{x})$. 
+%The approximation of the log-likelihood ratio is significantly improved when calibrating
+%the classifier score with univariate density estimation
+%% according to 
+%%$\hat{r}(\mathbf{x}) = \sfrac{\hat p(\hat s(\mathbf{x})|\gamma=0.05)}{\hat p(\hat s(\mathbf{x})|\gamma=0)}$, 
+%as illustrated in red. 
+%%The
+%%approximated ratios show to be more accurate for all three classifiers, even
+%%when the direct approximation was not very good in the first place, e.g. as for the
+%%linear model. 
+%In regions where the densities are low (i.e., near the
+%boundaries) the approximated ratio is less accurate.
+%% since the underlying
+%%classifier cannot make precise predictions due to the lack training samples
+%% in these parts of the input space. 
+% When leveraging the fact
+%that densities are mixtures and decomposing their ratio as described in Section~\ref{sec:mixture}, 
+%the capacity of the underlying classifiers can be more effectively focused on easier supervised learning tasks,
+%resulting as expected in even more accurate approximations, as shown in cyan.
 
-As shown in the figures, qualitatively different results are obtained depending
-the classification algorithm embedded within the approximation of the ratio. The
-neural network-based approximation appears to work best, due to the capacity of
-the classifier to model a smooth decision function $s(\mathbf{x})$ which is
-very close to the optimal decision function. The random forest yields a decision function
-which is piece-wise constant, therefore non-continuous and not strictly
-monotonic with the ratio in the finite sample regime. On this problem, the
-random forest still approximates the ratio correctly, but more variance can be
-observed. 
-%Finally, the linear model produces a decision function that is
-%smooth and continuous but only piece-wise monotonic with the ratio. Due to the symmetry of
-%the ratio around $\mathbf{x}=1$, this still results in an accurate
-%approximation, but poorer results should be expected on more complex problems.
+%As shown in the figures, qualitatively different results are obtained depending
+%the classification algorithm embedded within the approximation of the ratio. The
+%neural network-based approximation appears to work best, due to the capacity of
+%the classifier to model a smooth decision function $s(\mathbf{x})$ which is
+%very close to the optimal decision function. The random forest yields a decision function
+%which is piece-wise constant, therefore non-continuous and not strictly
+%monotonic with the ratio in the finite sample regime. On this problem, the
+%random forest still approximates the ratio correctly, but more variance can be
+%observed. 
+%%Finally, the linear model produces a decision function that is
+%%smooth and continuous but only piece-wise monotonic with the ratio. Due to the symmetry of
+%%the ratio around $\mathbf{x}=1$, this still results in an accurate
+%%approximation, but poorer results should be expected on more complex problems.
+
 While not directly apparent, calibrating $\hat s(\mathbf{x})$ to construct $\hat p(\hat
 s(\mathbf{x}))$ is key to obtain accurate results. Standard
 histograms with fixed bins have been used here for illustrative purposes, but we
