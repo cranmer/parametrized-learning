@@ -955,7 +955,7 @@ resulting as expected in even more accurate approximations.
     ~
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig-likelihood.pdf}
-        \caption{log-likelihood curve }
+        \caption{$-\log \Lambda(\gamma)$ }
         \label{fig:likelihood}
     \end{subfigure}
 
@@ -1006,45 +1006,40 @@ resulting as expected in even more accurate approximations.
 %%the ratio around $\mathbf{x}=1$, this still results in an accurate
 %%approximation, but poorer results should be expected on more complex problems.
 
-While not directly apparent, calibrating $\hat s(\mathbf{x})$ to construct $\hat p(\hat
-s(\mathbf{x}))$ is key to obtain accurate results. Standard
-histograms with fixed bins have been used here for illustrative purposes, but we
-anticipate that the embedded density estimation algorithm should be carefully
-chosen and tuned, on a case by case basis. Overall, this first example confirms
-that even if the classifier does a poor job at modeling the optimal decision
-function, good approximations of the likelihood ratio can still be obtained
-with the proposed method, by calibrating $s(\mathbf{x})$ and/or by decomposing
-the mixture when possible.
-%
-%
-%\begin{figure}
-%    \centering
-%    \begin{subfigure}[b]{0.3\textwidth}
-%        \includegraphics[width=\textwidth]{figures/p_sij.png}
-%        \caption{Pairwise classifier score distributions}
-%        \label{fig:p_sij}
-%    \end{subfigure}
-%    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%      %(or a blank line to force the subfigure onto a new line)
-%    \begin{subfigure}[b]{0.3\textwidth}
-%        \includegraphics[width=\textwidth]{figures/fig_ratio_dist.png}
-%        \caption{Likelihood ratio distributions}
-%        \label{fig:decomposed_ratio}
-%    \end{subfigure}
-%    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%      %(or a blank line to force the subfigure onto a new line)
-%    \begin{subfigure}[b]{0.3\textwidth}
-%        \includegraphics[width=\textwidth]{figures/likelihood.png}
-%        \caption{log-likelihood curve }
-%        \label{fig:likelihood}
-%    \end{subfigure}
-%
-%    \caption{Approximation of the log-likelihood ratio
-%             $\log r(\mathbf{x};\gamma=0.05,\gamma=0) = \log \frac{p(\mathbf{x}|\gamma=0.05)}{p(\mathbf{x}|\gamma=0)}$
-%             with calibrated classifiers.}
-%\end{figure}
-%
-%%%%%%%%%%%%%
+As the results show, calibrating $\hat s(\mathbf{x})$ through univariate density estimation of 
+$\hat p(\hat s(\mathbf{x}))$ is key to obtaining accurate results. Standard
+histograms with uniform binning have been used here for illustrative purposes, but we
+anticipate that more sophisticated calibration strategies will be important in further development
+of this method. We leave this as an area for future study. 
+
+Figure~\ref{fig:decomposed_ratio} shows the distribution of $ \log \hat r(\mathbf{x}))$ for $\gamma=0.05$
+using the decomposed approximation of $\hat r(\mathbf{x}))$ with neural networks and the distribution
+of the exact log-likelihood ratio. While there are some artifacts in the distribution in the low-probability regions and the maximum value of the log-likehood ratio is underestimated, the overall shape of the distribution is well approximated. 
+
+Finally, we see the log-likelihood curve $-\log \Lambda(\gamma)$ for the dataset $\mathcal{D}$ shown in 
+Fig.~\ref{fig:1a}. The exact likelihood curve is very well approximated by the method, confirming that
+even when the raw classifier does a poor job at modeling the $s^*(\mathbf{x}$, a good approximations of the 
+likelihood ratio can still be obtained by calibrating $s(\mathbf{x})$ (and by decomposing
+the mixture, if possible).
+
+
+Given observed data from Figure~\ref{fig:1a}, let us now consider the composite hypothesis testing setting, by comparing
+$H_0: \gamma = 0.05$ versus the alternative $H_1: \gamma \neq 0.05$. That is, we want to evaluate
+\begin{equation}
+\Lambda( \gamma = 0.05) =  \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \; .
+\end{equation}
+%\begin{equation}
+%\Lambda({\cal D}; \Theta_0 = \{0.05\}, \Theta=[0, 1]) =  \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \; .
+%\end{equation}
+By exploiting the fact that
+\begin{equation}
+\log \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} = \log \frac{ p({\cal D} | \gamma = 0.05) }{ p({\cal D} | \gamma = 0 ) } - \log \frac{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma) }{  p({\cal D} | \gamma = 0 ) },
+\end{equation}
+the generalized likelihood ratio statistic can be computed by evaluating
+both terms reusing the decomposed neural network-based approximation from Figure~\ref{fig:1c}.
+In particular, the maximum likelihood estimator (MLE) in the second term
+can be found as outlined in
+Section~\ref{sec:generalized-likelihood-ratio}.
 
 
 \begin{figure}
@@ -1068,23 +1063,7 @@ the mixture when possible.
     \label{fig:2}
 \end{figure}
 
-Given observed data from Figure~\ref{fig:1a}, let us now consider the composite hypothesis testing setting, by comparing
-$H_0: \gamma = 0.05$ versus the alternative $H_1: \gamma \neq 0.05$. That is, we want to evaluate
-\begin{equation}
-\Lambda( \gamma = 0.05) =  \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \; .
-\end{equation}
-%\begin{equation}
-%\Lambda({\cal D}; \Theta_0 = \{0.05\}, \Theta=[0, 1]) =  \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \; .
-%\end{equation}
-By exploiting the fact that
-\begin{equation}
-\log \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} = \log \frac{ p({\cal D} | \gamma = 0.05) }{ p({\cal D} | \gamma = 0 ) } - \log \frac{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma) }{  p({\cal D} | \gamma = 0 ) },
-\end{equation}
-the generalized likelihood ratio statistic can be computed by evaluating
-both terms reusing the decomposed neural network-based approximation from Figure~\ref{fig:1c}.
-In particular, the maximum likelihood estimator (MLE) in the second term
-can be found as outlined in
-Section~\ref{sec:generalized-likelihood-ratio}.
+
 Figure~\ref{fig:2a} shows the empirical distribution of the resulting MLEs,
 compared to the distribution of the true MLEs. It clearly suggests that
 the proposed inference procedure yields in this case an unbiased estimator
@@ -1095,6 +1074,8 @@ overlapping, indicating bias. From this, the initial $\Lambda$ test statistic ca
 be evaluated to determine in this case that the null should not be rejected.  Figure \ref{fig:2b} also confirms
 that $-2 \log \Lambda$, as approximated with our method, is asymptotically $\chi^2_1$ distributed,
 as should be the true statistic when the null is true.
+
+
 
 
 \subsection{Parameterized inference from multidimensional data}
