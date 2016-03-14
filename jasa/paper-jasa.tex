@@ -721,8 +721,7 @@ outlined in Section~\ref{sec:likelihood-ratio-tests}, it is desirable and
 convenient to have a smooth evolution of the classification score as a function
 of the parameters. For this reason, we anticipate a single learning stage based
 on training data with input $(\mathbf{x}, \theta_0, \theta_1)_i$ and target
-$y_i$, as outlined in Algorithm~\ref{alg:training}.
-Somewhat unusually, the
+$y_i$, as outlined in Algorithm~\ref{alg:training}. Somewhat unusually, the
 unknown values of the parameters are taken as input to the classifier; their
 values will be specified via the enveloping (generalized) likelihood ratio of
 Eqn.~\ref{eqn:generalized-lr}.  In this way, the parameterized classifier
@@ -735,18 +734,30 @@ Algorithm~\ref{alg:training}, it is not clear whether the optimal decision
 function can be expected for data generated from  $\theta'_0$ and $\theta'_1$
 never jointly encountered during learning. Similarly, it is not clear how the
 limited capacity of the classifier may impact the performance the resulting
-parameterized decision function. These issues are left as an area for future
-work, but preliminary exploration by \cite{Baldi:2016fzo} show that
-Algorithm~\ref{alg:training} is an effective practical approach.
+parameterized decision function. 
+Preliminary exploration by \cite{Baldi:2016fzo} shows that
+ a uniform grid scan over parameter space is an effective practical approach; 
+ however, we introduce the distributions $\pi_{\Theta_0}$ and $\pi_{\Theta_1}$ 
+into the Algorithm~\ref{alg:training} to allow for a more 
+ sophisticated sampling strategy. 
+% this formulation of Algorithm~\ref{alg:training} allows for a more 
+% sophisticated sampling strategy. 
+% These issues are left as an area for future work.
+%For this reason, we introduce the distributions $\pi_{\Theta_0}$ and $\pi_{\Theta_1}$ 
+%into the Algorithm~\ref{alg:training} to allow for a more 
+% sophisticated sampling strategy. 
+ 
 
 \begin{algorithm}[t]
 \caption{Learning a parameterized classifier.}\label{alg:training}
 \begin{algorithmic}
     \State ${\cal T := \{ \}}$;
-    \While{ $\text{size}({\cal L}) < N $ }
-        \State Select or draw $\theta_0$, $\theta_1$ from $\Theta_0$, $\Theta_1$;
+    \While{ $\text{size}({\cal T}) < N $ }
+        %\State Select or draw $\theta_0$, $\theta_1$ from $\Theta_0$, $\Theta_1$;
+        \State Draw $\theta_0 \sim \pi_{\Theta_0}$; 
 	    \State Draw $\mathbf{x} \sim p(\mathbf{x}|\theta_0)$;
 		\State ${\cal T} := {\cal T} \cup \{ ((\mathbf{x}, \theta_0, \theta_1), y=0) \}$;
+        \State Draw $\theta_1 \sim \pi_{\Theta_1}$; 
 		\State Draw $\mathbf{x} \sim p(\mathbf{x}|\theta_1)$;
 		\State ${\cal T} := {\cal T} \cup \{ ((\mathbf{x}, \theta_0, \theta_1), y=1) \}$;
     \EndWhile
@@ -881,7 +892,7 @@ p(\mathbf{x}|\gamma) &= (1-\gamma)\frac{p_{c_0}(\mathbf{x}) +  p_{c_1}(\mathbf{x
 \end{align}
 where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.25^2)$, $p_{c_1} := {\cal N}(\mu=0, \sigma^2=4)$,
 $p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$. Samples drawn for the nominal value $\gamma=0.05$ are shown in
-Figure~\ref{fig:1a} and used later for inference.
+Fig.~\ref{fig:1a} and used later for inference.
 
 Figure~\ref{fig:p_sij} shows the intermediate stages for the decomposition described in Section~\ref{sec:mixture}.
 The blue and green curves show $p_{c'}(\hat{s}_{c,c'}(\mathbf{x}))$,  the distributions for the score for the sub-classifiers for the three pair-wise comparisons of the mixture components. The red curves in Fig.~\ref{fig:p_sij} show the approximation of the density ratio obtained from those distributions.
@@ -928,13 +939,13 @@ resulting as expected in even more accurate approximations.
 
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig1c.pdf}
-        \caption{$\log \hat r(\mathbf{x})$ using neural network}
+        \caption{$\log \hat r(\hat{s}(\mathbf{x}))$ using neural network}
         \label{fig:1c}
     \end{subfigure}
     ~
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig1d.pdf}
-        \caption{$\log \hat r(\mathbf{x})$ using random forest}
+        \caption{$\log \hat r(\hat{s}(\mathbf{x}))$ using random forest}
         \label{fig:1d}
     \end{subfigure}
 
@@ -949,7 +960,7 @@ resulting as expected in even more accurate approximations.
       %(or a blank line to force the subfigure onto a new line)
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig-ratio-dist.pdf}
-        \caption{$p( \log \hat r(\mathbf{x})) \, | \,\gamma = 0.05)$ }
+        \caption{$p( \log \hat r(\hat{s}(\mathbf{x}))) \, | \,\gamma = 0.05)$ }
         \label{fig:decomposed_ratio}
     \end{subfigure}
     ~
@@ -1024,7 +1035,7 @@ Finally, we come to the log-likelihood curve
 for the dataset $\mathcal{D}$ shown in  Fig.~\ref{fig:1a}. 
 By exploiting the fact that
 \begin{equation}
-\log \frac{ p({\cal D} | \gamma = 0.05) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} = \log \frac{ p({\cal D} | \gamma = 0.05) }{ p({\cal D} | \gamma = 0 ) } - \log \frac{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma) }{  p({\cal D} | \gamma = 0 ) },
+\log \frac{ p({\cal D} | \gamma ) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} = \log \frac{ p({\cal D} | \gamma ) }{ p({\cal D} | \gamma = 0 ) } - \log \frac{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma) }{  p({\cal D} | \gamma = 0 ) },
 \end{equation}
 the generalized likelihood ratio can be computed by evaluating
 both terms with respect to a common reference $\gamma=0$
@@ -1146,7 +1157,7 @@ from the following process $p_0$:
         \caption{ }
         \label{fig:5b}
     \end{subfigure}
-    ~
+
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/fig5c.pdf}
         \caption{ }
@@ -1162,7 +1173,7 @@ from the following process $p_0$:
     \label{fig:5}
 \end{figure}
 
-The observations ${\cal D}$ represented in Figure~\ref{fig:4}
+The observations ${\cal D}$ represented in Fig.~\ref{fig:4}
 are random samples with $\alpha=1$ and $\beta=-1$. 
 Our goal is to infer the values $\alpha$ and $\beta$ based on ${\cal D}$.
 We construct the log-likelihood ratio 
@@ -1176,17 +1187,19 @@ that we calculate by exploiting the fact that
 Following the procedure described in Section~\ref{sec:param-clf}, we 
 % to reduce
 %computational requirements, both terms in the right hand side of Eqn.~\ref{eqn:obj-ex2-expanded} are evaluated using 
-a single 2-layer neural network (with 5+2 inputs and one output node) to form the parameterized classifier $s(\mathbf{x}; \theta_0, \theta_1)$ and fix $\theta_1=(\alpha=0, \beta=0)$.
+a build single 2-layer neural network (with 5+2 inputs and one output node) to form the parameterized classifier $s(\mathbf{x}; \theta_0, \theta_1)$ and fix $\theta_1=(\alpha=0, \beta=0)$.
 Since the generative model is not expensive, the classifier output is calibrated
 on-the-fly with histograms for  every candidate parameter pair $(\alpha,\beta)$.
 
-Figure~\ref{fig:5a} shows the exact log-likelihood ratio for this dataset, which has an exact MLE at $(\hat \alpha=1.012, \hat \beta=-0.9221)$. Figure~\ref{fig:5b} shows the approximate log-likelihood ratio evaluated on a coarse grid of parameter values. Some roughness in the contours is observed, which is due to primarily to variance introduced in the calibration procedure. In addition to the statistical fluctuations due to finite calibration samples, there are also fluctuations introduced from changes in the binning of the calibration histograms as $\alpha$ and $\beta$ vary. As discussed in Section~\ref{sec:param-calibration}, a parameterized calibration
+Figure~\ref{fig:5a} shows the exact log-likelihood ratio for this dataset, which has an exact MLE at $(\hat \alpha=1.012, \hat \beta=-0.9221)$. 
+
+Figure~\ref{fig:5b} shows the approximate log-likelihood ratio evaluated on a coarse grid of parameter values. Some roughness in the contours is observed, which is due to primarily to variance introduced in the calibration procedure. In addition to the statistical fluctuations due to finite calibration samples, there are also fluctuations introduced from changes in the binning of the calibration histograms as $\alpha$ and $\beta$ vary. As discussed in Section~\ref{sec:param-calibration}, a parameterized calibration
 procedure should ameliorate this issue, but that is left for now as an area for future work.
 Nevertheless, optimizing the approximate log-likelihood ratio with
 a Bayesian optimization~\citep{brochu2010tutorial} procedure is efficient and effective. 
 After $50$ likelihood evaluations, the maximum likelihood estimate is found at $(\hat \alpha=1.008, \hat \beta=-1.004)$. 
 While the goal of the Bayesian optimization procedure is to find the maximum likelihood, the posterior mean of the 
-internal Gaussian process, shown in Figure~\ref{fig:5c}, is close to the exact log-likelihood ratio illustrated in Figure~\ref{fig:5a}. 
+internal Gaussian process, shown in Fig.~\ref{fig:5c}, is close to the exact log-likelihood ratio illustrated in Fig.~\ref{fig:5a}. 
 In each case, the true values $\alpha=1$ and $\beta=-1$ are contained within the $1-\sigma$ likelihood contour.
 %For comparison, Figure~\ref{fig:5b} shows the approximate log likelihood ratio evaluated on a fixed grid of values. Since $\hat s(\mathbf{x;\alpha,\beta})$ is calibrated on-the-fly,
 %roughness in the contours can be observed, in particular due to non-smooth changes in the resulting histograms as $\alpha$ and $\beta$ vary.
