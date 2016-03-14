@@ -892,9 +892,9 @@ p(\mathbf{x}|\gamma) &= (1-\gamma)\frac{p_{c_0}(\mathbf{x}) +  p_{c_1}(\mathbf{x
 \end{align}
 where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.25^2)$, $p_{c_1} := {\cal N}(\mu=0, \sigma^2=4)$,
 $p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$. Samples drawn for the nominal value $\gamma=0.05$ are shown in
-Fig.~\ref{fig:1a} and used later for inference.
+Figure~\ref{fig:1a} and used later for inference.
 
-Fig.~\ref{fig:p_sij} shows the intermediate stages for the decomposition described in Section~\ref{sec:mixture}.
+Figure~\ref{fig:p_sij} shows the intermediate stages for the decomposition described in Section~\ref{sec:mixture}.
 The blue and green curves show $p_{c'}(\hat{s}_{c,c'}(\mathbf{x}))$,  the distributions for the score for the sub-classifiers for the three pair-wise comparisons of the mixture components. The red curves in Fig.~\ref{fig:p_sij} show the approximation of the density ratio obtained from those distributions.
 
 %Using the method outlined in Section~\ref{sec:approx},
@@ -1023,7 +1023,7 @@ histograms with uniform binning have been used here for illustrative purposes, b
 anticipate that more sophisticated calibration strategies will be important in further development
 of this method. We leave this as an area for future study.
 
-Fig.~\ref{fig:decomposed_ratio} shows the distribution of $ \log \hat r(\mathbf{x}))$ for $\gamma=0.05$
+Figure~\ref{fig:decomposed_ratio} shows the distribution of $ \log \hat r(\mathbf{x}))$ for $\gamma=0.05$
 using the decomposed approximation of $\hat r(\mathbf{x}))$ with neural networks and the distribution
 of the exact log-likelihood ratio. While there are some artifacts in the distribution in the low-probability regions and the maximum value of the log-likehood ratio is underestimated, the overall shape of the distribution is well approximated.
 
@@ -1043,7 +1043,7 @@ both terms with respect to a common reference $\gamma=0$
 %In particular, the maximum likelihood estimator (MLE) in the second term
 %can be found
 as outlined in Section~\ref{sec:generalized-likelihood-ratio}.
-Fig.~\ref{fig:likelihood} shows that the exact likelihood curve is very well
+Figure~\ref{fig:likelihood} shows that the exact likelihood curve is very well
 approximated by the method, confirming that
 even when the raw classifier does a poor job at modeling the $s^*(\mathbf{x})$, a good approximations of the
 likelihood ratio can still be obtained by calibrating $s(\mathbf{x})$ (and by decomposing
@@ -1096,7 +1096,7 @@ parts of the approximation  -- are independent of the of the dataset $\mathcal{D
 Thus once trained and calibrated, the approximation can be applied to any dataset $\mathcal{D}$.
 This makes it computationally efficient to perform ensemble tests of the method.
 
-Fig.~\ref{fig:2a} shows the empirical distribution of the maximum likelihood estimators (MLEs) from the
+Figure~\ref{fig:2a} shows the empirical distribution of the maximum likelihood estimators (MLEs) from the
 approximate likelihood compared to the distribution of the MLEs from the exact likelihood.
 It clearly demonstrates that in this case the approximate likelihood yields an unbiased estimator with the essentially the same variance as the exact MLE.
 %($\mathbb{E} [\hat \gamma] = 0.0501$, as empirically estimated over $1000$
@@ -1110,7 +1110,7 @@ Wilks's theorem states that the distribution of $-2\log \Lambda(\gamma=0.05)$ sh
 %
 %From this, the initial $\Lambda$ test statistic can finally
 %be evaluated to determine in this case that the null should not be rejected.
-Fig.~\ref{fig:2b} also confirms this behavior, supporting the applicability of this method for likelihood-based inference techniques in the likelihood-free setting.
+Figure~\ref{fig:2b} also confirms this behavior, supporting the applicability of this method for likelihood-based inference techniques in the likelihood-free setting.
 % that $-2 \log \Lambda$, as approximated with our method, is asymptotically $\chi^2_1$ distributed,
 %as should be the true statistic when the null is true.
 
