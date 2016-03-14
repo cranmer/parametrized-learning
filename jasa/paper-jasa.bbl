@@ -33,12 +33,6 @@ Bickel, S., Br{\"u}ckner, M., and Scheffer, T. (2009).
 \newblock Discriminative learning under covariate shift.
 \newblock {\em The Journal of Machine Learning Research}, 10:2137--2155.
 
-\bibitem[Bolognesi et~al., 2012]{Bolognesi:2012mm}
-Bolognesi, S., Gao, Y., Gritsan, A.~V., Melnikov, K., Schulze, M., et~al.
-  (2012).
-\newblock {On the spin and parity of a single-produced resonance at the LHC}.
-\newblock {\em Phys.Rev.}, D86:095031.
-
 \bibitem[Brochu et~al., 2010]{brochu2010tutorial}
 Brochu, E., Cora, V.~M., and De~Freitas, N. (2010).
 \newblock A tutorial on bayesian optimization of expensive cost functions, with
@@ -72,12 +66,6 @@ Friedman, J., Hastie, T., Tibshirani, R., et~al. (2000).
 \newblock Additive logistic regression: a statistical view of boosting (with
   discussion and a rejoinder by the authors).
 \newblock {\em The annals of statistics}, 28(2):337--407.
-
-\bibitem[Gao et~al., 2010]{Gao:2010qx}
-Gao, Y., Gritsan, A.~V., Guo, Z., Melnikov, K., Schulze, M., et~al. (2010).
-\newblock {Spin determination of single-produced resonances at hadron
-  colliders}.
-\newblock {\em Phys.Rev.}, D81:075022.
 
 \bibitem[Gretton et~al., 2009]{gretton2009covariate}
 Gretton, A., Smola, A., Huang, J., Schmittfull, M., Borgwardt, K., and
