@@ -516,7 +516,7 @@ around $\mathbf{x}$, such as neural networks. For small training sets, tree-base
 methods are not expected to work so well for this use case, since they usually
 model $\hat{s}(\mathbf{x})$ as a non-strictly monotonic composition of step functions.
 In such cases where $\hat s(\mathbf{x})$ is not monotonic with $r(\mathbf{x})$,
-the induced probability does not factorize as in Eqn.~\ref{eqn:factorization}, 
+the induced probability does not factorize as in Eqn.~\ref{eqn:factorization},
 leading to artifacts in the resulting approximation of the density ratio.
 Provided enough training data, accurate results can however still be achieved,
 given the universal approximator capacity of tree-based models.
@@ -533,21 +533,21 @@ is a much simpler problem than learning $p(\mathbf{x}|\theta)$, since the
 reduction $s$ projects $\mathbf{x}$ into a one-dimensional space in which only
 the (simpler) informative content of $r(\mathbf{x})$ is preserved.
 
-An alternative approach for calibration is to approximate the density ratio 
-$r(\hat{s}(\mathbf{x}))$ directly. 
-%There are various strategies. 
+An alternative approach for calibration is to approximate the density ratio
+$r(\hat{s}(\mathbf{x}))$ directly.
+%There are various strategies.
 For instance, isotonic regression, which is commonly used to transform the classifier score  $\hat{s}(\mathbf{x})$ into $\hat{s}_\textrm{iso}(\mathbf{x})$ that more accurately reflect  the posterior probability $s^*(\mathbf{x})$
 of Eq.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\mathbf{x}) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
 \textbf{Gilles, should we add more about direct density ratio estimation (currently in 5. Related Work) here?}
 
-%An alternative approach for calibration is to approximate the density ratio 
-%$r(\hat{s}(\mathbf{x}); \theta_0, \theta_1)$ directly. 
-%%There are various strategies. 
+%An alternative approach for calibration is to approximate the density ratio
+%$r(\hat{s}(\mathbf{x}); \theta_0, \theta_1)$ directly.
+%%There are various strategies.
 %For instance, isotonic regression, which is commonly used to transform the classifier score  $\hat{s}(\mathbf{x})$ into $\hat{s}_\textrm{iso}(\mathbf{x})$ that more accurately reflect  the posterior probability $s^*(\mathbf{x})$
 %of Eq.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}; \theta_0, \theta_1) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\mathbf{x}; \theta_0, \theta_1) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
 %\textbf{Gilles, should we add more about direct density ratio estimation (currently in 5. Related Work) here?}
 
-%. , which for balanced training samples has the form 
+%. , which for balanced training samples has the form
 %$\hat{p}(\theta_1 | \hat{s}(\mathbf{x})) \approx p(\hat{s}(\mathbf{x}) | \theta_0) / (p(\hat{s}(\mathbf{x}) | \theta_1) + p(\hat{s}(\mathbf{x}) | \theta_1)) = 1/(1+r(\hat{s}(\mathbf{x}); \theta_0, \theta_1)))$.
 
 One strength of the proposed approach is that it factorizes the approximation of
@@ -734,19 +734,19 @@ Algorithm~\ref{alg:training}, it is not clear whether the optimal decision
 function can be expected for data generated from  $\theta'_0$ and $\theta'_1$
 never jointly encountered during learning. Similarly, it is not clear how the
 limited capacity of the classifier may impact the performance the resulting
-parameterized decision function. 
+parameterized decision function.
 Preliminary exploration by \cite{Baldi:2016fzo} shows that
- a uniform grid scan over parameter space is an effective practical approach; 
- however, we introduce the distributions $\pi_{\Theta_0}$ and $\pi_{\Theta_1}$ 
-into the Algorithm~\ref{alg:training} to allow for a more 
- sophisticated sampling strategy. 
-% this formulation of Algorithm~\ref{alg:training} allows for a more 
-% sophisticated sampling strategy. 
+ a uniform grid scan over parameter space is an effective practical approach;
+ however, we introduce the distributions $\pi_{\Theta_0}$ and $\pi_{\Theta_1}$
+into the Algorithm~\ref{alg:training} to allow for a more
+ sophisticated sampling strategy.
+% this formulation of Algorithm~\ref{alg:training} allows for a more
+% sophisticated sampling strategy.
 % These issues are left as an area for future work.
-%For this reason, we introduce the distributions $\pi_{\Theta_0}$ and $\pi_{\Theta_1}$ 
-%into the Algorithm~\ref{alg:training} to allow for a more 
-% sophisticated sampling strategy. 
- 
+%For this reason, we introduce the distributions $\pi_{\Theta_0}$ and $\pi_{\Theta_1}$
+%into the Algorithm~\ref{alg:training} to allow for a more
+% sophisticated sampling strategy.
+
 
 \begin{algorithm}[t]
 \caption{Learning a parameterized classifier.}\label{alg:training}
@@ -754,10 +754,10 @@ into the Algorithm~\ref{alg:training} to allow for a more
     \State ${\cal T := \{ \}}$;
     \While{ $\text{size}({\cal T}) < N $ }
         %\State Select or draw $\theta_0$, $\theta_1$ from $\Theta_0$, $\Theta_1$;
-        \State Draw $\theta_0 \sim \pi_{\Theta_0}$; 
+        \State Draw $\theta_0 \sim \pi_{\Theta_0}$;
 	    \State Draw $\mathbf{x} \sim p(\mathbf{x}|\theta_0)$;
 		\State ${\cal T} := {\cal T} \cup \{ ((\mathbf{x}, \theta_0, \theta_1), y=0) \}$;
-        \State Draw $\theta_1 \sim \pi_{\Theta_1}$; 
+        \State Draw $\theta_1 \sim \pi_{\Theta_1}$;
 		\State Draw $\mathbf{x} \sim p(\mathbf{x}|\theta_1)$;
 		\State ${\cal T} := {\cal T} \cup \{ ((\mathbf{x}, \theta_0, \theta_1), y=1) \}$;
     \EndWhile
@@ -771,29 +771,29 @@ into the Algorithm~\ref{alg:training} to allow for a more
 
 
 
-Once the parametrized classifier $\hat{s}(\mathbf{x}; \theta_0, \theta_1)$ is trained, 
-we can use the generative model together with one of the calibration strategies 
-discussed in Sec.~\ref{s:learning_calibration} for particular values of $\theta_0$ and $\theta_1$. 
-%For instance, 
+Once the parametrized classifier $\hat{s}(\mathbf{x}; \theta_0, \theta_1)$ is trained,
+we can use the generative model together with one of the calibration strategies
+discussed in Sec.~\ref{s:learning_calibration} for particular values of $\theta_0$ and $\theta_1$.
+%For instance,
 %together with a
 %univariate density estimation technique (e.g. histograms or kernel density
 %estimation) to approximate $p(s|\theta)$ for specific parameter
-%points. 
+%points.
 For a single parameter point $\theta$, this is a tractable univariate density
 estimation problem. The challenge comes from the need to calibrate this density
 for all values of $\theta$. A straightforward approach would be to run the
 generative model on demand for any particular value of $\theta$. In the context
 of a likelihood fit this would mean that the optimization algorithm that is
 trying to maximize the likelihood with respect to $\theta$ needs access to the
-generative model $p(\mathbf{x}|\theta)$.  This is the strategy used for the examples presented in Sec.~\ref{sec:examples}. 
+generative model $p(\mathbf{x}|\theta)$.  This is the strategy used for the examples presented in Sec.~\ref{sec:examples}.
 
 Calibrating the density on-demand can be  impractical when the generative
 model is computationally expensive or has high-latency (for instance some human
-intervention is required to reconfigure the generative model). In high energy physics, where 
-it is common to calibrate the distribution of a fixed classifier. There the strategy is to interpolate 
+intervention is required to reconfigure the generative model). In high energy physics, where
+it is common to calibrate the distribution of a fixed classifier. There the strategy is to interpolate
 the distribution between discrete values of $\theta$ in order to produce a continuous parameterization for
 $p(s | \theta)$~\citep{read1999linear,Cranmer:2012sba,baak2015interpolation}.
-One can easily imagine a number of approaches to parametrized calibration and the 
+One can easily imagine a number of approaches to parametrized calibration and the
 relative merits of those approaches will depend critically on the dimensionality of $\theta$ and the
 computational cost of the generative model. We leave a more general strategy for
 this overarching optimization problem as an area of future work.
@@ -899,17 +899,17 @@ The blue and green curves show $p_{c'}(\hat{s}_{c,c'}(\mathbf{x}))$,  the distri
 
 %Using the method outlined in Section~\ref{sec:approx},
 
-Figures~\ref{fig:1c} and \ref{fig:1d} show the approximate $\log \left( \hat{r}(\mathbf{x}) \right)$ as a function of $\mathbf{x}$ using a 
+Figures~\ref{fig:1c} and \ref{fig:1d} show the approximate $\log \left( \hat{r}(\mathbf{x}) \right)$ as a function of $\mathbf{x}$ using a
 2-layer neural network and a random forest for the classifier $\hat{s}(\mathbf{x})$.
 The neural network provides a smoother approximation, while the random has some artifacts due to the fact that the
 decision function is piece-wise constant.
 %ratio when using respectively a linear model, a 2-layer neural network and a random
-%forest. 
-The blue curves show the exact log-ratio, the green curves show 
+%forest.
+The blue curves show the exact log-ratio, the green curves show
 $\log \left( (1-\hat s(\mathbf{x}))/\hat s(\mathbf{x}) \right)$
 without calibration, while the red curve is the improved approximation $\log \hat{r}(\mathbf{x})$ calibrated
 using histograms. Finally, the cyan curve shows the approximated log-likelihood ratio when decomposing the mixture, as
-seen in Fig.~\ref{fig:p_sij}.  By leveraging the fact that densities are mixtures, the capacity 
+seen in Fig.~\ref{fig:p_sij}.  By leveraging the fact that densities are mixtures, the capacity
 of the underlying classifiers can be more effectively focused on easier classification tasks,
 resulting as expected in even more accurate approximations.
 
@@ -978,28 +978,28 @@ resulting as expected in even more accurate approximations.
 %The first feature to highlight is that, in the finite sample setting, uncalibrated
 %direct approximations $\log \left(  (1-\hat s(\mathbf{x}))/\hat s(\mathbf{x})  \right)$, as shown in green, may not yield a very accurate
 %estimate of the ratio, even when using universal approximators such as a neural
-%network or a random forest. 
+%network or a random forest.
 %%This observation is at the origin of this work, and
 %%led us to show that the ratio $r(\mathbf{x})$ can still be computed exactly by
 %%forming the equivalent statistic
 %%$\sfrac{p(s(\mathbf{x})|\gamma=0.05)}{p(s(\mathbf{x})|\gamma=0)}$, provided the
-%%transformation $s(\mathbf{x})$ is monotonic with $r(\mathbf{x})$. 
+%%transformation $s(\mathbf{x})$ is monotonic with $r(\mathbf{x})$.
 %The approximation of the log-likelihood ratio is significantly improved when calibrating
 %the classifier score with univariate density estimation
-%% according to 
-%%$\hat{r}(\mathbf{x}) = \sfrac{\hat p(\hat s(\mathbf{x})|\gamma=0.05)}{\hat p(\hat s(\mathbf{x})|\gamma=0)}$, 
-%as illustrated in red. 
+%% according to
+%%$\hat{r}(\mathbf{x}) = \sfrac{\hat p(\hat s(\mathbf{x})|\gamma=0.05)}{\hat p(\hat s(\mathbf{x})|\gamma=0)}$,
+%as illustrated in red.
 %%The
 %%approximated ratios show to be more accurate for all three classifiers, even
 %%when the direct approximation was not very good in the first place, e.g. as for the
-%%linear model. 
+%%linear model.
 %In regions where the densities are low (i.e., near the
 %boundaries) the approximated ratio is less accurate.
 %% since the underlying
 %%classifier cannot make precise predictions due to the lack training samples
-%% in these parts of the input space. 
+%% in these parts of the input space.
 % When leveraging the fact
-%that densities are mixtures and decomposing their ratio as described in Section~\ref{sec:mixture}, 
+%that densities are mixtures and decomposing their ratio as described in Section~\ref{sec:mixture},
 %the capacity of the underlying classifiers can be more effectively focused on easier supervised learning tasks,
 %resulting as expected in even more accurate approximations, as shown in cyan.
 
@@ -1011,28 +1011,28 @@ resulting as expected in even more accurate approximations.
 %which is piece-wise constant, therefore non-continuous and not strictly
 %monotonic with the ratio in the finite sample regime. On this problem, the
 %random forest still approximates the ratio correctly, but more variance can be
-%observed. 
+%observed.
 %%Finally, the linear model produces a decision function that is
 %%smooth and continuous but only piece-wise monotonic with the ratio. Due to the symmetry of
 %%the ratio around $\mathbf{x}=1$, this still results in an accurate
 %%approximation, but poorer results should be expected on more complex problems.
 
-As the results show, calibrating $\hat s(\mathbf{x})$ through univariate density estimation of 
+As the results show, calibrating $\hat s(\mathbf{x})$ through univariate density estimation of
 $\hat p(\hat s(\mathbf{x}))$ is key to obtaining accurate results. Standard
 histograms with uniform binning have been used here for illustrative purposes, but we
 anticipate that more sophisticated calibration strategies will be important in further development
-of this method. We leave this as an area for future study. 
+of this method. We leave this as an area for future study.
 
 Figure~\ref{fig:decomposed_ratio} shows the distribution of $ \log \hat r(\mathbf{x}))$ for $\gamma=0.05$
 using the decomposed approximation of $\hat r(\mathbf{x}))$ with neural networks and the distribution
-of the exact log-likelihood ratio. While there are some artifacts in the distribution in the low-probability regions and the maximum value of the log-likehood ratio is underestimated, the overall shape of the distribution is well approximated. 
+of the exact log-likelihood ratio. While there are some artifacts in the distribution in the low-probability regions and the maximum value of the log-likehood ratio is underestimated, the overall shape of the distribution is well approximated.
 
-Finally, we come to the log-likelihood curve 
+Finally, we come to the log-likelihood curve
 %shown in Figure~\ref{fig:likelihood}
 \begin{equation}
-\log \Lambda( \gamma ) =  \log \frac{ p({\cal D} | \gamma ) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \; .
+\log \Lambda( \gamma ) =  \log \frac{ p({\cal D} | \gamma ) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \;
 \end{equation}
-for the dataset $\mathcal{D}$ shown in  Fig.~\ref{fig:1a}. 
+for the dataset $\mathcal{D}$ shown in  Fig.~\ref{fig:1a}.
 By exploiting the fact that
 \begin{equation}
 \log \frac{ p({\cal D} | \gamma ) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} = \log \frac{ p({\cal D} | \gamma ) }{ p({\cal D} | \gamma = 0 ) } - \log \frac{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma) }{  p({\cal D} | \gamma = 0 ) },
@@ -1041,11 +1041,11 @@ the generalized likelihood ratio can be computed by evaluating
 both terms with respect to a common reference $\gamma=0$
 %reusing the decomposed neural network-based approximation from Figure~\ref{fig:1c}.
 %In particular, the maximum likelihood estimator (MLE) in the second term
-%can be found 
+%can be found
 as outlined in Section~\ref{sec:generalized-likelihood-ratio}.
-Figure~\ref{fig:likelihood} shows that the exact likelihood curve is very well 
+Figure~\ref{fig:likelihood} shows that the exact likelihood curve is very well
 approximated by the method, confirming that
-even when the raw classifier does a poor job at modeling the $s^*(\mathbf{x})$, a good approximations of the 
+even when the raw classifier does a poor job at modeling the $s^*(\mathbf{x})$, a good approximations of the
 likelihood ratio can still be obtained by calibrating $s(\mathbf{x})$ (and by decomposing
 the mixture, if possible).
 
@@ -1092,26 +1092,26 @@ the mixture, if possible).
 
 
 \bigskip
-An advantage of this approach compared to ABC is that the 
-classifier and calibration -- computationally intensive 
-parts of the approximation  -- are independent of the of the dataset $\mathcal{D}$. 
-Thus once trained and calibrated, the approximation can be applied to any dataset $\mathcal{D}$. 
+An advantage of this approach compared to ABC is that the
+classifier and calibration -- computationally intensive
+parts of the approximation  -- are independent of the of the dataset $\mathcal{D}$.
+Thus once trained and calibrated, the approximation can be applied to any dataset $\mathcal{D}$.
 This makes it computationally efficient to perform ensemble tests of the method.
 
-Figure~\ref{fig:2a} shows the empirical distribution of the maximum likelihood estimators (MLEs) from the 
-approximate likelihood compared to the distribution of the MLEs from the exact likelihood. 
+Figure~\ref{fig:2a} shows the empirical distribution of the maximum likelihood estimators (MLEs) from the
+approximate likelihood compared to the distribution of the MLEs from the exact likelihood.
 It clearly demonstrates that in this case the approximate likelihood yields an unbiased estimator with the essentially the same variance as the exact MLE.
 %($\mathbb{E} [\hat \gamma] = 0.0501$, as empirically estimated over $1000$
-%trials). 
+%trials).
 %Note that had the underlying ratio not been accurate enough because of
 %poor training or poor calibration, the two distributions would not be exactly
-%overlapping, indicating bias. 
+%overlapping, indicating bias.
 In addition to the MLE, we can study the coverage of a confidence interval based on the likelihood ratio test statistic.
 This is done by evaluating $-2\log \Lambda(\gamma=0.05)$ for samples drawn from $p(\mathbf{x} | \gamma=0.05)$.
 Wilks's theorem states that the distribution of $-2\log \Lambda(\gamma=0.05)$ should follow a $\chi^2_1$ distribution.
 %
 %From this, the initial $\Lambda$ test statistic can finally
-%be evaluated to determine in this case that the null should not be rejected.  
+%be evaluated to determine in this case that the null should not be rejected.
 Figure \ref{fig:2b} also confirms this behavior, supporting the applicability of this method for likelihood-based inference techniques in the likelihood-free setting.
 % that $-2 \log \Lambda$, as approximated with our method, is asymptotically $\chi^2_1$ distributed,
 %as should be the true statistic when the null is true.
@@ -1174,9 +1174,9 @@ from the following process $p_0$:
 \end{figure}
 
 The observations ${\cal D}$ represented in Fig.~\ref{fig:4}
-are random samples with $\alpha=1$ and $\beta=-1$. 
+are random samples with $\alpha=1$ and $\beta=-1$.
 Our goal is to infer the values $\alpha$ and $\beta$ based on ${\cal D}$.
-We construct the log-likelihood ratio 
+We construct the log-likelihood ratio
 \begin{equation}\label{eqn:obj-ex2}
     -2 \log \Lambda(\alpha, \beta ) = -2 \log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }
 \end{equation}
@@ -1184,22 +1184,21 @@ that we calculate by exploiting the fact that
 \begin{equation}\label{eqn:obj-ex2-expanded}
 \log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) } = \log \frac{p({\cal D} | \alpha, \beta)}{ p({\cal D} | \alpha=0, \beta=0) } - \log \frac{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }{ p({\cal D} | \alpha=0, \beta=0)}.
 \end{equation}
-Following the procedure described in Section~\ref{sec:param-clf}, we 
+Following the procedure described in Section~\ref{sec:param-clf}, we build
 % to reduce
-%computational requirements, both terms in the right hand side of Eqn.~\ref{eqn:obj-ex2-expanded} are evaluated using 
+%computational requirements, both terms in the right hand side of Eqn.~\ref{eqn:obj-ex2-expanded} are evaluated using
 a build single 2-layer neural network (with 5+2 inputs and one output node) to form the parameterized classifier $s(\mathbf{x}; \theta_0, \theta_1)$ and fix $\theta_1=(\alpha=0, \beta=0)$.
 Since the generative model is not expensive, the classifier output is calibrated
 on-the-fly with histograms for  every candidate parameter pair $(\alpha,\beta)$.
 
-Figure~\ref{fig:5a} shows the exact log-likelihood ratio for this dataset, which has an exact MLE at $(\hat \alpha=1.012, \hat \beta=-0.9221)$. 
-
+Figure~\ref{fig:5a} shows the exact log-likelihood ratio for this dataset, which has an exact MLE at $(\hat \alpha=1.012, \hat \beta=-0.9221)$.
 Figure~\ref{fig:5b} shows the approximate log-likelihood ratio evaluated on a coarse grid of parameter values. Some roughness in the contours is observed, which is due to primarily to variance introduced in the calibration procedure. In addition to the statistical fluctuations due to finite calibration samples, there are also fluctuations introduced from changes in the binning of the calibration histograms as $\alpha$ and $\beta$ vary. As discussed in Section~\ref{sec:param-calibration}, a parameterized calibration
 procedure should ameliorate this issue, but that is left for now as an area for future work.
 Nevertheless, optimizing the approximate log-likelihood ratio with
-a Bayesian optimization~\citep{brochu2010tutorial} procedure is efficient and effective. 
-After $50$ likelihood evaluations, the maximum likelihood estimate is found at $(\hat \alpha=1.008, \hat \beta=-1.004)$. 
-While the goal of the Bayesian optimization procedure is to find the maximum likelihood, the posterior mean of the 
-internal Gaussian process, shown in Fig.~\ref{fig:5c}, is close to the exact log-likelihood ratio illustrated in Fig.~\ref{fig:5a}. 
+a Bayesian optimization~\citep{brochu2010tutorial} procedure is efficient and effective.
+After $50$ likelihood evaluations, the maximum likelihood estimate is found at $(\hat \alpha=1.008, \hat \beta=-1.004)$.
+While the goal of the Bayesian optimization procedure is to find the maximum likelihood, the posterior mean of the
+internal Gaussian process, shown in Fig.~\ref{fig:5c}, is close to the exact log-likelihood ratio illustrated in Fig.~\ref{fig:5a}.
 In each case, the true values $\alpha=1$ and $\beta=-1$ are contained within the $1-\sigma$ likelihood contour.
 %For comparison, Figure~\ref{fig:5b} shows the approximate log likelihood ratio evaluated on a fixed grid of values. Since $\hat s(\mathbf{x;\alpha,\beta})$ is calibrated on-the-fly,
 %roughness in the contours can be observed, in particular due to non-smooth changes in the resulting histograms as $\alpha$ and $\beta$ vary.
@@ -1276,16 +1275,16 @@ likelihood ratio is used as a test statistic.
 % \subsubsection{Comments on typical usage of machine learning in HEP}
 
 Nuisance parameters are an after thought in the typical usage of machine
-learning in high energy physics. The classifiers are typically trained with 
-data generated using a fixed nominal value of the nuisance parameters $\nu=\nu_0$. 
+learning in high energy physics. The classifiers are typically trained with
+data generated using a fixed nominal value of the nuisance parameters $\nu=\nu_0$.
 However, as experimentalists we know that we must account for
 the systematic uncertainties that correspond to the nuisance parameters
 $\nu$. Thus, typically we take the classifier $\hat s(\mathbf{x})$ as fixed and then propagate
-uncertainty by estimating $\hat{p}_s(\hat s(\mathbf{x}) | \nu)$ with a parametrized calibration procedure. 
+uncertainty by estimating $\hat{p}_s(\hat s(\mathbf{x}) | \nu)$ with a parametrized calibration procedure.
 %Building such
 %distributions for values of $\nu$ other than the nominal $\nu_0$
 %used for training is thought of as a calibration necessary for
-%classical statistical inference. 
+%classical statistical inference.
 However, this classifier is clearly not optimal
 for $\nu \ne \nu_0$. In contrast, a parameterized classifier proposed in this work
 would yield more accurate estimates of the generalized likelihood ratio.
@@ -1333,7 +1332,7 @@ learning in high energy physics, where classifiers have always been used between
 classes of events and not parameterized explicitly in terms of the physical
 quantities we wish to measure.
 
-%The work of \cite{Whiteson:2006ws} used a stochastic optimization technique 
+%The work of \cite{Whiteson:2006ws} used a stochastic optimization technique
 %to find a binary classifier such that selected events would minimize the measurement
 %uncertainty of a particle's mass; however, the resulting classifier was fixed.
 %This approach also offers the advantage that it explicitly reformulates the
@@ -1352,7 +1351,7 @@ high energy physics is the so-called matrix element
 method, in which one  directly computes an approximate likelihood ratio by
 performing a computationally intensive integral associated to a simplified detector
 response~\citep{Volobouev:2011vb}. In the approach considered in this paper, the
-detailed detector response is naturally incorporated by the simulator; however, that integral 
+detailed detector response is naturally incorporated by the simulator; however, that integral
 is intractable for the matrix element method. Even with drastic simplifications of the detector response, the
 matrix element method can take several minutes of CPU time to calculate the
 likelihood ratio for a single event $\mathbf{x}$. The work here can be seen as aiming
@@ -1370,7 +1369,7 @@ lucky, measurement of the mass of supersymmetric particles in cascade
 decays~\citep{Allanach:2000kt}.  Both of these examples involve data sets with
 many events, each with a feature vector $\mathbf{x}$ that has on the order of 10
 components, and a parameter vector $\theta$ with 2-10 parameters of interest and
-possibly many more nuisance parameters. 
+possibly many more nuisance parameters.
 %The state of the art for the operator
 %coefficients of the Higgs decay uses the so-called matrix element likelihood
 %analysis (MELA) in which the equivalent of $s(\mathbf{x}; \theta_0, \theta_1)$ is
