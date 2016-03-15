@@ -535,10 +535,11 @@ the (simpler) informative content of $r(\mathbf{x})$ is preserved.
 
 An alternative approach for calibration is to approximate the density ratio
 $r(\hat{s}(\mathbf{x}))$ directly.
-%There are various strategies.
-For instance, isotonic regression, which is commonly used to transform the classifier score  $\hat{s}(\mathbf{x})$ into $\hat{s}_\textrm{iso}(\mathbf{x})$ that more accurately reflect  the posterior probability $s^*(\mathbf{x})$
-of Eq.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\mathbf{x}) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
-\textbf{Gilles, should we add more about direct density ratio estimation (currently in 5. Related Work) here?}
+For example, isotonic regression, which is commonly used to transform the classifier score  $\hat{s}(\mathbf{x})$ into $\hat{s}_\textrm{iso}(\mathbf{x})$ that more accurately reflect  the posterior probability $s^*(\mathbf{x})$
+of Eq.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\hat{s}(\mathbf{x})) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
+Additionally, Sec.~\ref{sec:related} describes related work in which the density ratio $\hat{r}(\mathbf{x})$ is estimated directly on the feature space $\mathcal{X}$.
+
+%\textbf{Gilles, should we add more about direct density ratio estimation (currently in 5. Related Work) here?}
 
 %An alternative approach for calibration is to approximate the density ratio
 %$r(\hat{s}(\mathbf{x}); \theta_0, \theta_1)$ directly.
@@ -554,7 +555,7 @@ One strength of the proposed approach is that it factorizes the approximation of
 the dimensionality reduction ($\hat{s}(\mathbf{x}) \approx s(\mathbf{x})$) from the
 calibration procedure ($\hat p(\hat s(\mathbf{x})| \theta) \approx
 p(\hat{s}(\mathbf{x})|\theta)$ or $\hat{r}(\hat{s}(\mathbf{x})) \approx r(\hat{s}(\mathbf{x}))$). Thus, even if the classifier does a poor job at
-learning the optimal decision function~\ref{eqn:best-s-clf} and therefore at
+learning the optimal decision function~\ref{eqn:best-s-clf} and, therefore, at
 reproducing the level sets of the per-sample likelihood ratio, the density of
 $\hat{s}$ can still be well calibrated. In that case, one might loose power, but
 the resulting inference will still be valid. This point was made by
@@ -686,7 +687,7 @@ the same as the value that maximizes the likelihood ratio with respect to
 $p({\cal D}|\theta_1)$, for some fixed value of $\theta_1$ chosen such that the support of $p(\mathbf{x}|\theta_1)$ covers the support of $p(\mathbf{x}|\theta)$.
 This allows us to
 use Theorem~\ref{thm:ratio-equivalence} to reformulate the maximum likelihood
-estimate as
+estimate (MLE) as
 \begin{align}\label{eq:mle_withs}
 \hat{\theta} &= \argmax_\theta  p({\cal D} | \theta) \nonumber \\
 &= \argmax_\theta  \prod_{\mathbf{x} \in {\cal D}} \frac{p(\mathbf{x}| \theta)}{p(\mathbf{x}|\theta_1)} \nonumber \\
@@ -874,7 +875,27 @@ p_{c'}(s_{c,c'}(\mathbf{x}))}{ p_c(s_{c,c'}(\mathbf{x}))}$, which can be
 pre-computed without the need of parameterized classification or
 calibration.
 
+\subsection{Diagnostics}
 
+While Theorem~\ref{thm:ratio-equivalence} states that the likelihood ratio $r(\mathbf{x}; \theta_0, \theta_1)$ is 
+invariant under the dimensionality reduction $s(\mathbf{x}; \theta_0, \theta_1)$ provided that it is monotonic with 
+$r(\mathbf{x}; \theta_0, \theta_1)$ itself and we know that any universally strongly consistent algorithm can be 
+used to learn such a function, we know that in practice $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$ will not be exact.
+Thus, it is crucial that to have some diagnostic procedures to assess the quality of this approximation.
+This is complicated by the fact that in the likelihood-free setting, we don't have access to the true likelihood ratio. 
+Below we consider two such diagnostic procedures that can be implemented in the likelihood-free setting.
+
+The first diagnostic procedure is related to the procedure for finding the MLE $\hat{\theta}$ in Eqn.~\ref{eq:mle_withs}. As pointed out there it is important that one maximizes the likelihood ratio as the surface integral and Jacobian factors related to the dimensionality reduction only cancel in the ratio (see Eqn.~\ref{eqn:factorization}). Importantly, they also only cancel if the dimensionality reduction map satisfies the conditions needed for Theorem~\ref{thm:ratio-equivalence} to hold. Moreover, the resulting value of $\hat{\theta}$ should be independent of the value of $\theta_1$ used in the denominator of the likelihood ratio. Similarly, we have
+%$\log\Lambda(\theta) = \log p(\mathcal{D}|\theta)/p(\mathcal{D}|\hat\theta) = \log p(\mathcal{D}|\theta)/p(\mathcal{D}|\theta_1) -\log p(\mathcal{D}|\hat\theta)/p(\mathcal{D}|\theta_1)$ for all values of $\theta_1$.
+\begin{equation}
+\log\Lambda(\theta) = \log \frac{p(\mathcal{D}|\theta)}{p(\mathcal{D}|\hat\theta)} = \log \frac{p(\mathcal{D}|\theta)}{p(\mathcal{D}|\theta_1)} -\log \frac{p(\mathcal{D}|\hat\theta)}{p(\mathcal{D}|\theta_1)}
+\end{equation}
+for all values of $\theta_1$. Thus, by explicitly checking the independence of these quantities on $\theta_1$ we indirectly probe the quality of the approximation $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1)) \approx {r}({s}(\mathbf{x}; \theta_0, \theta_1))$.
+
+The second diagnostic procedure leverages the connection of this technique to direct density ratio estimation and its application to covariate shift and importance sampling. The idea is simple: we test the relationship $p(\mathbf{x}|\theta_0) = p(\mathbf{x}|\theta_1) {r}({s}(\mathbf{x}; \theta_0, \theta_1))$ with the approximate ratio $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$ and samples drawn from the generative model. More specifically, we can train a classifier to distinguish between unweighted samples from $p(\mathbf{x}|\theta_0)$ and samples from $p(\mathbf{x}|\theta_1)$ weighted by $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$.
+If the classifier can distinguish between the distributions, then $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$ is not a good approximation of ${r}({s}(\mathbf{x}; \theta_0, \theta_1))$. In contrast, if the classifier is unable to distinguish between the two distributions, then either $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$ is a good approximation or the discriminator is not effective. The two situations can be disentangled to some degree by training another classifier to distinguish between an unweighted distribution of samples from $p(\mathbf{x}|\theta_1)$.
+
+We illustrate these diagnostic procedures in Fig.~\ref{fig:ratio_comp}.
 
 \section{Examples and applications}
 \label{sec:examples}
@@ -962,7 +983,7 @@ resulting as expected in even more accurate approximations.
         \label{fig:likelihood}
     \end{subfigure}
 
-    \caption{Approximation of the log-likelihood ratio
+    \caption{Example data $\mathcal{D}$ Various stages in Approximation of the log-likelihood ratio
              $\log r(\mathbf{x};\gamma=0.05,\gamma=0)$
              with calibrated classifiers. }
 \end{figure}
@@ -1136,28 +1157,28 @@ from the following process $p_0$:
 
 \begin{figure}
     \centering
-    \begin{subfigure}[t]{0.45\textwidth}
+    \begin{subfigure}[t]{0.43\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/fig5a.pdf}
         \caption{  }
         \label{fig:5a}
     \end{subfigure}
     ~
-    \begin{subfigure}[t]{0.45\textwidth}
+    \begin{subfigure}[t]{0.43\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/fig5b.pdf}
         \caption{ }
         \label{fig:5b}
     \end{subfigure}
 
-    \begin{subfigure}[t]{0.45\textwidth}
+    \begin{subfigure}[t]{0.43\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/fig5c.pdf}
         \caption{ }
         \label{fig:5c}
     \end{subfigure}
     ~
-    \begin{subfigure}[t]{0.45\textwidth}
+    \begin{subfigure}[t]{0.43\textwidth}
         \centering
         \hfill\includegraphics[width=0.9\textwidth]{figures/fig5d.pdf}
         \caption{ }
@@ -1207,6 +1228,15 @@ Overall, this example further illustrates and confirms the ability
 of the proposed method for inference with multiple parameters and multi-dimensional data where
 reliable approximations $\hat p(\mathbf{x}|\theta_0)$ and $\hat p(\mathbf{x}|\theta_1)$
 are often difficult to construct.
+
+%\subsubsection{Diagnostics}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=.9\textheight]{figures/diagnostics.pdf}
+    \caption{Diagnostic plots ....}
+    \label{fig:ratio_comp}
+\end{figure}
 
 
 \subsection{High energy physics}
