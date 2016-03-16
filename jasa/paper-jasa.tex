@@ -883,11 +883,12 @@ $r(\mathbf{x}; \theta_0, \theta_1)$ itself and we know that any universally stro
 used to learn such a function, we know that in practice $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$ will not be exact.
 Thus, it is crucial that to have some diagnostic procedures to assess the quality of this approximation.
 This is complicated by the fact that in the likelihood-free setting, we don't have access to the true likelihood ratio.
-Below we consider two such diagnostic procedures that can be implemented in the likelihood-free setting.
+Below we consider two such diagnostic procedures that can be implemented in the likelihood-free setting. We illustrate these diagnostic procedures in Fig.~\ref{fig:diagnostics}.
+
 
 The first diagnostic procedure is related to the procedure for finding the MLE $\hat{\theta}$ in Eqn.~\ref{eq:mle_withs}. As pointed out there it is important that one maximizes the likelihood ratio as the surface integral and Jacobian factors related to the dimensionality reduction only cancel in the ratio (see Eqn.~\ref{eqn:factorization}). Importantly, they also only cancel if the dimensionality reduction map satisfies the conditions needed for Theorem~\ref{thm:ratio-equivalence} to hold. Moreover, the resulting value of $\hat{\theta}$ should be independent of the value of $\theta_1$ used in the denominator of the likelihood ratio. Similarly, we have
 %$\log\Lambda(\theta) = \log p(\mathcal{D}|\theta)/p(\mathcal{D}|\hat\theta) = \log p(\mathcal{D}|\theta)/p(\mathcal{D}|\theta_1) -\log p(\mathcal{D}|\hat\theta)/p(\mathcal{D}|\theta_1)$ for all values of $\theta_1$.
-\begin{equation}
+\begin{equation}\label{eq:theta_1_independence}
 \log\Lambda(\theta) = \log \frac{p(\mathcal{D}|\theta)}{p(\mathcal{D}|\hat\theta)} = \log \frac{p(\mathcal{D}|\theta)}{p(\mathcal{D}|\theta_1)} -\log \frac{p(\mathcal{D}|\hat\theta)}{p(\mathcal{D}|\theta_1)}
 \end{equation}
 for all values of $\theta_1$. Thus, by explicitly checking the independence of these quantities on $\theta_1$ we indirectly probe the quality of the approximation $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1)) \approx {r}({s}(\mathbf{x}; \theta_0, \theta_1))$.
@@ -895,7 +896,6 @@ for all values of $\theta_1$. Thus, by explicitly checking the independence of t
 The second diagnostic procedure leverages the connection of this technique to direct density ratio estimation and its application to covariate shift and importance sampling. The idea is simple: we test the relationship $p(\mathbf{x}|\theta_0) = p(\mathbf{x}|\theta_1) {r}({s}(\mathbf{x}; \theta_0, \theta_1))$ with the approximate ratio $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$ and samples drawn from the generative model. More specifically, we can train a classifier to distinguish between unweighted samples from $p(\mathbf{x}|\theta_0)$ and samples from $p(\mathbf{x}|\theta_1)$ weighted by $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$.
 If the classifier can distinguish between the distributions, then $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$ is not a good approximation of ${r}({s}(\mathbf{x}; \theta_0, \theta_1))$. In contrast, if the classifier is unable to distinguish between the two distributions, then either $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$ is a good approximation or the discriminator is not effective. The two situations can be disentangled to some degree by training another classifier to distinguish between an unweighted distribution of samples from $p(\mathbf{x}|\theta_1)$.
 
-We illustrate these diagnostic procedures in Fig.~\ref{fig:ratio_comp}.
 
 \section{Examples and applications}
 \label{sec:examples}
@@ -938,13 +938,13 @@ resulting as expected in even more accurate approximations.
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig1a.pdf}
+        \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm, width=\textwidth]{figures/fig1a.pdf}
         \caption{$p(\mathbf{x}|\gamma)$  for $\gamma=0.05$ and $\gamma=0$}
         \label{fig:1a}
     \end{subfigure}
     ~
     \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig1b.pdf}
+        \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig1b.pdf}
         \caption{$\hat{p}_c(\hat{s}_{c,c^\prime}(\mathbf{x}) )$ and $1/(1+\hat{r}(\hat{s}_{c,c^\prime}(\mathbf{x}))$}
         \label{fig:p_sij}
     \end{subfigure}
@@ -952,13 +952,13 @@ resulting as expected in even more accurate approximations.
     \vspace{1em}
 
     \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig1c.pdf}
+        \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig1c.pdf}
         \caption{$\log \hat r(\hat{s}(\mathbf{x}))$ using neural network}
         \label{fig:1c}
     \end{subfigure}
     ~
     \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig1d.pdf}
+        \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig1d.pdf}
         \caption{$\log \hat r(\hat{s}(\mathbf{x}))$ using random forest}
         \label{fig:1d}
     \end{subfigure}
@@ -966,13 +966,13 @@ resulting as expected in even more accurate approximations.
     \vspace{1em}
 
     \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig1e.pdf}
+        \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig1e.pdf}
         \caption{$p( \log \hat r(\hat{s}(\mathbf{x}))) \, | \,\gamma = 0.05)$ }
         \label{fig:decomposed_ratio}
     \end{subfigure}
     ~
     \begin{subfigure}[b]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig1f.pdf}
+        \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig1f.pdf}
         \caption{$-2\log \Lambda(\gamma)$ }
         \label{fig:likelihood}
     \end{subfigure}
@@ -1080,14 +1080,14 @@ the mixture, if possible).
     \centering
 
     \begin{subfigure}[t]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig2a.pdf}
+        \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig2a.pdf}
         \caption{Exact vs. approximated MLEs.}
         \label{fig:2a}
     \end{subfigure}
     ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
       %(or a blank line to force the subfigure onto a new line)
     \begin{subfigure}[t]{0.4\textwidth}
-        \includegraphics[width=\textwidth]{figures/fig2b.pdf}
+        \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig2b.pdf}
         \caption{$p(-2 \log \Lambda(\gamma=0.05) \, | \, \gamma=0.05)$}
         \label{fig:2b}
     \end{subfigure}
@@ -1212,11 +1212,13 @@ procedure should ameliorate this issue, but that is left for now as an area for 
 Nevertheless, optimizing the approximate log-likelihood ratio with
 a Bayesian optimization~\citep{brochu2010tutorial} procedure is efficient and effective.
 After $50$ likelihood evaluations, the maximum likelihood estimate is found at $(\hat \alpha=1.008, \hat \beta=-1.004)$.
-While the goal of the Bayesian optimization procedure is to find the maximum likelihood, the posterior mean of the
+While the objective of the Bayesian optimization procedure is to find the maximum likelihood, the posterior mean of the
 internal Gaussian process, shown in Fig.~\ref{fig:5c}, is close to the exact log-likelihood ratio illustrated in Fig.~\ref{fig:5a}.
 In each case, the true values $\alpha=1$ and $\beta=-1$ are contained within the $1-\sigma$ likelihood contour.
 %For comparison, Figure~\ref{fig:5b} shows the approximate log likelihood ratio evaluated on a fixed grid of values. Since $\hat s(\mathbf{x;\alpha,\beta})$ is calibrated on-the-fly,
 %roughness in the contours can be observed, in particular due to non-smooth changes in the resulting histograms as $\alpha$ and $\beta$ vary.
+
+Finally, we evaluate the diagnostics described in Sec.~\ref{S:diagnostics} for this example. To aid in visualization, we restrict to a 1-dimensional slice of the likelihood along $\alpha$ with $\beta=1$.   We consider three situations: i) a poorly trained, but well calibrated classifier; ii) a well trained, but poorly calibrated classifier; and iii) a well trained, and well calibrated classifier. For each case, we employ two diagnostic tests. The first checks for independence of $-2\log\Lambda(\theta)$ with respect to changes in the reference value $\theta_1$ as shown in Eqn.~\ref{eq:theta_1_independence}. The second uses a classifier to distinguish between samples from  $p(\mathbf{x}|\theta_0)$ and samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x}; \theta_0, \theta_1)$.  As discussed for Fig.~\ref{fig:5b}, statistical fluctuations in the calibration lead to some noise in the raw approximate likelihood. Thus, we show the posterior mean of a Gaussian processes resulting from Bayesian optimization of  the raw approximate likelihood as in Fig.~\ref{fig:5c}. In addition, the standard deviation of the Gaussian process is shown for one of the $\theta_1$ reference points to indicate the size of these statistical fluctuations. It is clear that in the well calibrated cases that these fluctuations are small, while in the poorly calibrated case these fluctuations are large. Moreover, in Fig.~\ref{fig:5a} we see that in the poorly trained, well calibrated case the classifier $\hat{s}(\mathbf{x}; \theta_0, \theta_1)$ has a significant dependence on the $\theta_1$ reference point. In contrast, in Fig.~\ref{fig:5c} the likelihood curves vary significantly, but this is comparable to the fluctuations expected from the calibration procedure. Finally, Fig.~\ref{fig:5e} shows that in the well trained, well calibrated case that the likelihood curves are all consistent with the exact likelihood within the estimated uncertainty band of the Gaussian process.  The ROC curves tell a similarly revealing story. As expected, the classifier is not able to distinguish between the distributions when $p(\mathbf{x}|\theta_1)$ is weighted by the exact likelihood ratio. We can also rule out that this is a deficiency in the classifier because the two distributions are well separated when no weights are applied to $p(\mathbf{x}|\theta_1)$. In both Fig.~\ref{fig:5b} and Fig.~\ref{fig:5d} the ROC curve correctly diagnoses deficiencies in the approximate likelihood ratio  $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$. Finally, Fig.~\ref{fig:5f} shows that the ROC curve in the well trained, well calibrated case is almost identical with the exact likelihood ratio, confirming the quality of the approximation.
 
 Overall, this example further illustrates and confirms the ability
 of the proposed method for inference with multiple parameters and multi-dimensional data where
@@ -1238,42 +1240,42 @@ are often difficult to construct.
     \centering
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
-        \includegraphics[height=10.075em]{figures/likelihood_comp_0.pdf}
+        \includegraphics[clip, trim=0.3cm 0.3cm 0.3cm 0.3cm,height=10.075em]{figures/likelihood_comp_0.pdf}
         \caption{Poorly trained, well calibrated. }
         \label{fig:6a}
     \end{subfigure}
     ~
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
-        \includegraphics[height=9.5em]{figures/ROC_comp0.pdf}
+        \includegraphics[clip, trim=0.3cm 0.3cm 0.3cm 0.3cm,height=9.5em]{figures/ROC_comp0.pdf}
         \caption{Poorly trained, well calibrated. }
         \label{fig:6b}
     \end{subfigure}
 
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
-        \includegraphics[height=10.075em]{figures/likelihood_comp_1.pdf}
+        \includegraphics[clip, trim=0.3cm 0.3cm 0.3cm 0.3cm,height=10.075em]{figures/likelihood_comp_1.pdf}
         \caption{Poorly calibrated, well trained. }
         \label{fig:6c}
     \end{subfigure}
     ~
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
-        \includegraphics[height=9.5em]{figures/ROC_comp1.pdf}
+        \includegraphics[clip, trim=0.3cm 0.3cm 0.3cm 0.3cm,height=9.5em]{figures/ROC_comp1.pdf}
         \caption{Poorly calibrated, well trained. }
         \label{fig:6d}
     \end{subfigure}
 
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
-        \includegraphics[height=10.075em]{figures/likelihood_comp_2.pdf}
+        \includegraphics[clip, trim=0.3cm 0.3cm 0.3cm 0.3cm,height=10.075em]{figures/likelihood_comp_2.pdf}
         \caption{Well trained, well calibrated. }
         \label{fig:6e}
     \end{subfigure}
     ~
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
-        \includegraphics[height=9.5em]{figures/ROC_comp2.pdf}
+        \includegraphics[clip, trim=0.3cm 0.3cm 0.3cm 0.3cm,height=9.5em]{figures/ROC_comp2.pdf}
         \caption{Well trained, well calibrated. }
         \label{fig:6f}
     \end{subfigure}
