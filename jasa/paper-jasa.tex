@@ -1036,8 +1036,8 @@ histograms with uniform binning have been used here for illustrative purposes, b
 anticipate that more sophisticated calibration strategies will be important in further development
 of this method. We leave this as an area for future study.
 
-Figure~\ref{fig:decomposed_ratio} shows the distribution of $ \log \hat r(\mathbf{x}))$ for $\gamma=0.05$
-using the decomposed approximation of $\hat r(\mathbf{x}))$ with neural networks and the distribution
+Figure~\ref{fig:decomposed_ratio} shows the distribution of $ \log \hat r(\mathbf{x})$ for $\gamma=0.05$
+using the decomposed approximation of $\hat r(\mathbf{x})$ with neural networks and the distribution
 of the exact log-likelihood ratio. While there are some artifacts in the distribution in the low-probability regions and the maximum value of the log-likehood ratio is underestimated, the overall shape of the distribution is well approximated.
 
 Finally, we come to the log-likelihood curve
@@ -1111,7 +1111,7 @@ This makes it computationally efficient to perform ensemble tests of the method.
 
 Figure~\ref{fig:2a} shows the empirical distribution of the maximum likelihood estimators (MLEs) from the
 approximate likelihood compared to the distribution of the MLEs from the exact likelihood.
-It clearly demonstrates that in this case the approximate likelihood yields an unbiased estimator with the essentially the same variance as the exact MLE.
+It clearly demonstrates that in this case the approximate likelihood yields an unbiased estimator with essentially the same variance as the exact MLE.
 %($\mathbb{E} [\hat \gamma] = 0.0501$, as empirically estimated over $1000$
 %trials).
 %Note that had the underlying ratio not been accurate enough because of
@@ -1205,15 +1205,15 @@ that we calculate by exploiting the fact that
 \begin{equation}\label{eqn:obj-ex2-expanded}
 \log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) } = \log \frac{p({\cal D} | \alpha, \beta)}{ p({\cal D} | \alpha=0, \beta=0) } - \log \frac{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }{ p({\cal D} | \alpha=0, \beta=0)}.
 \end{equation}
-Following the procedure described in Section~\ref{sec:param-clf}, we build
+Following the procedure described in Section~\ref{sec:param-clf}, we
 % to reduce
 %computational requirements, both terms in the right hand side of Eqn.~\ref{eqn:obj-ex2-expanded} are evaluated using
-a build single 2-layer neural network (with 5+2 inputs and one output node) to form the parameterized classifier $s(\mathbf{x}; \theta_0, \theta_1)$ and fix $\theta_1=(\alpha=0, \beta=0)$.
+build a single 2-layer neural network (with 5+2 inputs and one output node) to form the parameterized classifier $s(\mathbf{x}; \theta_0, \theta_1)$ and fix $\theta_1=(\alpha=0, \beta=0)$.
 Since the generative model is not expensive, the classifier output is calibrated
 on-the-fly with histograms for  every candidate parameter pair $(\alpha,\beta)$.
 
 Figure~\ref{fig:5a} shows the exact log-likelihood ratio for this dataset, which has an exact MLE at $(\hat \alpha=1.012, \hat \beta=-0.9221)$.
-Figure~\ref{fig:5b} shows the approximate log-likelihood ratio evaluated on a coarse grid of parameter values. Some roughness in the contours is observed, which is due to primarily to variance introduced in the calibration procedure. In addition to the statistical fluctuations due to finite calibration samples, there are also fluctuations introduced from changes in the binning of the calibration histograms as $\alpha$ and $\beta$ vary. As discussed in Section~\ref{sec:param-calibration}, a parameterized calibration
+Figure~\ref{fig:5b} shows the approximate log-likelihood ratio evaluated on a coarse grid of parameter values. Some roughness in the contours is observed, which is primarily due to variance introduced in the calibration procedure. In addition to the statistical fluctuations due to finite calibration samples, there are also fluctuations introduced from changes in the binning of the calibration histograms as $\alpha$ and $\beta$ vary. As discussed in Section~\ref{sec:param-calibration}, a parameterized calibration
 procedure should ameliorate this issue, but that is left for now as an area for future work.
 Nevertheless, optimizing the approximate log-likelihood ratio with
 a Bayesian optimization~\citep{brochu2010tutorial} procedure is efficient and effective.
