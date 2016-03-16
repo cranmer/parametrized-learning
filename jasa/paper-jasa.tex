@@ -401,7 +401,7 @@ classifier decision function $s$ parameterized in terms of $(\theta_0, \theta_1)
 % \frac{p_1(\sstar)}{p_0(\sstar)} = \frac{p_1(x)}{p_0(x)} \frac{\int d\Omega_{\sstar} p_0(x)/ | \hat{n} \cdot \nabla s  |}{ \int d\Omega_{\sstar} p_0(x) / | \hat{n} \cdot \nabla s  |} = \frac{p_1(x)}{p_0(x)}  \;\hspace{3em} \forall x\in\Omega_{\sstar}.
 % \end{equation}
 %
-% One can think of the ratio $p_1(s)/p_0(s)$ as a way of calibrating the the discriminative classifier and correcting for the monotonic transformation $m$ of the desired likelihood ratio as in Eq.~\ref{eq:montonic}.
+% One can think of the ratio $p_1(s)/p_0(s)$ as a way of calibrating the the discriminative classifier and correcting for the monotonic transformation $m$ of the desired likelihood ratio as in Eqn.~\ref{eq:montonic}.
 
 \begin{theorem}
     \label{thm:ratio-equivalence}
@@ -536,7 +536,7 @@ the (simpler) informative content of $r(\mathbf{x})$ is preserved.
 An alternative approach for calibration is to approximate the density ratio
 $r(\hat{s}(\mathbf{x}))$ directly.
 For example, isotonic regression, which is commonly used to transform the classifier score  $\hat{s}(\mathbf{x})$ into $\hat{s}_\textrm{iso}(\mathbf{x})$ that more accurately reflect  the posterior probability $s^*(\mathbf{x})$
-of Eq.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\hat{s}(\mathbf{x})) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
+of Eqn.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\hat{s}(\mathbf{x})) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
 Additionally, Sec.~\ref{sec:related} describes related work in which the density ratio $\hat{r}(\mathbf{x})$ is estimated directly on the feature space $\mathcal{X}$.
 
 %\textbf{Gilles, should we add more about direct density ratio estimation (currently in 5. Related Work) here?}
@@ -545,7 +545,7 @@ Additionally, Sec.~\ref{sec:related} describes related work in which the density
 %$r(\hat{s}(\mathbf{x}); \theta_0, \theta_1)$ directly.
 %%There are various strategies.
 %For instance, isotonic regression, which is commonly used to transform the classifier score  $\hat{s}(\mathbf{x})$ into $\hat{s}_\textrm{iso}(\mathbf{x})$ that more accurately reflect  the posterior probability $s^*(\mathbf{x})$
-%of Eq.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}; \theta_0, \theta_1) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\mathbf{x}; \theta_0, \theta_1) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
+%of Eqn.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}; \theta_0, \theta_1) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\mathbf{x}; \theta_0, \theta_1) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
 %\textbf{Gilles, should we add more about direct density ratio estimation (currently in 5. Related Work) here?}
 
 %. , which for balanced training samples has the form
@@ -805,7 +805,7 @@ this overarching optimization problem as an area of future work.
 % $x_e$. In the parametrized setting it is not possible to pre-compute $\hat
 % s(x_e; \theta_0, \theta_1)$ since one does not know the true values of
 % $\theta_0$ and $\theta_1$. Thus one must implement the embedding of the
-% classifier as in Eq.~\ref{eq:embedding}.
+% classifier as in Eqn.~\ref{eq:embedding}.
 %  A concrete realization of this has
 % been performed for probability models implemented with the \texttt{RooFit}
 % probabilistic programing language and  classifiers implemented with
@@ -829,7 +829,7 @@ this overarching optimization problem as an area of future work.
 
 % In this section we generalize the capacity focusing technique of training
 % classifiers to discriminate between components of a mixture model. First, we
-% generalize Eq.~\ref{eq:hepGen} to a mixture model of several components
+% generalize Eqn.~\ref{eq:hepGen} to a mixture model of several components
 % \begin{equation}
 % p(x|\theta)=\sum_c w_c(\theta) p_c(x| \theta) \;.
 % \end{equation}
@@ -839,7 +839,7 @@ this overarching optimization problem as an area of future work.
 % &= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(x| \theta_1)}{  p_c(x| \theta_0)}  \right]^{-1} \nonumber \\
 % &= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(s_{c,c',\theta_0, \theta_1}| \theta_1)}{ p_c(s_{c,c',\theta_0, \theta_1}| \theta_0)}  \right]^{-1} \label{eq:decomposedResult}
 % \end{align}
-% The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eq.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
+% The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eqn.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
 In the special case of (simple or composite) hypothesis testing between
 models defined as known mixtures of several components, i.e. when $p(\mathbf{x}|\theta)$ can be written as
@@ -877,12 +877,12 @@ calibration.
 
 \subsection{Diagnostics}
 
-While Theorem~\ref{thm:ratio-equivalence} states that the likelihood ratio $r(\mathbf{x}; \theta_0, \theta_1)$ is 
-invariant under the dimensionality reduction $s(\mathbf{x}; \theta_0, \theta_1)$ provided that it is monotonic with 
-$r(\mathbf{x}; \theta_0, \theta_1)$ itself and we know that any universally strongly consistent algorithm can be 
+While Theorem~\ref{thm:ratio-equivalence} states that the likelihood ratio $r(\mathbf{x}; \theta_0, \theta_1)$ is
+invariant under the dimensionality reduction $s(\mathbf{x}; \theta_0, \theta_1)$ provided that it is monotonic with
+$r(\mathbf{x}; \theta_0, \theta_1)$ itself and we know that any universally strongly consistent algorithm can be
 used to learn such a function, we know that in practice $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$ will not be exact.
 Thus, it is crucial that to have some diagnostic procedures to assess the quality of this approximation.
-This is complicated by the fact that in the likelihood-free setting, we don't have access to the true likelihood ratio. 
+This is complicated by the fact that in the likelihood-free setting, we don't have access to the true likelihood ratio.
 Below we consider two such diagnostic procedures that can be implemented in the likelihood-free setting.
 
 The first diagnostic procedure is related to the procedure for finding the MLE $\hat{\theta}$ in Eqn.~\ref{eq:mle_withs}. As pointed out there it is important that one maximizes the likelihood ratio as the surface integral and Jacobian factors related to the dimensionality reduction only cancel in the ratio (see Eqn.~\ref{eqn:factorization}). Importantly, they also only cancel if the dimensionality reduction map satisfies the conditions needed for Theorem~\ref{thm:ratio-equivalence} to hold. Moreover, the resulting value of $\hat{\theta}$ should be independent of the value of $\theta_1$ used in the denominator of the likelihood ratio. Similarly, we have
@@ -1036,8 +1036,8 @@ histograms with uniform binning have been used here for illustrative purposes, b
 anticipate that more sophisticated calibration strategies will be important in further development
 of this method. We leave this as an area for future study.
 
-Figure~\ref{fig:decomposed_ratio} shows the distribution of $ \log \hat r(\mathbf{x}))$ for $\gamma=0.05$
-using the decomposed approximation of $\hat r(\mathbf{x}))$ with neural networks and the distribution
+Figure~\ref{fig:decomposed_ratio} shows the distribution of $ \log \hat r(\mathbf{x})$ for $\gamma=0.05$
+using the decomposed approximation of $\hat r(\mathbf{x})$ with neural networks and the distribution
 of the exact log-likelihood ratio. While there are some artifacts in the distribution in the low-probability regions and the maximum value of the log-likehood ratio is underestimated, the overall shape of the distribution is well approximated.
 
 Finally, we come to the log-likelihood curve
@@ -1103,7 +1103,7 @@ the mixture, if possible).
     \label{fig:2}
 \end{figure}
 
-An advantage of this approach compared to ABC is that the
+An advantage of this approach compared to Approximate Bayesian Computation~\citep{beaumont2002approximate} is that the
 classifier and calibration -- computationally intensive
 parts of the approximation  -- are independent of the of the dataset $\mathcal{D}$.
 Thus once trained and calibrated, the approximation can be applied to any dataset $\mathcal{D}$.
@@ -1111,7 +1111,7 @@ This makes it computationally efficient to perform ensemble tests of the method.
 
 Figure~\ref{fig:2a} shows the empirical distribution of the maximum likelihood estimators (MLEs) from the
 approximate likelihood compared to the distribution of the MLEs from the exact likelihood.
-It clearly demonstrates that in this case the approximate likelihood yields an unbiased estimator with the essentially the same variance as the exact MLE.
+It clearly demonstrates that in this case the approximate likelihood yields an unbiased estimator with essentially the same variance as the exact MLE.
 %($\mathbb{E} [\hat \gamma] = 0.0501$, as empirically estimated over $1000$
 %trials).
 %Note that had the underlying ratio not been accurate enough because of
@@ -1205,15 +1205,15 @@ that we calculate by exploiting the fact that
 \begin{equation}\label{eqn:obj-ex2-expanded}
 \log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) } = \log \frac{p({\cal D} | \alpha, \beta)}{ p({\cal D} | \alpha=0, \beta=0) } - \log \frac{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }{ p({\cal D} | \alpha=0, \beta=0)}.
 \end{equation}
-Following the procedure described in Section~\ref{sec:param-clf}, we build
+Following the procedure described in Section~\ref{sec:param-clf}, we
 % to reduce
 %computational requirements, both terms in the right hand side of Eqn.~\ref{eqn:obj-ex2-expanded} are evaluated using
-a build single 2-layer neural network (with 5+2 inputs and one output node) to form the parameterized classifier $s(\mathbf{x}; \theta_0, \theta_1)$ and fix $\theta_1=(\alpha=0, \beta=0)$.
+build a single 2-layer neural network (with 5+2 inputs and one output node) to form the parameterized classifier $s(\mathbf{x}; \theta_0, \theta_1)$ and fix $\theta_1=(\alpha=0, \beta=0)$.
 Since the generative model is not expensive, the classifier output is calibrated
 on-the-fly with histograms for  every candidate parameter pair $(\alpha,\beta)$.
 
 Figure~\ref{fig:5a} shows the exact log-likelihood ratio for this dataset, which has an exact MLE at $(\hat \alpha=1.012, \hat \beta=-0.9221)$.
-Figure~\ref{fig:5b} shows the approximate log-likelihood ratio evaluated on a coarse grid of parameter values. Some roughness in the contours is observed, which is due to primarily to variance introduced in the calibration procedure. In addition to the statistical fluctuations due to finite calibration samples, there are also fluctuations introduced from changes in the binning of the calibration histograms as $\alpha$ and $\beta$ vary. As discussed in Section~\ref{sec:param-calibration}, a parameterized calibration
+Figure~\ref{fig:5b} shows the approximate log-likelihood ratio evaluated on a coarse grid of parameter values. Some roughness in the contours is observed, which is primarily due to variance introduced in the calibration procedure. In addition to the statistical fluctuations due to finite calibration samples, there are also fluctuations introduced from changes in the binning of the calibration histograms as $\alpha$ and $\beta$ vary. As discussed in Section~\ref{sec:param-calibration}, a parameterized calibration
 procedure should ameliorate this issue, but that is left for now as an area for future work.
 Nevertheless, optimizing the approximate log-likelihood ratio with
 a Bayesian optimization~\citep{brochu2010tutorial} procedure is efficient and effective.
@@ -1580,7 +1580,7 @@ $p(\mathbf{x}|\theta)$.
 % classifier when $p(x|\theta_0)$ and $p(x|\theta_1)$ differ primarily by a small
 % mixture coefficient.  This approach leverages the power of machine learning in a
 % classical statistical setting.
-The proposed method offers an alternative to approximate Bayesian computation
+The proposed method offers an alternative to Approximate Bayesian Computation
 for parameter inference in the likelihood-free setting that can also be used in
 the frequentist formalism without specifying a prior over the parameters. A
 strength of this approach is that it separates the quality of the approximation

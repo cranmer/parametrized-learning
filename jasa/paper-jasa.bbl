@@ -28,6 +28,11 @@ Baak, M., Gadatsch, S., Harrington, R., and Verkerke, W. (2015).
 Baldi, P., Cranmer, K., Faucett, T., Sadowski, P., and Whiteson, D. (2016).
 \newblock {Parameterized Machine Learning for High-Energy Physics}.
 
+\bibitem[Beaumont et~al., 2002]{beaumont2002approximate}
+Beaumont, M.~A., Zhang, W., and Balding, D.~J. (2002).
+\newblock Approximate bayesian computation in population genetics.
+\newblock {\em Genetics}, 162(4):2025--2035.
+
 \bibitem[Bickel et~al., 2009]{bickel2009discriminative}
 Bickel, S., Br{\"u}ckner, M., and Scheffer, T. (2009).
 \newblock Discriminative learning under covariate shift.
