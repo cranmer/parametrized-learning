@@ -875,7 +875,7 @@ p_{c'}(s_{c,c'}(\mathbf{x}))}{ p_c(s_{c,c'}(\mathbf{x}))}$, which can be
 pre-computed without the need of parameterized classification or
 calibration.
 
-\subsection{Diagnostics}
+\subsection{Diagnostics}\label{S:diagnostics}
 
 While Theorem~\ref{thm:ratio-equivalence} states that the likelihood ratio $r(\mathbf{x}; \theta_0, \theta_1)$ is
 invariant under the dimensionality reduction $s(\mathbf{x}; \theta_0, \theta_1)$ provided that it is monotonic with
@@ -979,7 +979,7 @@ resulting as expected in even more accurate approximations.
     ~
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figures/fig-likelihood.pdf}
-        \caption{$-\log \Lambda(\gamma)$ }
+        \caption{$-2\log \Lambda(\gamma)$ }
         \label{fig:likelihood}
     \end{subfigure}
 
@@ -1151,7 +1151,7 @@ from the following process $p_0$:
 \begin{figure}
     \centering
     \includegraphics[width=1.0\textwidth]{figures/fig4.pdf}
-    \caption{Observed 5-dimensional data ${\cal D}$ for nominal values $(\alpha=1, \beta=-1)$. The size of ${\cal D}$ is set to $500$.}
+    \caption{Scatter plots for the 500 samples in the 5-dimensional data ${\cal D}$ generated for nominal values $(\alpha=1, \beta=-1)$. }
     \label{fig:4}
 \end{figure}
 
@@ -1186,11 +1186,11 @@ from the following process $p_0$:
     \end{subfigure}
     \caption{Inference from exact and approximate likelihood ratios. The red dot corresponds
     to the true values $(\alpha=1, \beta=-1)$ used to generate $\mathcal{D}$, the green dot is the MLE
-    $(\hat \alpha=1.012, \hat \beta=-0.9221)$  from the exact likelihood, while the blue dot is the MLE $(\hat \alpha=1.008, \hat \beta=-1.004)$ from the approximate likelihood.
+     from the exact likelihood, while the blue dot is the MLE  from the approximate likelihood.
     1, 2 and 3-$\sigma$ contours are shown in white.
-             (\ref{fig:5a}) The exact log-likelihood for the observed data ${\cal D}$.
-             (\ref{fig:5b}) The approximate log-likelihood  evaluated on a coarse $15 \times 15$ fixed grid.
-             (\ref{fig:5c}) A Gaussian Process surrogate of the approximate log-likelihood ratio estimated from a Bayesian optimization procedure. White dots show the  parameter points sampled during the optimization process.}
+             (\ref{fig:5a}) The exact $-2\log\Lambda(\alpha,\beta)$ for the observed data ${\cal D}$.
+             (\ref{fig:5b}) The approximate $-2\log\Lambda(\alpha,\beta)$ evaluated on a coarse $15 \times 15$  grid.
+             (\ref{fig:5c}) A Gaussian Process surrogate of $-2\log\Lambda(\alpha,\beta)$ ratio estimated from a Bayesian optimization procedure. White dots show the  parameter points sampled during the optimization process.}
     \label{fig:5}
 \end{figure}
 
@@ -1231,12 +1231,12 @@ are often difficult to construct.
 
 %\subsubsection{Diagnostics}
 
-\begin{figure}
-    \centering
-    \includegraphics[height=.9\textheight]{figures/diagnostics.pdf}
-    \caption{Diagnostic plots ....}
-    \label{fig:ratio_comp}
-\end{figure}
+%\begin{figure}
+%    \centering
+%    \includegraphics[height=.9\textheight]{figures/diagnostics.pdf}
+%    \caption{Diagnostic plots ....}
+%    \label{fig:ratio_comp}
+%\end{figure}
 
 
 
@@ -1245,46 +1245,49 @@ are often difficult to construct.
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/likelihood_comp_0.pdf}
-        \caption{$-2\log \Lambda(\alpha)$: poorly trained, well calibrated. }
+        \caption{Poorly trained, well calibrated. }
         \label{fig:6a}
     \end{subfigure}
     ~
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/ROC_comp0.pdf}
-        \caption{ROC: poorly trained, well calibrated. }
+        \caption{Poorly trained, well calibrated. }
         \label{fig:6b}
     \end{subfigure}
 
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/likelihood_comp_1.pdf}
-        \caption{$-2\log \Lambda(\alpha)$: poorly calibrated, well trained. }
+        \caption{Poorly calibrated, well trained. }
         \label{fig:6c}
     \end{subfigure}
     ~
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/ROC_comp1.pdf}
-        \caption{ROC: poorly calibrated, well trained. }
+        \caption{Poorly calibrated, well trained. }
         \label{fig:6d}
     \end{subfigure}
 
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/likelihood_comp_2.pdf}
-        \caption{$-2\log \Lambda(\alpha)$: well trained, well calibrated. }
+        \caption{Well trained, well calibrated. }
         \label{fig:6e}
     \end{subfigure}
     ~
     \begin{subfigure}[t]{0.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/ROC_comp2.pdf}
-        \caption{ROC: well trained, well calibrated. }
+        \caption{Well trained, well calibrated. }
         \label{fig:6f}
     \end{subfigure}
 
-    \caption{Alternative presentation of Diagnostic plots.}
+    \caption{Results from the diagnostics described in Sec.~\ref{S:diagnostics}.  
+    The rows correspond to the quality of the training and calibration of the classifier. The left plots probe the sensitivity to $\theta_1$, while the right plots show the ROC curve for a calibrator trained to discriminate samples from $p(\mathbf{x}|\theta_0)$ and samples from $p(\mathbf{x}|\theta_1)$ weighted as indicated in the legend. }
+
+%    \caption{Diagnostic plots for the approximate likelihood ratios. The left plots show slices of $-2\log\Lambda(\alpha,\beta=1)$ for the exact likelihood ratio and the approximate likelihood ratio with different choices of $\theta_1$. The right plots show the ROC curve for a calibrator trained to discriminate samples from $p(\mathbf{x}|\theta_0)$ and samples from $p(\mathbf{x}|\theta_1)$ weighted as indicated in the legend. }
     \label{fig:diagnostics}
 \end{figure}
 
