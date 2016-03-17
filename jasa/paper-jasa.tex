@@ -421,7 +421,7 @@ classifier decision function $s$ parameterized in terms of $(\theta_0, \theta_1)
 Starting from the definition of the probability density function, we have
 \begin{align}
 % p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) &= \frac{d}{dy} P(s(\mathbf{X}) \leq y) \nonumber \\
-p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) &= \frac{d}{du}  \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) \leq u\}} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
+p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) &= \frac{d}{du}  \int_{\{\mathbf{x}^\prime : s(\mathbf{x}^\prime) \leq u\}} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
 % &= \frac{d}{dy} \int_{\mathbb{R}^p} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
 % &= \int_{\mathbb{R}^p} \frac{d}{dy} H(y - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime \nonumber \\
 &= \int_{\mathbb{R}^p} \delta(u - s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) d\mathbf{x}^\prime
