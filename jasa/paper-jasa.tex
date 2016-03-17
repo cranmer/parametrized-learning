@@ -968,7 +968,7 @@ resulting as expected in even more accurate approximations.
 
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig1e.pdf}
-        \caption{$p( \log \hat r(\hat{s}(\mathbf{x}))) \, | \,\gamma = 0.05)$ }
+        \caption{$p( \log \hat r(\hat{s}(\mathbf{x})) \, | \,\gamma = 0.05)$ }
         \label{fig:decomposed_ratio}
     \end{subfigure}
     ~
@@ -978,9 +978,9 @@ resulting as expected in even more accurate approximations.
         \label{fig:likelihood}
     \end{subfigure}
 
-    \caption{Example data $\mathcal{D}$ Various stages in Approximation of the log-likelihood ratio
-             $\log r(\mathbf{x};\gamma=0.05,\gamma=0)$
-             with calibrated classifiers. }
+    \caption{Histogram of $\mathcal{D}$ generated from $\gamma=0.05$ and plots illustrating various stages in 
+    the approximation of the log-likelihood ratio  $\log r(\mathbf{x};\gamma=0.05,\gamma=0)$
+             with calibrated classifiers (see text). }
 \end{figure}
 
 %The first feature to highlight is that, in the finite sample setting, uncalibrated
@@ -1095,7 +1095,7 @@ the mixture, if possible).
     \end{subfigure}
 
     \caption{Using approximated likelihood ratios for parameter inference yields an unbiased maximum likelihood estimator
-            $\hat \gamma$, as empirically estimated 1000 times over re-sampled observed data.}
+            $\hat \gamma$, as empirically estimated from an ensemble of 1000 artificial datasets.}
     \label{fig:2}
 \end{figure}
 
