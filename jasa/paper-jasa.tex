@@ -169,7 +169,7 @@ the data is available for training and calibration.
 % process of interest (labeled \textit{signal}) and various other processes
 % (labeled \textit{background}). Typically,  pseudo-data from the simulator are
 % used to approximate the density at various parameter points, and an
-% interpolation algorithm is used to approximate the parametrized
+% interpolation algorithm is used to approximate the parameterized
 % model~\citep{Cranmer:2012sba}.
 %
 % To improve the statistical power of these tests, hundreds of these searches have
@@ -198,7 +198,7 @@ model~\citep{Cranmer:2012sba}. In order to improve the statistical power
 of these tests, hundreds of these searches have already been using supervised
 learning to train classifiers to discriminate between two two discrete hypotheses based
 on a high dimensional feature vector $\mathbf{x}$. The results of this paper outline
-how to extend the use of discriminative classifiers for composite hypotheses (parametrized by $\theta$)
+how to extend the use of discriminative classifiers for composite hypotheses (parameterized by $\theta$)
 in a way
 that fits naturally into the established likelihood based inference techniques.
 
@@ -223,19 +223,19 @@ that fits naturally into the established likelihood based inference techniques.
 % to ABC as it does not require a prior over the parameters and can also be used
 % in the classical (frequentist) setting. A strength of this approach is that it
 % separates the quality of the approximation of the target likelihood from the
-% quality of the calibration.  In Section~\ref{S:Related} we discuss the scheme
+% quality of the calibration.  In Sec.~\ref{S:Related} we discuss the scheme
 % sketched by \cite{Neal:2007zz} that also suggests using a classifier  as a
 % dimensionality reduction map to aid in the estimation of the likelihood
 % function.
 
 The rest of the paper is organized as follows. In
-Section~\ref{sec:likelihood-ratio-tests}, we first introduce the likelihood
+Sec.~\ref{sec:likelihood-ratio-tests}, we first introduce the likelihood
 ratio test statistic in the setting of simple hypothesis testing, and then
 outline how it can be computed exactly using calibrated classifiers.
-In Section~\ref{sec:generalized-likelihood-ratio}, we generalize the proposed
+In Sec.~\ref{sec:generalized-likelihood-ratio}, we generalize the proposed
 approach to the case of composite hypothesis testing and discuss directions for
 approximating the statistic efficiently. We then illustrate the proposed
-method in Section~\ref{sec:examples} and outline how it could improve
+method in Sec.~\ref{sec:examples} and outline how it could improve
 statistical analysis within the field of high energy physics. Related work
 and conclusions are finally presented in Sections~\ref{sec:related} and \ref{sec:conclusions}.
 
@@ -261,7 +261,7 @@ and conclusions are finally presented in Sections~\ref{sec:related} and \ref{sec
 % \item $p(x| \theta)$:  probability density  (simulation-based model) for $x$ given $\theta$
 % %\item $s(x)$: real-valued score from a machine learning classification algorithm (or any map $s: X\to\mathbb{R}$)
 % \item $y$: a class label used for training a classifier.
-% \item $s(x;\theta_0, \theta_1)$: real-valued discriminative classification score, parametrized by $\theta_0$ and $\theta_1$
+% \item $s(x;\theta_0, \theta_1)$: real-valued discriminative classification score, parameterized by $\theta_0$ and $\theta_1$
 % %\item $p( s | \theta )$ The probability density function for $s$ implied by $p(x|\theta)$ and $s(x)$
 % \item $p( s_{\theta_0, \theta_1} | \theta )$: The probability density  for $s(x; \theta_0, \theta_1)$ implied by $p(x|\theta)$
 % \end{itemize}
@@ -324,7 +324,7 @@ be done in the forward mode.
 % \end{equation}
 % where $m$ is any strictly increasing or decreasing function. This result will be proven below.
 % This allows us to recast the original likelihood ratio test into an alternate form in which supervised learning is used to train the discriminative classifier $s(x; \theta_0, \theta_1)$. The discriminative classifier can be trained with data $(x,u=0)$ generated
-% from $p(x|\theta_0)$ and $(x,u=1)$ generated from $p(x|\theta_1)$. In Section~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the classifier  parametrized in terms of $(\theta_0, \theta_1)$.
+% from $p(x|\theta_0)$ and $(x,u=1)$ generated from $p(x|\theta_1)$. In Sec.~\ref{S:GLR} we extend this result to generalized likelihood ratio tests, where it will be useful to have the classifier  parameterized in terms of $(\theta_0, \theta_1)$.
 %
 % Here we see that the original goal for simple hypothesis testing (i.e. to make a decision to accept or reject the null hypothesis based on the entire data set $D$) has been reformulated into a per-event classification problem. This follows from the fact that we assume the $x_e$ to be i.i.d.
 
@@ -342,7 +342,7 @@ r(\mathbf{x};\theta_0, \theta_1) = \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\m
 As derived below, this allows to recast the original likelihood ratio test into
 an alternate form in which supervised learning can be used to build
 $s(\mathbf{x})$ as a discriminative classifier.  In
-Section~\ref{sec:generalized-likelihood-ratio} we extend this result to
+Sec.~\ref{sec:generalized-likelihood-ratio} we extend this result to
 generalized likelihood ratio tests, where it will be useful to have the
 classifier decision function $s$ parameterized in terms of $(\theta_0, \theta_1)$.
 
@@ -482,16 +482,16 @@ s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mat
 \end{equation}
 modeled by a classifier trained to distinguish samples $\mathbf{x} \sim p_{\theta_0}$
 from samples $\mathbf{x} \sim p_{\theta_1}$ satisfies the conditions of
-Theorem~\ref{thm:ratio-equivalence} (see Appendix~\ref{app:clf-for-s} for further details).
+Thm.~\ref{thm:ratio-equivalence} (see Appendix~\ref{app:clf-for-s}).
 In other words, supervised learning yields a sufficient
-procedure for Theorem~\ref{thm:ratio-equivalence} to hold, guaranteeing that any
+procedure for Thm.~\ref{thm:ratio-equivalence} to hold, guaranteeing that any
 {\it universally strongly consistent} algorithm can be used for learning $s^*$.
 Note however, that it is not a necessary procedure since
-Theorem~\ref{thm:ratio-equivalence} holds for any monotonic function $m$ of the
+Thm.~\ref{thm:ratio-equivalence} holds for any monotonic function $m$ of the
 density ratio,  not only for $m(r(\mathbf{x})) = (1 +
 r(\mathbf{x}))^{-1}$.
 Equivalently,
-Theorem~\ref{thm:ratio-equivalence} shows that in the case that we learn a probabilistic
+Thm.~\ref{thm:ratio-equivalence} shows that in the case that we learn a
 classifier $s(\mathbf{x})$ which is imperfect up to a monotonic transformation
 of $r(\mathbf{x})$, then one can still resort to calibration (i.e., modeling
 $p_{\mathbf{U}}(u=s(\mathbf{x}))$) to compute $r(\mathbf{x})$ exactly.
@@ -537,7 +537,7 @@ An alternative approach for calibration is to approximate the density ratio
 $r(\hat{s}(\mathbf{x}))$ directly.
 For example, isotonic regression, which is commonly used to transform the classifier score  $\hat{s}(\mathbf{x})$ into $\hat{s}_\textrm{iso}(\mathbf{x})$ that more accurately reflect  the posterior probability $s^*(\mathbf{x})$
 of Eqn.~\ref{eqn:best-s-clf}, can be used for calibration. This is done by inverting the relationship ${r}(\mathbf{x}) = (1-s^*(\mathbf{x}))/s^*(\mathbf{x})$ to obtain $\hat{r}(\hat{s}(\mathbf{x})) = (1-\hat{s}_\textrm{iso}(\mathbf{x}))/\hat{s}_\textrm{iso}(\mathbf{x})$.
-Additionally, Sec.~\ref{sec:related} describes related work in which the density ratio $\hat{r}(\mathbf{x})$ is estimated directly on the feature space $\mathcal{X}$.
+Additionally, Sec.~\ref{sec:related} describes related work in which the ratio $\hat{r}(\mathbf{x})$ is estimated directly on the feature space $\mathcal{X}$.
 
 %\textbf{Gilles, should we add more about direct density ratio estimation (currently in 5. Related Work) here?}
 
@@ -630,14 +630,14 @@ $\theta$ are continuous model parameters.
 % $p(x|\theta_0)/p(x|\theta_1)$. We now generalize from the ratio of two simple
 % hypotheses specified by $\theta_0$ and $\theta_1$ to the case where $\theta$ are
 % continuous model parameters. We postpone the practicalities of training the
-% classifier and estimating the density to Section~\ref{S:classifier} and continue
+% classifier and estimating the density to Sec.~\ref{S:classifier} and continue
 % in the likelihood-free setting with idealized classifiers and their densities.
 
 
 %
 % In the case of a fixed classifier $s(x)$ it is possible to compute $s_e=s(x_e)$
 % for the observed data and never refer back to the original features $x_e$. In
-% the parametrized setting it is not possible to pre-compute $s(x_e; \theta_0,
+% the parameterized setting it is not possible to pre-compute $s(x_e; \theta_0,
 % \theta_1)$ since $\theta_0$ and $\theta_1$ are unknown.
 %
 % The critical observation is that  if we postpone the evaluation of the
@@ -686,7 +686,7 @@ based on $s$ that works: the maximum likelihood estimate of Eqn.~\ref{eq:mle} is
 the same as the value that maximizes the likelihood ratio with respect to
 $p({\cal D}|\theta_1)$, for some fixed value of $\theta_1$ chosen such that the support of $p(\mathbf{x}|\theta_1)$ covers the support of $p(\mathbf{x}|\theta)$.
 This allows us to
-use Theorem~\ref{thm:ratio-equivalence} to reformulate the maximum likelihood
+use Thm.~\ref{thm:ratio-equivalence} to reformulate the maximum likelihood
 estimate (MLE) as
 \begin{align}\label{eq:mle_withs}
 \hat{\theta} &= \argmax_\theta  p({\cal D} | \theta) \nonumber \\
@@ -701,11 +701,11 @@ cancels Jacobian factors that vary with $\theta$.
 
 Finally, once the maximum likelihood estimates have been found for both the numerator
 and denominator of Eqn.~\ref{eqn:generalized-lr}, the generalized likelihood
-ratio can be estimated as outlined in Section~\ref{sec:approx}
+ratio can be estimated as outlined in Sec.~\ref{sec:approx}
 for simple hypothesis testing.
 
 % For completeness, the proposed method is summarized in
-% Algorithm~\ref{alg:training}, while further details for training and calibrating
+% Alg.~\ref{alg:training}, while further details for training and calibrating
 % efficiently a family $s(\mathbf{x};\theta_0,\theta_1)$ of classifiers are
 % discussed in sections \ref{sec:param-clf} and \ref{sec:param-calibration}.
 
@@ -718,11 +718,11 @@ described above, we must train a family $s(\mathbf{x};\theta_0,\theta_1)$ of
 classifiers parameterized by $\theta_0$ and $\theta_1$, the parameters
 associated to the null and alternate hypotheses, respectively. While this could
 be done independently for all $\theta_0$ and $\theta_1$, using the procedure
-outlined in Section~\ref{sec:likelihood-ratio-tests}, it is desirable and
+outlined in Sec.~\ref{sec:likelihood-ratio-tests}, it is desirable and
 convenient to have a smooth evolution of the classification score as a function
 of the parameters. For this reason, we anticipate a single learning stage based
 on training data with input $(\mathbf{x}, \theta_0, \theta_1)_i$ and target
-$y_i$, as outlined in Algorithm~\ref{alg:training}. Somewhat unusually, the
+$y_i$, as outlined in Alg.~\ref{alg:training}. Somewhat unusually, the
 unknown values of the parameters are taken as input to the classifier; their
 values will be specified via the enveloping (generalized) likelihood ratio of
 Eqn.~\ref{eqn:generalized-lr}.  In this way, the parameterized classifier
@@ -731,7 +731,7 @@ for any $\mathbf{x}$ and any combination of parameter values $\theta_0, \theta_1
 
 While the optimal decision function \ref{eqn:best-s-clf} is expected to be
 learned for the parameter values $\theta_0$ and $\theta_1$ selected in
-Algorithm~\ref{alg:training}, it is not clear whether the optimal decision
+Alg.~\ref{alg:training}, it is not clear whether the optimal decision
 function can be expected for data generated from  $\theta'_0$ and $\theta'_1$
 never jointly encountered during learning. Similarly, it is not clear how the
 limited capacity of the classifier may impact the performance the resulting
@@ -739,13 +739,13 @@ parameterized decision function.
 Preliminary exploration by \cite{Baldi:2016fzo} shows that
  a uniform grid scan over parameter space is an effective practical approach;
  however, we introduce the distributions $\pi_{\Theta_0}$ and $\pi_{\Theta_1}$
-into the Algorithm~\ref{alg:training} to allow for a more
+into the Alg.~\ref{alg:training} to allow for a more
  sophisticated sampling strategy.
-% this formulation of Algorithm~\ref{alg:training} allows for a more
+% this formulation of Alg.~\ref{alg:training} allows for a more
 % sophisticated sampling strategy.
 % These issues are left as an area for future work.
 %For this reason, we introduce the distributions $\pi_{\Theta_0}$ and $\pi_{\Theta_1}$
-%into the Algorithm~\ref{alg:training} to allow for a more
+%into the Alg.~\ref{alg:training} to allow for a more
 % sophisticated sampling strategy.
 
 
@@ -772,7 +772,7 @@ into the Algorithm~\ref{alg:training} to allow for a more
 
 
 
-Once the parametrized classifier $\hat{s}(\mathbf{x}; \theta_0, \theta_1)$ is trained,
+Once the parameterized classifier $\hat{s}(\mathbf{x}; \theta_0, \theta_1)$ is trained,
 we can use the generative model together with one of the calibration strategies
 discussed in Sec.~\ref{s:learning_calibration} for particular values of $\theta_0$ and $\theta_1$.
 %For instance,
@@ -794,7 +794,7 @@ intervention is required to reconfigure the generative model). In high energy ph
 it is common to calibrate the distribution of a fixed classifier. There the strategy is to interpolate
 the distribution between discrete values of $\theta$ in order to produce a continuous parameterization for
 $p(s | \theta)$~\citep{read1999linear,Cranmer:2012sba,baak2015interpolation}.
-One can easily imagine a number of approaches to parametrized calibration and the
+One can easily imagine a number of approaches to parameterized calibration and the
 relative merits of those approaches will depend critically on the dimensionality of $\theta$ and the
 computational cost of the generative model. We leave a more general strategy for
 this overarching optimization problem as an area of future work.
@@ -802,7 +802,7 @@ this overarching optimization problem as an area of future work.
 % There is a mild technical challenge in embedding the classifier into the
 % likelihood. In the case of a fixed classifier $\hat s(x)$ it is possible to
 % pre-compute $\hat s_e=\hat s(x_e)$ and never refer back to the original features
-% $x_e$. In the parametrized setting it is not possible to pre-compute $\hat
+% $x_e$. In the parameterized setting it is not possible to pre-compute $\hat
 % s(x_e; \theta_0, \theta_1)$ since one does not know the true values of
 % $\theta_0$ and $\theta_1$. Thus one must implement the embedding of the
 % classifier as in Eqn.~\ref{eq:embedding}.
@@ -819,7 +819,7 @@ this overarching optimization problem as an area of future work.
 %   * illustrate the method for several classifiers (new)
 %    * illustrate the method for several calibration routines (new)
 %    * compare with other methods (new)
-% - ratio of mixtures and decomposition (special case of generalized likelihood rario tests when parameters only affect the mixture coefficients => no need for parametrized classifiers)
+% - ratio of mixtures and decomposition (special case of generalized likelihood rario tests when parameters only affect the mixture coefficients => no need for parameterized classifiers)
 %   discuss about focusing the capacity of the classifier
 % - measure of particles properties, with a concrete example. Comparison with other likelihood-free inference methods (new)
 
@@ -839,7 +839,7 @@ this overarching optimization problem as an area of future work.
 % &= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(x| \theta_1)}{  p_c(x| \theta_0)}  \right]^{-1} \nonumber \\
 % &= \sum_c \left[ \sum_{c'} \frac{ w_{c'}(\theta_1)}{w_c(\theta_0)} \frac{ p_{c'}(s_{c,c',\theta_0, \theta_1}| \theta_1)}{ p_c(s_{c,c',\theta_0, \theta_1}| \theta_0)}  \right]^{-1} \label{eq:decomposedResult}
 % \end{align}
-% The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Theorem~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eqn.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
+% The second line is a trivial, but useful decomposition into pair-wise classification between $p_{c'}(x|\theta_1)$ and $p_c(x|\theta_0)$.  The third line uses Thm.~1 to relate the high-dimensional likelihood ratio into an equivalent calibrated likelihood ratio based on the univariate density of the corresponding classifier, denoted $s_{c,c',\theta_0, \theta_1}$. In the situation where the only free parameters of the  model are the mixture coefficients $w_c$, then the distributions $p_{c}(s_{c,c',\theta_0, \theta_1}| \theta)$ are independent of $\theta$ and can be pre-computed (after training the discriminative classifier, but before evaluating the  likelihood ratio). Equation~\ref{eq:decomposedResult} allows one to take advantage of both the parameterized classifier as in Eqn.~\ref{eq:hep_improved} and the capacity focusing technique in the typical HEP usage pattern.
 
 In the special case of (simple or composite) hypothesis testing between
 models defined as known mixtures of several components, i.e. when $p(\mathbf{x}|\theta)$ can be written as
@@ -856,7 +856,7 @@ classification problems. Specifically, we can write
 The second line is a trivial, but a useful decomposition into pairwise
 density ratio sub-problems between $p_{c'}(\mathbf{x}|\theta_1)$ and
 $p_c(\mathbf{x}|\theta_0)$.  The third line uses
-Theorem~\ref{thm:ratio-equivalence} to relate the high-dimensional likelihood
+Thm.~\ref{thm:ratio-equivalence} to relate the high-dimensional likelihood
 ratio into an equivalent calibrated likelihood ratio based on the univariate
 density of the corresponding classifier.
 
@@ -877,7 +877,7 @@ calibration.
 
 \subsection{Diagnostics}\label{S:diagnostics}
 
-While Theorem~\ref{thm:ratio-equivalence} states that the likelihood ratio $r(\mathbf{x}; \theta_0, \theta_1)$ is
+While Thm.~\ref{thm:ratio-equivalence} states that the likelihood ratio $r(\mathbf{x}; \theta_0, \theta_1)$ is
 invariant under the dimensionality reduction $s(\mathbf{x}; \theta_0, \theta_1)$ provided that it is monotonic with
 $r(\mathbf{x}; \theta_0, \theta_1)$ itself and we know that any universally strongly consistent algorithm can be
 used to learn such a function, we know that in practice $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$ will not be exact.
@@ -886,7 +886,8 @@ This is complicated by the fact that in the likelihood-free setting, we don't ha
 Below we consider two such diagnostic procedures that can be implemented in the likelihood-free setting. We illustrate these diagnostic procedures in Fig.~\ref{fig:diagnostics}.
 
 
-The first diagnostic procedure is related to the procedure for finding the MLE $\hat{\theta}$ in Eqn.~\ref{eq:mle_withs}. As pointed out there it is important that one maximizes the likelihood ratio as the surface integral and Jacobian factors related to the dimensionality reduction only cancel in the ratio (see Eqn.~\ref{eqn:factorization}). Importantly, they also only cancel if the dimensionality reduction map satisfies the conditions needed for Theorem~\ref{thm:ratio-equivalence} to hold. Moreover, the resulting value of $\hat{\theta}$ should be independent of the value of $\theta_1$ used in the denominator of the likelihood ratio. Similarly, we have
+The first diagnostic procedure is related to the procedure for finding the MLE $\hat{\theta}$ in Eqn.~\ref{eq:mle_withs}. As pointed out there it is important that one maximizes the likelihood ratio as the surface integral and Jacobian factors related to the dimensionality reduction only cancel in the ratio (see Eqn.~\ref{eqn:factorization}).
+Importantly, they also only cancel if the reduction map satisfies the assumptions of Thm.~\ref{thm:ratio-equivalence}. Moreover, the resulting value of $\hat{\theta}$ should be independent of the value of $\theta_1$ used in the denominator of the likelihood ratio. Similarly, we have
 %$\log\Lambda(\theta) = \log p(\mathcal{D}|\theta)/p(\mathcal{D}|\hat\theta) = \log p(\mathcal{D}|\theta)/p(\mathcal{D}|\theta_1) -\log p(\mathcal{D}|\hat\theta)/p(\mathcal{D}|\theta_1)$ for all values of $\theta_1$.
 \begin{equation}\label{eq:theta_1_independence}
 \log\Lambda(\theta) = \log \frac{p(\mathcal{D}|\theta)}{p(\mathcal{D}|\hat\theta)} = \log \frac{p(\mathcal{D}|\theta)}{p(\mathcal{D}|\theta_1)} -\log \frac{p(\mathcal{D}|\hat\theta)}{p(\mathcal{D}|\theta_1)}
@@ -915,10 +916,10 @@ where $p_{c_0} := {\cal N}(\mu=-2, \sigma^2=0.25^2)$, $p_{c_1} := {\cal N}(\mu=0
 $p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$. Samples drawn for the nominal value $\gamma=0.05$ are shown in
 Figure~\ref{fig:1a} and used later for inference.
 
-Figure~\ref{fig:p_sij} shows the intermediate stages for the decomposition described in Section~\ref{sec:mixture}.
+Figure~\ref{fig:p_sij} shows the intermediate stages for the decomposition described in Sec.~\ref{sec:mixture}.
 The blue and green curves show $p_{c'}(\hat{s}_{c,c'}(\mathbf{x}))$,  the distributions for the score for the sub-classifiers for the three pair-wise comparisons of the mixture components. The red curves in Fig.~\ref{fig:p_sij} show the approximation of the density ratio obtained from those distributions.
 
-%Using the method outlined in Section~\ref{sec:approx},
+%Using the method outlined in Sec.~\ref{sec:approx},
 
 Figures~\ref{fig:1c} and \ref{fig:1d} show the approximate $\log \left( \hat{r}(\mathbf{x}) \right)$ as a function of $\mathbf{x}$ using a
 2-layer neural network and a random forest for the classifier $\hat{s}(\mathbf{x})$.
@@ -1006,7 +1007,7 @@ resulting as expected in even more accurate approximations.
 %%classifier cannot make precise predictions due to the lack training samples
 %% in these parts of the input space.
 % When leveraging the fact
-%that densities are mixtures and decomposing their ratio as described in Section~\ref{sec:mixture},
+%that densities are mixtures and decomposing their ratio as described in Sec.~\ref{sec:mixture},
 %the capacity of the underlying classifiers can be more effectively focused on easier supervised learning tasks,
 %resulting as expected in even more accurate approximations, as shown in cyan.
 
@@ -1032,7 +1033,7 @@ of this method. We leave this as an area for future study.
 
 Figure~\ref{fig:decomposed_ratio} shows the distribution of $ \log \hat r(\mathbf{x})$ for $\gamma=0.05$
 using the decomposed approximation of $\hat r(\mathbf{x})$ with neural networks and the distribution
-of the exact log-likelihood ratio. While there are some artifacts in the distribution in the low-probability regions and the maximum value of the log-likehood ratio is underestimated, the overall shape of the distribution is well approximated.
+of the exact log-likelihood ratio. While there are some artifacts in the distribution in the low-probability regions and the maximum value of the log-likelihood ratio is underestimated, the overall shape of the distribution is well approximated.
 
 Finally, we come to the log-likelihood curve
 %shown in Figure~\ref{fig:likelihood}
@@ -1040,7 +1041,7 @@ Finally, we come to the log-likelihood curve
 \log \Lambda( \gamma ) =  \log \frac{ p({\cal D} | \gamma ) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \;
 \end{equation}
 for the dataset $\mathcal{D}$ shown in  Fig.~\ref{fig:1a}.
-By exploiting Eq.~\ref{eq:theta_1_independence},
+By exploiting Eqn.~\ref{eq:theta_1_independence},
 % fact that
 %\begin{equation}
 %\log \frac{ p({\cal D} | \gamma ) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} = \log \frac{ p({\cal D} | \gamma ) }{ p({\cal D} | \gamma = 0 ) } - \log \frac{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma) }{  p({\cal D} | \gamma = 0 ) },
@@ -1050,7 +1051,7 @@ both terms with respect to a common reference $\gamma=0$
 %reusing the decomposed neural network-based approximation from Figure~\ref{fig:1c}.
 %In particular, the maximum likelihood estimator (MLE) in the second term
 %can be found
-as outlined in Section~\ref{sec:generalized-likelihood-ratio}.
+as outlined in Sec.~\ref{sec:generalized-likelihood-ratio}.
 Figure~\ref{fig:likelihood} shows that the exact likelihood curve is very well
 approximated by the method, confirming that
 even when the raw classifier does a poor job at modeling the $s^*(\mathbf{x})$, a good approximations of the
@@ -1074,7 +1075,7 @@ the mixture, if possible).
 %both terms reusing the decomposed neural network-based approximation from Figure~\ref{fig:1c}.
 %In particular, the maximum likelihood estimator (MLE) in the second term
 %can be found as outlined in
-%Section~\ref{sec:generalized-likelihood-ratio}.
+%Sec.~\ref{sec:generalized-likelihood-ratio}.
 
 
 \begin{figure}
@@ -1201,7 +1202,7 @@ that we calculate via Eqn.~\ref{eq:theta_1_independence}.
 %\begin{equation}\label{eqn:obj-ex2-expanded}
 %\log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) } = \log \frac{p({\cal D} | \alpha, \beta)}{ p({\cal D} | \alpha=0, \beta=0) } - \log \frac{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }{ p({\cal D} | \alpha=0, \beta=0)}.
 %\end{equation}
-Following the procedure described in Section~\ref{sec:param-clf}, we
+Following the procedure described in Sec.~\ref{sec:param-clf}, we
 % to reduce
 %computational requirements, both terms in the right hand side of Eqn.~\ref{eqn:obj-ex2-expanded} are evaluated using
 build a single 2-layer neural network (with 5+2 inputs and one output node) to form the parameterized classifier $s(\mathbf{x}; \theta_0, \theta_1)$ and fix $\theta_1=(\alpha=0, \beta=0)$.
@@ -1209,7 +1210,7 @@ Since the generative model is not expensive, the classifier output is calibrated
 on-the-fly with histograms for  every candidate parameter pair $(\alpha,\beta)$.
 
 Figure~\ref{fig:5a} shows the exact log-likelihood ratio for this dataset, which has an exact MLE at $(\hat \alpha=1.012, \hat \beta=-0.9221)$.
-Figure~\ref{fig:5b} shows the approximate log-likelihood ratio evaluated on a coarse grid of parameter values. Some roughness in the contours is observed, which is primarily due to variance introduced in the calibration procedure. In addition to the statistical fluctuations due to finite calibration samples, there are also fluctuations introduced from changes in the binning of the calibration histograms as $\alpha$ and $\beta$ vary. As discussed in Section~\ref{sec:param-calibration}, a parameterized calibration
+Figure~\ref{fig:5b} shows the approximate log-likelihood ratio evaluated on a coarse grid of parameter values. Some roughness in the contours is observed, which is primarily due to variance introduced in the calibration procedure. In addition to the statistical fluctuations due to finite calibration samples, there are also fluctuations introduced from changes in the binning of the calibration histograms as $\alpha$ and $\beta$ vary. As discussed in Sec.~\ref{sec:param-calibration}, a parameterized calibration
 procedure should ameliorate this issue, but that is left for now as an area for future work.
 Nevertheless, optimizing the approximate log-likelihood ratio with
 a Bayesian optimization~\citep{brochu2010tutorial} procedure is efficient and effective.
@@ -1219,15 +1220,6 @@ internal Gaussian process, shown in Fig.~\ref{fig:5c}, is close to the exact log
 In each case, the true values $\alpha=1$ and $\beta=-1$ are contained within the $1-\sigma$ likelihood contour.
 %For comparison, Figure~\ref{fig:5b} shows the approximate log likelihood ratio evaluated on a fixed grid of values. Since $\hat s(\mathbf{x;\alpha,\beta})$ is calibrated on-the-fly,
 %roughness in the contours can be observed, in particular due to non-smooth changes in the resulting histograms as $\alpha$ and $\beta$ vary.
-
-Finally, we evaluate the diagnostics described in Sec.~\ref{S:diagnostics} for this example. To aid in visualization, we restrict to a 1-dimensional slice of the likelihood along $\alpha$ with $\beta=1$.   We consider three situations: i) a poorly trained, but well calibrated classifier; ii) a well trained, but poorly calibrated classifier; and iii) a well trained, and well calibrated classifier. For each case, we employ two diagnostic tests. The first checks for independence of $-2\log\Lambda(\theta)$ with respect to changes in the reference value $\theta_1$ as shown in Eqn.~\ref{eq:theta_1_independence}. The second uses a classifier to distinguish between samples from  $p(\mathbf{x}|\theta_0)$ and samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x}; \theta_0, \theta_1)$.  As discussed for Fig.~\ref{fig:5b}, statistical fluctuations in the calibration lead to some noise in the raw approximate likelihood. Thus, we show the posterior mean of a Gaussian processes resulting from Bayesian optimization of  the raw approximate likelihood as in Fig.~\ref{fig:6c}. In addition, the standard deviation of the Gaussian process is shown for one of the $\theta_1$ reference points to indicate the size of these statistical fluctuations. It is clear that in the well calibrated cases that these fluctuations are small, while in the poorly calibrated case these fluctuations are large. Moreover, in Fig.~\ref{fig:6a} we see that in the poorly trained, well calibrated case the classifier $\hat{s}(\mathbf{x}; \theta_0, \theta_1)$ has a significant dependence on the $\theta_1$ reference point. In contrast, in Fig.~\ref{fig:6c} the likelihood curves vary significantly, but this is comparable to the fluctuations expected from the calibration procedure. Finally, Fig.~\ref{fig:6e} shows that in the well trained, well calibrated case that the likelihood curves are all consistent with the exact likelihood within the estimated uncertainty band of the Gaussian process.  The ROC curves tell a similarly revealing story. As expected, the classifier is not able to distinguish between the distributions when $p(\mathbf{x}|\theta_1)$ is weighted by the exact likelihood ratio. We can also rule out that this is a deficiency in the classifier because the two distributions are well separated when no weights are applied to $p(\mathbf{x}|\theta_1)$. In both Fig.~\ref{fig:5b} and Fig.~\ref{fig:6d} the ROC curve correctly diagnoses deficiencies in the approximate likelihood ratio  $\hat{r}(\hat{s}(\mathbf{x}; \theta_0, \theta_1))$. Finally, Fig.~\ref{fig:6f} shows that the ROC curve in the well trained, well calibrated case is almost identical with the exact likelihood ratio, confirming the quality of the approximation.
-
-Overall, this example further illustrates and confirms the ability
-of the proposed method for inference with multiple parameters and multi-dimensional data where
-reliable approximations $\hat p(\mathbf{x}|\theta_0)$ and $\hat p(\mathbf{x}|\theta_1)$
-are often difficult to construct.
-
-
 
 \begin{figure}
     \centering
@@ -1281,6 +1273,49 @@ are often difficult to construct.
 \end{figure}
 
 
+Finally, we evaluate the diagnostics described in Sec.~\ref{S:diagnostics} for
+this example. To aid in visualization, we restrict to a 1-dimensional slice of
+the likelihood along $\alpha$ with $\beta=1$.   We consider three situations: i)
+a poorly trained, but well calibrated classifier; ii) a well trained, but poorly
+calibrated classifier; and iii) a well trained, and well calibrated classifier.
+For each case, we employ two diagnostic tests. The first checks for independence
+of $-2\log\Lambda(\theta)$ with respect to changes in the reference value
+$\theta_1$ as shown in Eqn.~\ref{eq:theta_1_independence}. The second uses a
+classifier to distinguish between samples from  $p(\mathbf{x}|\theta_0)$ and
+samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
+\theta_0, \theta_1)$.  As discussed for Fig.~\ref{fig:5b}, statistical
+fluctuations in the calibration lead to some noise in the raw approximate
+likelihood. Thus, we show the posterior mean of a Gaussian processes resulting
+from Bayesian optimization of  the raw approximate likelihood as in
+Fig.~\ref{fig:6c}. In addition, the standard deviation of the Gaussian process
+is shown for one of the $\theta_1$ reference points to indicate the size of
+these statistical fluctuations. It is clear that in the well calibrated cases
+that these fluctuations are small, while in the poorly calibrated case these
+fluctuations are large. Moreover, in Fig.~\ref{fig:6a} we see that in the poorly
+trained, well calibrated case the classifier $\hat{s}(\mathbf{x}; \theta_0,
+\theta_1)$ has a significant dependence on the $\theta_1$ reference point. In
+contrast, in Fig.~\ref{fig:6c} the likelihood curves vary significantly, but
+this is comparable to the fluctuations expected from the calibration procedure.
+Finally, Fig.~\ref{fig:6e} shows that in the well trained, well calibrated case
+that the likelihood curves are all consistent with the exact likelihood within
+the estimated uncertainty band of the Gaussian process.  The ROC curves tell a
+similarly revealing story. As expected, the classifier is not able to
+distinguish between the distributions when $p(\mathbf{x}|\theta_1)$ is weighted
+by the exact likelihood ratio. We can also rule out that this is a deficiency in
+the classifier because the two distributions are well separated when no weights
+are applied to $p(\mathbf{x}|\theta_1)$. In both Fig.~\ref{fig:6b} and
+Fig.~\ref{fig:6d} the ROC curve correctly diagnoses deficiencies in the
+approximate likelihood ratio  $\hat{r}(\hat{s}(\mathbf{x}; \theta_0,
+\theta_1))$. Finally, Fig.~\ref{fig:6f} shows that the ROC curve in the well
+trained, well calibrated case is almost identical with the exact likelihood
+ratio, confirming the quality of the approximation.
+
+Overall, this example further illustrates and confirms the ability
+of the proposed method for inference with multiple parameters and multi-dimensional data where
+reliable approximations $\hat p(\mathbf{x}|\theta_0)$ and $\hat p(\mathbf{x}|\theta_1)$
+are often difficult to construct.
+
+
 \subsection{High energy physics}
 
 High energy physics was the original scientific domain that motivated the development of this procedure.
@@ -1296,7 +1331,7 @@ component, that is
 \begin{equation}\label{eq:hepGen}
 p( {\cal D} | \mu, \nu) = \prod_{\mathbf{x} \in {\cal D}} \left[ \mu p_s( \mathbf{x} |  \nu)  + (1-\mu) p_b( \mathbf{x} | \nu) \right] \;.
 \end{equation}
-Accordingly, new particle searches at the LHC are typically framed as
+Accordingly, new particle searches are typically framed as
 hypothesis tests where the null corresponds to $\mu=0$, and the generalized
 likelihood ratio is used as a test statistic.
 
@@ -1310,7 +1345,7 @@ likelihood ratio is used as a test statistic.
 %$\sfrac{p_s(\mathbf{x}|\nu_0)}{p_s(\mathbf{x}|\nu_0)+p_b(\mathbf{x}|\nu_0)}$, which is
 %one to one with the likelihood ratio of the null to the alternate
 %$\frac{p(\mathbf{x}|\mu=0,\nu_0)}{p(\mathbf{x}|\mu,\nu_0)}$ for all $\mu$ and therefore
-%satisfies conditions of Theorem~\ref{thm:ratio-equivalence}. Associating the
+%satisfies conditions of Thm.~\ref{thm:ratio-equivalence}. Associating the
 %$y=1$ label to the signal component has advantages because it helps the
 %classifier focus its capacity on the relevant regions in the feature space,
 %particularly when the signal is a very small perturbation to the background
@@ -1352,7 +1387,7 @@ data generated using a fixed nominal value of the nuisance parameters $\nu=\nu_0
 However, as experimentalists we know that we must account for
 the systematic uncertainties that correspond to the nuisance parameters
 $\nu$. Thus, typically we take the classifier $\hat s(\mathbf{x})$ as fixed and then propagate
-uncertainty by estimating $\hat{p}_s(\hat s(\mathbf{x}) | \nu)$ with a parametrized calibration procedure.
+uncertainty by estimating $\hat{p}_s(\hat s(\mathbf{x}) | \nu)$ with a parameterized calibration procedure.
 %Building such
 %distributions for values of $\nu$ other than the nominal $\nu_0$
 %used for training is thought of as a calibration necessary for
@@ -1369,7 +1404,7 @@ would yield more accurate estimates of the generalized likelihood ratio.
 % \begin{equation}
 % \lambda(\mu) = \frac{p(D|\mu, \hat{\hat{\nu}})}{p(D|\hat \mu, {\hat{\nu}})} \;,
 % \end{equation}
-% following the approach outlined in Section~\ref{S:GLR}.
+% following the approach outlined in Sec.~\ref{S:GLR}.
 %
 % There is an interesting distinction between this approach and the standard use
 % in which the classifier is trained for a fixed $\nu_0$. In the standard use one
@@ -1488,7 +1523,7 @@ into the likelihood and postpone the evaluation of the classifier to the point
 of evaluation of the likelihood when $\theta$ is explicitly being tested. This
 avoids the loss of information that occurs from the regression step
 $\hat{\theta}(\mathbf{x})$ proposed by \cite{Neal:2007zz} and leads to
-Theorem~\ref{thm:ratio-equivalence}, which is an exact result in the case of an
+Thm.~\ref{thm:ratio-equivalence}, which is an exact result in the case of an
 ideal classifier. In both cases, the quality of the classifier is factorized
 from the calibration of its density, which allows for valid inference even if
 there is a loss of power due to a non ideal classifier.
@@ -1608,7 +1643,7 @@ environment at NYU.
 \label{app:clf-for-s}
 
 In this appendix, we show for completeness that the probabilistic classification framework
-yields a reduction $s$ which satisfies conditions of Theorem~\ref{thm:ratio-equivalence}.
+yields a reduction $s$ which satisfies conditions of Thm.~\ref{thm:ratio-equivalence}.
 
 \begin{proposition} \label{thm:best-classifier}
 Let $\mathbf{X} = (X_1, ..., X_p)$ and $Y$ be random input and output variables
@@ -1654,7 +1689,7 @@ as
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mathbf{x} | \theta_0) + p_{\mathbf{X}}(\mathbf{x} | \theta_1)}.
 \end{equation}
 In particular, this regression function satisfies conditions of
-Theorem~\ref{thm:ratio-equivalence} since $s^*(\mathbf{x}) =
+Thm.~\ref{thm:ratio-equivalence} since $s^*(\mathbf{x}) =
 m(\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)})$,
 for $m(r(\mathbf{x})) = \frac{1}{1 + r(\mathbf{x})}$, is monotonic with
 $\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$.
