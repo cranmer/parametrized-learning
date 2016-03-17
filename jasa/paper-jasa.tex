@@ -431,10 +431,10 @@ over all $\mathbf{x}^\prime \in \mathbb{R}^p$ such that $s(\mathbf{x}^\prime) = 
 by the Dirac $\delta$ function. Given Theorem 6.1.5 of \citet{Hrmander1990},
 it further comes
 \begin{equation}
-p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) = \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}} \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \label{eqn:hormander}
+p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) = \int_{\mathbf{x}^\prime \in \Omega_u } \frac{1}{|\nabla s(\mathbf{x}^\prime)|} p_\mathbf{X}(\mathbf{x}^\prime|\theta_0) dS_{\mathbf{x}^\prime} \label{eqn:hormander}
 \end{equation}
-where $|\nabla s(\mathbf{x}^\prime)| = \sqrt{\sum_{i=1}^p |\frac{\partial}{\partial x_i} s(\mathbf{x}^\prime)|^2}$
-and where $dS_{\mathbf{x}^\prime}$ is the Euclidean surface measure on $\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}$.
+where $\Omega_u = \{x^\prime : s(\mathbf{x}^\prime)=u\}$, $|\nabla s(\mathbf{x}^\prime)| = \sqrt{\sum_{i=1}^p |\frac{\partial}{\partial x_i} s(\mathbf{x}^\prime)|^2}$
+and where $dS_{\mathbf{x}^\prime}$ is the Euclidean surface measure on $\Omega_u$.
 Also, since $s(\mathbf{x})$ is monotonic with
 $r(\mathbf{X}; \theta_0, \theta_1)$,
 there exists an invertible function $m:\mathbb{R}^+ \mapsto \mathbb{R}$ such
@@ -446,14 +446,14 @@ p_\mathbf{X}(\mathbf{x}|\theta_0) &= m^{-1}(s(\mathbf{x})) p_\mathbf{X}(\mathbf{
 \end{align}
 Combining equations \ref{eqn:hormander} and \ref{eqn:mapping}, the density ratio $r(\mathbf{X}; \theta_0, \theta_1)$ can be pulled out of the integral, resulting in
 \begin{align}
-p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) &= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
-&= \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(u) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
-&= m^{-1}(s(\mathbf{x})) \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
-&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}. \label{eqn:factorization}
+p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0) &= \int_{\Omega_u}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(s(\mathbf{x}^\prime)) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+&= \int_{\Omega_u}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|} m^{-1}(u) p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+&= m^{-1}(s(\mathbf{x})) \int_{\Omega_u}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} \nonumber \\
+&= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \int_{\Omega_u}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}. \label{eqn:factorization}
 \end{align}
 Similarly, Equation~\ref{eqn:hormander} can be used to derive $p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_1)$, finally yielding
 \begin{align}
-\frac{p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0)}{p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_1)} &= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \frac{\int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}}{ \int_{\{\mathbf{x}^\prime \in \mathbb{R}^p : s(\mathbf{x}^\prime) = u\}}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} } \nonumber \\
+\frac{p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_0)}{p_{\mathbf{U}}(u=s(\mathbf{x})|\theta_1)} &= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)} \frac{\int_{\Omega_u}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime}}{ \int_{\Omega_u}  \frac{1}{|\nabla s(\mathbf{x}^\prime)|}  p_\mathbf{X}(\mathbf{x}^\prime|\theta_1) dS_{\mathbf{x}^\prime} } \nonumber \\
 &= \frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}. \label{eqn:jacob}
 \end{align}
 \end{proof}
