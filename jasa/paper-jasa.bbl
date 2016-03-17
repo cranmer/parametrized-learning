@@ -72,6 +72,11 @@ Friedman, J., Hastie, T., Tibshirani, R., et~al. (2000).
   discussion and a rejoinder by the authors).
 \newblock {\em The annals of statistics}, 28(2):337--407.
 
+\bibitem[{GPyOpt}, 2015]{gpy2014}
+{GPyOpt} (2015).
+\newblock {GPy}: A bayesian optimization framework in python.
+\newblock \url{http://github.com/SheffieldML/GPyOpt}.
+
 \bibitem[Gretton et~al., 2009]{gretton2009covariate}
 Gretton, A., Smola, A., Huang, J., Schmittfull, M., Borgwardt, K., and
   Sch{\"o}lkopf, B. (2009).
@@ -109,6 +114,14 @@ Nguyen, X., Wainwright, M.~J., Jordan, M., et~al. (2010).
 \newblock Estimating divergence functionals and the likelihood ratio by convex
   risk minimization.
 \newblock {\em Information Theory, IEEE Transactions on}, 56(11):5847--5861.
+
+\bibitem[Pedregosa et~al., 2011]{scikit-learn}
+Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel,
+  O., Blondel, M., Prettenhofer, P., Weiss, R., Dubourg, V., Vanderplas, J.,
+  Passos, A., Cournapeau, D., Brucher, M., Perrot, M., and Duchesnay, E.
+  (2011).
+\newblock Scikit-learn: Machine learning in {P}ython.
+\newblock {\em Journal of Machine Learning Research}, 12:2825--2830.
 
 \bibitem[Read, 1999]{read1999linear}
 Read, A. (1999).

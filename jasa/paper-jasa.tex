@@ -902,7 +902,7 @@ If the classifier can distinguish between the distributions, then $\hat{r}(\hat{
 \label{sec:examples}
 
 In this section, we illustrate the proposed method on two representative
-examples where the exact likelihood is known and then discuss its application to high energy physics. The code used to produce the results and extended details for these examples is available in Ref.~\citep{carl}.%\footnote{\url{https://github.com/diana-hep/carl}}.
+examples where the exact likelihood is known and then discuss its application to high energy physics. The code used to produce the results and extended details for these examples is available in Ref.~\citep{carl}, which utilizes the classification and calibration routines in scikit-learn~\citep{scikit-learn}. %\footnote{\url{https://github.com/diana-hep/carl}}.
 
 \subsection{Likelihood ratios of mixtures of normals}
 
@@ -1214,7 +1214,7 @@ Figure~\ref{fig:5a} shows the exact log-likelihood ratio for this dataset, which
 Figure~\ref{fig:5b} shows the approximate log-likelihood ratio evaluated on a coarse grid of parameter values. Some roughness in the contours is observed, which is primarily due to variance introduced in the calibration procedure. In addition to the statistical fluctuations due to finite calibration samples, there are also fluctuations introduced from changes in the binning of the calibration histograms as $\alpha$ and $\beta$ vary. As discussed in Sec.~\ref{sec:param-calibration}, a parameterized calibration
 procedure should ameliorate this issue, but that is left for now as an area for future work.
 Nevertheless, optimizing the approximate log-likelihood ratio with
-a Bayesian optimization~\citep{brochu2010tutorial} procedure is efficient and effective.
+a Bayesian optimization~\citep{brochu2010tutorial,gpy2014} procedure is efficient and effective.
 After $50$ likelihood evaluations, the maximum likelihood estimate is found at $(\hat \alpha=1.008, \hat \beta=-1.004)$.
 While the objective of the Bayesian optimization procedure is to find the maximum likelihood, the posterior mean of the
 internal Gaussian process, shown in Fig.~\ref{fig:5c}, is close to the exact log-likelihood ratio illustrated in Fig.~\ref{fig:5a}.
@@ -1614,7 +1614,7 @@ the frequentist formalism without specifying a prior over the parameters.
 In contrast to approaches that learn the posterior conditional on $\mathcal{D}$, our
 approach can be applied to any observed data $\mathcal{D}$ once trained.
 A strength of this approach is that it separates the quality of the approximation
-of the target likelihood from the quality of the calibration. The former is
+of the target likelihood from the quality of the calibration. The former
 leverages the continuing advances in supervised learning approaches to classification. 
 The calibration procedure for a particular
 parameter point is fairly straightforward since it involves estimating a
@@ -1682,7 +1682,7 @@ For ${\cal Y} = \{ 0, 1 \}$,
 \end{align}
 \end{proof}
 
-For $P(Y=0)=P(Y=1)=\frac{1}{2}$, the best regression function $s^*$ simplifies
+For $P(Y=0)=P(Y=1)=\sfrac{1}{2}$, the best regression function $s^*$ simplifies
 to
 \begin{equation}
 s^*(\mathbf{x}) = \frac{p_{\mathbf{X}|Y}(\mathbf{x}|Y=1)}{p_{\mathbf{X}|Y}(\mathbf{x} | Y=0) + p_{\mathbf{X}|Y}(\mathbf{x} | Y=1)}.
@@ -1695,9 +1695,9 @@ s^*(\mathbf{x}) = \frac{p_{\mathbf{X}}(\mathbf{x}|\theta_1)}{p_{\mathbf{X}}(\mat
 \end{equation}
 In particular, this regression function satisfies conditions of
 Thm.~\ref{thm:ratio-equivalence} since $s^*(\mathbf{x}) =
-m(\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)})$,
-for $m(r(\mathbf{x})) = \frac{1}{1 + r(\mathbf{x})}$, is monotonic with
-$\frac{p_\mathbf{X}(\mathbf{x}|\theta_0)}{p_\mathbf{X}(\mathbf{x}|\theta_1)}$.
+m(r(\mathbf{x}; \theta_0, \theta_1))$,
+for $m(r(\mathbf{x})) = ({1 + r(\mathbf{x})})^{-1}$, is monotonic with
+$r(\mathbf{x}; \theta_0, \theta_1)$.
 
 Proposition~\ref{thm:best-classifier} holds for the squared error loss, but it
 can be similarly shown that classifiers minimizing the exponential loss, the
