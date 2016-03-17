@@ -917,17 +917,18 @@ $p_{c_2} := {\cal N}(\mu=1, \sigma^2=0.25)$. Samples drawn for the nominal value
 Figure~\ref{fig:1a} and used later for inference.
 
 Figure~\ref{fig:p_sij} shows the intermediate stages for the decomposition described in Sec.~\ref{sec:mixture}.
-The blue and green curves show $p_{c'}(\hat{s}_{c,c'}(\mathbf{x}))$,  the distributions for the score for the sub-classifiers for the three pair-wise comparisons of the mixture components. The red curves in Fig.~\ref{fig:p_sij} show the approximation of the density ratio obtained from those distributions.
+The blue and green curves show $p_{c'}(\hat{s}_{c,c'}(\mathbf{x}))$,  the distributions for the score for the sub-classifiers for the three pair-wise comparisons of the mixture components. The red curves in Fig.~\ref{fig:p_sij} show the approximation of the density ratio (rescaled as $(1 +
+\hat{r}(\mathbf{x}))^{-1}$) obtained from those distributions.
 
 %Using the method outlined in Sec.~\ref{sec:approx},
 
-Figures~\ref{fig:1c} and \ref{fig:1d} show the approximate $\log \left( \hat{r}(\mathbf{x}) \right)$ as a function of $\mathbf{x}$ using a
+Figures~\ref{fig:1c} and \ref{fig:1d} show the approximate $\log  \hat{r}(\mathbf{x}) $ as a function of $\mathbf{x}$ using a
 2-layer neural network and a random forest for the classifier $\hat{s}(\mathbf{x})$.
 The neural network provides a smoother approximation, while the random has some artifacts due to the fact that the
 decision function is piece-wise constant.
 %ratio when using respectively a linear model, a 2-layer neural network and a random
 %forest.
-The blue curves show the exact log-ratio, the green curves show
+The blue curves show the exact $\log {r}(\mathbf{x})$, the green curves show
 $\log \left( (1-\hat s(\mathbf{x}))/\hat s(\mathbf{x}) \right)$
 without calibration, while the red curve is the improved approximation $\log \hat{r}(\mathbf{x})$ calibrated
 using histograms. Finally, the cyan curve shows the approximated log-likelihood ratio when decomposing the mixture, as
@@ -946,7 +947,7 @@ resulting as expected in even more accurate approximations.
     ~
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig1b.pdf}
-        \caption{$\hat{p}_c(\hat{s}_{c,c^\prime}(\mathbf{x}) )$ and $1/(1+\hat{r}(\hat{s}_{c,c^\prime}(\mathbf{x}))$}
+        \caption{$\hat{p}_c(\hat{s}_{c,c^\prime}(\mathbf{x}) )$ and $(1+\hat{r}(\hat{s}_{c,c^\prime}(\mathbf{x}))^{-1}$}
         \label{fig:p_sij}
     \end{subfigure}
 
@@ -1275,7 +1276,7 @@ In each case, the true values $\alpha=1$ and $\beta=-1$ are contained within the
 
 Finally, we evaluate the diagnostics described in Sec.~\ref{S:diagnostics} for
 this example. To aid in visualization, we restrict to a 1-dimensional slice of
-the likelihood along $\alpha$ with $\beta=1$.   We consider three situations: i)
+the likelihood along $\alpha$ with $\beta=-1$.   We consider three situations: i)
 a poorly trained, but well calibrated classifier; ii) a well trained, but poorly
 calibrated classifier; and iii) a well trained, and well calibrated classifier.
 For each case, we employ two diagnostic tests. The first checks for independence
