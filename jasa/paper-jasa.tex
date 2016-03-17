@@ -1040,10 +1040,11 @@ Finally, we come to the log-likelihood curve
 \log \Lambda( \gamma ) =  \log \frac{ p({\cal D} | \gamma ) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} \;
 \end{equation}
 for the dataset $\mathcal{D}$ shown in  Fig.~\ref{fig:1a}.
-By exploiting the fact that
-\begin{equation}
-\log \frac{ p({\cal D} | \gamma ) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} = \log \frac{ p({\cal D} | \gamma ) }{ p({\cal D} | \gamma = 0 ) } - \log \frac{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma) }{  p({\cal D} | \gamma = 0 ) },
-\end{equation}
+By exploiting Eq.~\ref{eq:theta_1_independence},
+% fact that
+%\begin{equation}
+%\log \frac{ p({\cal D} | \gamma ) }{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma )} = \log \frac{ p({\cal D} | \gamma ) }{ p({\cal D} | \gamma = 0 ) } - \log \frac{ \sup_{\gamma \in \Theta} p({\cal D} | \gamma) }{  p({\cal D} | \gamma = 0 ) },
+%\end{equation}
 the generalized likelihood ratio can be computed by evaluating
 both terms with respect to a common reference $\gamma=0$
 %reusing the decomposed neural network-based approximation from Figure~\ref{fig:1c}.
@@ -1079,14 +1080,14 @@ the mixture, if possible).
 \begin{figure}
     \centering
 
-    \begin{subfigure}[t]{0.4\textwidth}
+    \begin{subfigure}[t]{0.475\textwidth}
         \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig2a.pdf}
         \caption{Exact vs. approximated MLEs.}
         \label{fig:2a}
     \end{subfigure}
     ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
       %(or a blank line to force the subfigure onto a new line)
-    \begin{subfigure}[t]{0.4\textwidth}
+    \begin{subfigure}[t]{0.475\textwidth}
         \includegraphics[clip, trim=0.5cm 0.5cm 0.5cm 0.5cm,width=\textwidth]{figures/fig2b.pdf}
         \caption{$p(-2 \log \Lambda(\gamma=0.05) \, | \, \gamma=0.05)$}
         \label{fig:2b}
@@ -1195,10 +1196,11 @@ We construct the log-likelihood ratio
 \begin{equation}\label{eqn:obj-ex2}
     -2 \log \Lambda(\alpha, \beta ) = -2 \log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }
 \end{equation}
-that we calculate by exploiting the fact that
-\begin{equation}\label{eqn:obj-ex2-expanded}
-\log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) } = \log \frac{p({\cal D} | \alpha, \beta)}{ p({\cal D} | \alpha=0, \beta=0) } - \log \frac{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }{ p({\cal D} | \alpha=0, \beta=0)}.
-\end{equation}
+that we calculate via Eqn.~\ref{eq:theta_1_independence}.
+%by exploiting the fact that
+%\begin{equation}\label{eqn:obj-ex2-expanded}
+%\log \frac{p({\cal D} | \alpha, \beta)}{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) } = \log \frac{p({\cal D} | \alpha, \beta)}{ p({\cal D} | \alpha=0, \beta=0) } - \log \frac{ \sup_{\alpha,\beta} p({\cal D} | \alpha, \beta) }{ p({\cal D} | \alpha=0, \beta=0)}.
+%\end{equation}
 Following the procedure described in Section~\ref{sec:param-clf}, we
 % to reduce
 %computational requirements, both terms in the right hand side of Eqn.~\ref{eqn:obj-ex2-expanded} are evaluated using
