@@ -27,6 +27,7 @@ Baak, M., Gadatsch, S., Harrington, R., and Verkerke, W. (2015).
 \bibitem[Baldi et~al., 2016]{Baldi:2016fzo}
 Baldi, P., Cranmer, K., Faucett, T., Sadowski, P., and Whiteson, D. (2016).
 \newblock {Parameterized Machine Learning for High-Energy Physics}.
+\newblock {\em arXiv preprint arXiv:1601.07913}.
 
 \bibitem[Beaumont et~al., 2002]{beaumont2002approximate}
 Beaumont, M.~A., Zhang, W., and Balding, D.~J. (2002).
@@ -60,6 +61,7 @@ Cowan, G., Cranmer, K., Gross, E., and Vitells, O. (2010).
 Cranmer, K., Lewis, G., Moneta, L., Shibata, A., and Verkerke, W. (2012).
 \newblock {HistFactory: A tool for creating statistical models for use with
   RooFit and RooStats}.
+\newblock {\em CERN-OPEN-2012-016}.
 
 \bibitem[Friedman et~al., 2000]{friedman2000additive}
 Friedman, J., Hastie, T., Tibshirani, R., et~al. (2000).
@@ -196,6 +198,7 @@ Vapnik, V., Braga, I., and Izmailov, R. (2013).
 Volobouev, I. (2011).
 \newblock {Matrix Element Method in HEP: Transfer Functions, Efficiencies, and
   Likelihood Normalization}.
+\newblock {\em arXiv preprint arXiv:1101.2259}.
 
 \bibitem[{Xin Tong}, 2013]{JMLR:v14:tong13a}
 {Xin Tong} (2013).
