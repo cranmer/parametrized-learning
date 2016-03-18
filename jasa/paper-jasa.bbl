@@ -61,11 +61,6 @@ Cranmer, K., Lewis, G., Moneta, L., Shibata, A., and Verkerke, W. (2012).
 \newblock {HistFactory: A tool for creating statistical models for use with
   RooFit and RooStats}.
 
-\bibitem[Cranmer et~al., 2016]{carl}
-Cranmer, K., Pavez, J., and Louppe, G. (2016).
-\newblock carl: a toolkit for likelihood free inference.
-\newblock \url{https://github.com/diana-hep/carl}.
-
 \bibitem[Friedman et~al., 2000]{friedman2000additive}
 Friedman, J., Hastie, T., Tibshirani, R., et~al. (2000).
 \newblock Additive logistic regression: a statistical view of boosting (with
@@ -102,6 +97,12 @@ Ihler, A., Fisher, J., and Willsky, A. (2004).
 Lin, Y. (2002).
 \newblock Support vector machines and the bayes rule in classification.
 \newblock {\em Data Mining and Knowledge Discovery}, 6(3):259--275.
+
+\bibitem[Louppe et~al., 2016]{carl}
+Louppe, G., Cranmer, K., and Pavez, J. (2016).
+\newblock carl: a likelihood-free inference toolbox.
+\newblock \url{http://dx.doi.org/10.5281/zenodo.47798},
+  {\url{https://github.com/diana-hep/carl}}.
 
 \bibitem[Neal, 2007]{Neal:2007zz}
 Neal, R.~M. (2007).
