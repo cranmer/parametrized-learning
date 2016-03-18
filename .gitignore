@@ -131,3 +131,5 @@ taylor/.ipynb*
 *.pcm
 
 SciKitLearnWrapper/.ipynb_checkpoints/scikit-learn-wrapper-demo-checkpoint.ipynb
+
+arxiv_v2.tgz
